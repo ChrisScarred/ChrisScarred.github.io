@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>misty2py.basic_skills.free_memory API documentation</title>
+<meta name="description" content="This module removes non-system files from Misty&#39;s memory." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>misty2py.basic_skills.free_memory</code></h1>
+</header>
+<section id="section-intro">
+<p>This module removes non-system files from Misty's memory.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;This module removes non-system files from Misty&#39;s memory.&#34;&#34;&#34;
+import os
+from typing import Dict, List, Tuple
+
+from misty2py.robot import Misty
+from misty2py.utils.messages import success_parser_from_dicts
+from misty2py.utils.utils import get_abs_path
+
+
+def get_non_system_assets(
+    misty: Misty,
+    assets: List = [&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;],
+) -&gt; Dict:
+    &#34;&#34;&#34;Obtains the list of all non-system assets that fall under one of the `assets` types.
+
+    Args:
+        misty (Misty): The Misty whose non system assets to obtain.
+        assets (List, optional): The types of assets to obtain. Defaults to `[&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;]`.
+
+    Returns:
+        Dict: all non-system assets of a given type (keywords) listed as their names in the list under the type keyword.
+    &#34;&#34;&#34;
+    action = &#34;_list&#34;
+    non_sys_assets = {}
+    for asset in assets:
+        data = misty.get_info(asset + action)
+        result = data.get(&#34;result&#34;, [])
+        for hit in result:
+            name = hit.get(&#34;name&#34;)
+            if not name:
+                continue
+
+            is_system = hit.get(&#34;systemAsset&#34;, True)
+            if not is_system:
+                if not non_sys_assets.get(asset):
+                    non_sys_assets[asset] = []
+                non_sys_assets[asset].append(name)
+                print(
+                    &#34;Found a non-system asset \
+                        of type `%s` named `%s`.&#34; % (asset, name)
+                )
+
+    return non_sys_assets
+
+
+def get_asset_properties(asset_type: str, file: str) -&gt; Tuple[Dict, str, str]:
+    &#34;&#34;&#34;Obtains the parameters, the name and the extension of a file.
+
+    Args:
+        asset_type (str): The type of the asset.
+        file (str): The file name.
+
+    Returns:
+        Tuple[Dict, str, str]: the parameters (a dict with keys `Name` for recordings or `FileName` for other asset types containing the name and the key `Base64` set to `&#34;true&#34;`), the file name and the file extension.
+    &#34;&#34;&#34;
+    if asset_type == &#34;recording&#34;:
+        params = {&#34;Name&#34;: file, &#34;Base64&#34;: &#34;true&#34;}
+    else:
+        params = {&#34;FileName&#34;: file, &#34;Base64&#34;: &#34;true&#34;}
+
+    split_file_name = file.split(&#34;.&#34;)
+    name = split_file_name[0]
+    if len(split_file_name) &gt; 1:
+        ext = split_file_name[1]
+    else:
+        ext = &#34;unknown&#34;
+
+    return params, name, ext
+
+
+def save_base64_str(
+    full_path: str,
+    content: str,
+    overwrite: bool = False
+) -&gt; bool:
+    &#34;&#34;&#34;Saves an asset content to the file specified by `full_path`.
+
+    Args:
+        full_path (str): The absolute path to the save location.
+        content (str): The base64 content to save.
+        overwrite (bool, optional): Whether the overwrite the file if it exists. Defaults to `False`.
+
+    Returns:
+        bool: The successfulness of the operation.
+    &#34;&#34;&#34;
+    if not overwrite and os.path.exists(full_path):
+        print(&#34;File `%s` already exists, not overwriting.&#34; % full_path)
+        return True
+
+    try:
+        with open(full_path, &#34;w&#34;) as f:
+            f.write(content)
+        print(&#34;Asset saved into `%s`.&#34; % full_path)
+        return True
+
+    except Exception as e:
+        print(&#34;Failed to save the asset into `%s`. Error message: `%s`&#34; % (
+            full_path,
+            e
+            )
+        )
+        return False
+
+
+def save_assets(misty: Misty, assets: Dict, location: str) -&gt; List[str]:
+    &#34;&#34;&#34;Saves multiple assets.
+
+    Args:
+        misty (Misty): the Misty whose assets to save.
+        assets (Dict): The dictionary of assets; a list of file names under their asset type as the keyword.
+        location (str): The absolute path to the directory where the assets are saved.
+
+    Returns:
+        List[str]: A list of file names for the files that failed to be saved.
+    &#34;&#34;&#34;
+    failed_list = []
+    action = &#34;_file&#34;
+    for asset_type, files in assets.items():
+        for file in files:
+            params, name, ext = get_asset_properties(asset_type, file)
+            response = misty.get_info(asset_type + action, params=params)
+            result = response.get(&#34;result&#34;)
+
+            if not result:
+                failed_list.append(file)
+
+            else:
+                file_name = &#34;%s_%s_%s_in_base64.txt&#34; % (asset_type, name, ext)
+                full_path = os.path.join(location, file_name)
+                file_content = result.get(&#34;base64&#34;)
+                if not file_content:
+                    failed_list.append(file)
+                else:
+                    success = save_base64_str(full_path, file_content)
+                    if not success:
+                        failed_list.append(file)
+
+    return failed_list
+
+
+def delete_assets(
+    misty: Misty,
+    assets: Dict,
+    ignore_list: List = []
+) -&gt; List[str]:
+    &#34;&#34;&#34;Deletes all non-system files except those that are in `ignore_list`.
+
+    Args:
+        misty (Misty): the Misty whose assets to delete.
+        assets (Dict): The dictionary of assets; a list of file names under their asset type as the keyword.
+        ignore_list (List, optional): The list of file names for files that should not be deleted. Defaults to `[]`.
+
+    Returns:
+        List[str]: The list of files that were succesfully deleted.
+    &#34;&#34;&#34;
+    action = &#34;_delete&#34;
+    delete_list = []
+
+    for asset_type, files in assets.items():
+        for file in files:
+            if file not in ignore_list:
+                if asset_type == &#34;recording&#34;:
+                    data = {&#34;Name&#34;: file}
+                else:
+                    data = {&#34;FileName&#34;: file}
+                response = misty.perform_action(asset_type + action, data=data)
+                status = response.get(&#34;status&#34;)
+                if status:
+                    if status == &#34;Success&#34;:
+                        print(&#34;Successfully deleted the asset `%s`.&#34; % file)
+                        delete_list.append(file)
+                    else:
+                        print(
+                            &#34;Failed to delete the asset `%s`. Message: `%s`&#34;
+                            % (file, response)
+                        )
+
+    return delete_list
+
+
+def free_memory(
+    misty: Misty,
+    assets: List = [&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;],
+    save: bool = True,
+    save_dir: str = &#34;data&#34;,
+) -&gt; Dict:
+    &#34;&#34;&#34;Removes all non-system files in Misty&#39;s memory.
+
+    Args:
+        misty (Misty): the Misty whose memory to free.
+        assets (List, optional): The list of asset types to delete. Defaults to `[&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;]`.
+        save (bool, optional): Whether to save the files that are being deleted from Misty&#39;s memory. Defaults to `True`.
+        save_dir (str, optional): The path to the directory that will store saved assets. Defaults to `&#34;data&#34;`.
+
+    Returns:
+        Dict: The dictionary with keys `overall_success` for the success of the entire operation and keys corresponding to the actions within the operation with successfulness of the action and messages about the action.
+    &#34;&#34;&#34;
+    save_dir = get_abs_path(save_dir)
+    enable_audio = misty.perform_action(&#34;audio_enable&#34;)
+    enable_av = misty.perform_action(&#34;streaming_av_enable&#34;)
+    enable_camera = misty.perform_action(&#34;camera_enable&#34;)
+
+    assets_to_delete = get_non_system_assets(misty, assets=assets)
+    deletion = {}
+
+    if len(assets_to_delete) == 0:
+        deletion[&#34;status&#34;] = &#34;Success&#34;
+        deletion[&#34;message&#34;] = &#34;No non-system files present.&#34;
+
+    else:
+        failed_to_save_list = []
+
+        if save:
+            failed_to_save_list = save_assets(
+                misty,
+                assets_to_delete,
+                save_dir
+            )
+
+        deleted = delete_assets(misty, assets_to_delete, failed_to_save_list)
+
+        if len(deleted) &gt; 0:
+            deletion[&#34;status&#34;] = &#34;Success&#34;
+            deletion[&#34;message&#34;] = &#34;Successfully deleted \
+                following assets: %s&#34; % str(deleted)
+
+        else:
+            deletion[&#34;status&#34;] = &#34;Failed&#34;
+            deletion[&#34;message&#34;] = &#34;Failed to delete any assets.&#34;
+
+    disable_audio = misty.perform_action(&#34;audio_disable&#34;)
+    disable_av = misty.perform_action(&#34;streaming_av_disable&#34;)
+    disable_camera = misty.perform_action(&#34;camera_disable&#34;)
+
+    return success_parser_from_dicts(
+        enable_audio=enable_audio,
+        enable_av=enable_av,
+        enable_camera=enable_camera,
+        deletion=deletion,
+        disable_audio=disable_audio,
+        disable_av=disable_av,
+        disable_camera=disable_camera,
+    )
+
+
+if __name__ == &#34;__main__&#34;:
+    from misty2py.utils.utils import get_misty
+
+    print(free_memory(get_misty(), &#34;data&#34;))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="misty2py.basic_skills.free_memory.delete_assets"><code class="name flex">
+<span>def <span class="ident">delete_assets</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: Dict, ignore_list: List = []) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deletes all non-system files except those that are in <code>ignore_list</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
+<dd>the Misty whose assets to delete.</dd>
+<dt><strong><code>assets</code></strong> :&ensp;<code>Dict</code></dt>
+<dd>The dictionary of assets; a list of file names under their asset type as the keyword.</dd>
+<dt><strong><code>ignore_list</code></strong> :&ensp;<code>List</code>, optional</dt>
+<dd>The list of file names for files that should not be deleted. Defaults to <code>[]</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List[str]</code></dt>
+<dd>The list of files that were succesfully deleted.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_assets(
+    misty: Misty,
+    assets: Dict,
+    ignore_list: List = []
+) -&gt; List[str]:
+    &#34;&#34;&#34;Deletes all non-system files except those that are in `ignore_list`.
+
+    Args:
+        misty (Misty): the Misty whose assets to delete.
+        assets (Dict): The dictionary of assets; a list of file names under their asset type as the keyword.
+        ignore_list (List, optional): The list of file names for files that should not be deleted. Defaults to `[]`.
+
+    Returns:
+        List[str]: The list of files that were succesfully deleted.
+    &#34;&#34;&#34;
+    action = &#34;_delete&#34;
+    delete_list = []
+
+    for asset_type, files in assets.items():
+        for file in files:
+            if file not in ignore_list:
+                if asset_type == &#34;recording&#34;:
+                    data = {&#34;Name&#34;: file}
+                else:
+                    data = {&#34;FileName&#34;: file}
+                response = misty.perform_action(asset_type + action, data=data)
+                status = response.get(&#34;status&#34;)
+                if status:
+                    if status == &#34;Success&#34;:
+                        print(&#34;Successfully deleted the asset `%s`.&#34; % file)
+                        delete_list.append(file)
+                    else:
+                        print(
+                            &#34;Failed to delete the asset `%s`. Message: `%s`&#34;
+                            % (file, response)
+                        )
+
+    return delete_list</code></pre>
+</details>
+</dd>
+<dt id="misty2py.basic_skills.free_memory.free_memory"><code class="name flex">
+<span>def <span class="ident">free_memory</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: List = ['audio', 'image', 'video', 'recording'], save: bool = True, save_dir: str = 'data') ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes all non-system files in Misty's memory.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
+<dd>the Misty whose memory to free.</dd>
+<dt><strong><code>assets</code></strong> :&ensp;<code>List</code>, optional</dt>
+<dd>The list of asset types to delete. Defaults to <code>["audio", "image", "video", "recording"]</code>.</dd>
+<dt><strong><code>save</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether to save the files that are being deleted from Misty's memory. Defaults to <code>True</code>.</dd>
+<dt><strong><code>save_dir</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The path to the directory that will store saved assets. Defaults to <code>"data"</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>The dictionary with keys <code>overall_success</code> for the success of the entire operation and keys corresponding to the actions within the operation with successfulness of the action and messages about the action.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def free_memory(
+    misty: Misty,
+    assets: List = [&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;],
+    save: bool = True,
+    save_dir: str = &#34;data&#34;,
+) -&gt; Dict:
+    &#34;&#34;&#34;Removes all non-system files in Misty&#39;s memory.
+
+    Args:
+        misty (Misty): the Misty whose memory to free.
+        assets (List, optional): The list of asset types to delete. Defaults to `[&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;]`.
+        save (bool, optional): Whether to save the files that are being deleted from Misty&#39;s memory. Defaults to `True`.
+        save_dir (str, optional): The path to the directory that will store saved assets. Defaults to `&#34;data&#34;`.
+
+    Returns:
+        Dict: The dictionary with keys `overall_success` for the success of the entire operation and keys corresponding to the actions within the operation with successfulness of the action and messages about the action.
+    &#34;&#34;&#34;
+    save_dir = get_abs_path(save_dir)
+    enable_audio = misty.perform_action(&#34;audio_enable&#34;)
+    enable_av = misty.perform_action(&#34;streaming_av_enable&#34;)
+    enable_camera = misty.perform_action(&#34;camera_enable&#34;)
+
+    assets_to_delete = get_non_system_assets(misty, assets=assets)
+    deletion = {}
+
+    if len(assets_to_delete) == 0:
+        deletion[&#34;status&#34;] = &#34;Success&#34;
+        deletion[&#34;message&#34;] = &#34;No non-system files present.&#34;
+
+    else:
+        failed_to_save_list = []
+
+        if save:
+            failed_to_save_list = save_assets(
+                misty,
+                assets_to_delete,
+                save_dir
+            )
+
+        deleted = delete_assets(misty, assets_to_delete, failed_to_save_list)
+
+        if len(deleted) &gt; 0:
+            deletion[&#34;status&#34;] = &#34;Success&#34;
+            deletion[&#34;message&#34;] = &#34;Successfully deleted \
+                following assets: %s&#34; % str(deleted)
+
+        else:
+            deletion[&#34;status&#34;] = &#34;Failed&#34;
+            deletion[&#34;message&#34;] = &#34;Failed to delete any assets.&#34;
+
+    disable_audio = misty.perform_action(&#34;audio_disable&#34;)
+    disable_av = misty.perform_action(&#34;streaming_av_disable&#34;)
+    disable_camera = misty.perform_action(&#34;camera_disable&#34;)
+
+    return success_parser_from_dicts(
+        enable_audio=enable_audio,
+        enable_av=enable_av,
+        enable_camera=enable_camera,
+        deletion=deletion,
+        disable_audio=disable_audio,
+        disable_av=disable_av,
+        disable_camera=disable_camera,
+    )</code></pre>
+</details>
+</dd>
+<dt id="misty2py.basic_skills.free_memory.get_asset_properties"><code class="name flex">
+<span>def <span class="ident">get_asset_properties</span></span>(<span>asset_type: str, file: str) ‑> Tuple[Dict, str, str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains the parameters, the name and the extension of a file.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>asset_type</code></strong> :&ensp;<code>str</code></dt>
+<dd>The type of the asset.</dd>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>The file name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Tuple[Dict, str, str]</code></dt>
+<dd>the parameters (a dict with keys <code>Name</code> for recordings or <code>FileName</code> for other asset types containing the name and the key <code>Base64</code> set to <code>"true"</code>), the file name and the file extension.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_asset_properties(asset_type: str, file: str) -&gt; Tuple[Dict, str, str]:
+    &#34;&#34;&#34;Obtains the parameters, the name and the extension of a file.
+
+    Args:
+        asset_type (str): The type of the asset.
+        file (str): The file name.
+
+    Returns:
+        Tuple[Dict, str, str]: the parameters (a dict with keys `Name` for recordings or `FileName` for other asset types containing the name and the key `Base64` set to `&#34;true&#34;`), the file name and the file extension.
+    &#34;&#34;&#34;
+    if asset_type == &#34;recording&#34;:
+        params = {&#34;Name&#34;: file, &#34;Base64&#34;: &#34;true&#34;}
+    else:
+        params = {&#34;FileName&#34;: file, &#34;Base64&#34;: &#34;true&#34;}
+
+    split_file_name = file.split(&#34;.&#34;)
+    name = split_file_name[0]
+    if len(split_file_name) &gt; 1:
+        ext = split_file_name[1]
+    else:
+        ext = &#34;unknown&#34;
+
+    return params, name, ext</code></pre>
+</details>
+</dd>
+<dt id="misty2py.basic_skills.free_memory.get_non_system_assets"><code class="name flex">
+<span>def <span class="ident">get_non_system_assets</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: List = ['audio', 'image', 'video', 'recording']) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains the list of all non-system assets that fall under one of the <code>assets</code> types.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
+<dd>The Misty whose non system assets to obtain.</dd>
+<dt><strong><code>assets</code></strong> :&ensp;<code>List</code>, optional</dt>
+<dd>The types of assets to obtain. Defaults to <code>["audio", "image", "video", "recording"]</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>all non-system assets of a given type (keywords) listed as their names in the list under the type keyword.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_non_system_assets(
+    misty: Misty,
+    assets: List = [&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;],
+) -&gt; Dict:
+    &#34;&#34;&#34;Obtains the list of all non-system assets that fall under one of the `assets` types.
+
+    Args:
+        misty (Misty): The Misty whose non system assets to obtain.
+        assets (List, optional): The types of assets to obtain. Defaults to `[&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;]`.
+
+    Returns:
+        Dict: all non-system assets of a given type (keywords) listed as their names in the list under the type keyword.
+    &#34;&#34;&#34;
+    action = &#34;_list&#34;
+    non_sys_assets = {}
+    for asset in assets:
+        data = misty.get_info(asset + action)
+        result = data.get(&#34;result&#34;, [])
+        for hit in result:
+            name = hit.get(&#34;name&#34;)
+            if not name:
+                continue
+
+            is_system = hit.get(&#34;systemAsset&#34;, True)
+            if not is_system:
+                if not non_sys_assets.get(asset):
+                    non_sys_assets[asset] = []
+                non_sys_assets[asset].append(name)
+                print(
+                    &#34;Found a non-system asset \
+                        of type `%s` named `%s`.&#34; % (asset, name)
+                )
+
+    return non_sys_assets</code></pre>
+</details>
+</dd>
+<dt id="misty2py.basic_skills.free_memory.save_assets"><code class="name flex">
+<span>def <span class="ident">save_assets</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: Dict, location: str) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Saves multiple assets.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
+<dd>the Misty whose assets to save.</dd>
+<dt><strong><code>assets</code></strong> :&ensp;<code>Dict</code></dt>
+<dd>The dictionary of assets; a list of file names under their asset type as the keyword.</dd>
+<dt><strong><code>location</code></strong> :&ensp;<code>str</code></dt>
+<dd>The absolute path to the directory where the assets are saved.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List[str]</code></dt>
+<dd>A list of file names for the files that failed to be saved.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_assets(misty: Misty, assets: Dict, location: str) -&gt; List[str]:
+    &#34;&#34;&#34;Saves multiple assets.
+
+    Args:
+        misty (Misty): the Misty whose assets to save.
+        assets (Dict): The dictionary of assets; a list of file names under their asset type as the keyword.
+        location (str): The absolute path to the directory where the assets are saved.
+
+    Returns:
+        List[str]: A list of file names for the files that failed to be saved.
+    &#34;&#34;&#34;
+    failed_list = []
+    action = &#34;_file&#34;
+    for asset_type, files in assets.items():
+        for file in files:
+            params, name, ext = get_asset_properties(asset_type, file)
+            response = misty.get_info(asset_type + action, params=params)
+            result = response.get(&#34;result&#34;)
+
+            if not result:
+                failed_list.append(file)
+
+            else:
+                file_name = &#34;%s_%s_%s_in_base64.txt&#34; % (asset_type, name, ext)
+                full_path = os.path.join(location, file_name)
+                file_content = result.get(&#34;base64&#34;)
+                if not file_content:
+                    failed_list.append(file)
+                else:
+                    success = save_base64_str(full_path, file_content)
+                    if not success:
+                        failed_list.append(file)
+
+    return failed_list</code></pre>
+</details>
+</dd>
+<dt id="misty2py.basic_skills.free_memory.save_base64_str"><code class="name flex">
+<span>def <span class="ident">save_base64_str</span></span>(<span>full_path: str, content: str, overwrite: bool = False) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Saves an asset content to the file specified by <code>full_path</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>full_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>The absolute path to the save location.</dd>
+<dt><strong><code>content</code></strong> :&ensp;<code>str</code></dt>
+<dd>The base64 content to save.</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether the overwrite the file if it exists. Defaults to <code>False</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>The successfulness of the operation.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_base64_str(
+    full_path: str,
+    content: str,
+    overwrite: bool = False
+) -&gt; bool:
+    &#34;&#34;&#34;Saves an asset content to the file specified by `full_path`.
+
+    Args:
+        full_path (str): The absolute path to the save location.
+        content (str): The base64 content to save.
+        overwrite (bool, optional): Whether the overwrite the file if it exists. Defaults to `False`.
+
+    Returns:
+        bool: The successfulness of the operation.
+    &#34;&#34;&#34;
+    if not overwrite and os.path.exists(full_path):
+        print(&#34;File `%s` already exists, not overwriting.&#34; % full_path)
+        return True
+
+    try:
+        with open(full_path, &#34;w&#34;) as f:
+            f.write(content)
+        print(&#34;Asset saved into `%s`.&#34; % full_path)
+        return True
+
+    except Exception as e:
+        print(&#34;Failed to save the asset into `%s`. Error message: `%s`&#34; % (
+            full_path,
+            e
+            )
+        )
+        return False</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="misty2py.basic_skills" href="index.html">misty2py.basic_skills</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="misty2py.basic_skills.free_memory.delete_assets" href="#misty2py.basic_skills.free_memory.delete_assets">delete_assets</a></code></li>
+<li><code><a title="misty2py.basic_skills.free_memory.free_memory" href="#misty2py.basic_skills.free_memory.free_memory">free_memory</a></code></li>
+<li><code><a title="misty2py.basic_skills.free_memory.get_asset_properties" href="#misty2py.basic_skills.free_memory.get_asset_properties">get_asset_properties</a></code></li>
+<li><code><a title="misty2py.basic_skills.free_memory.get_non_system_assets" href="#misty2py.basic_skills.free_memory.get_non_system_assets">get_non_system_assets</a></code></li>
+<li><code><a title="misty2py.basic_skills.free_memory.save_assets" href="#misty2py.basic_skills.free_memory.save_assets">save_assets</a></code></li>
+<li><code><a title="misty2py.basic_skills.free_memory.save_base64_str" href="#misty2py.basic_skills.free_memory.save_base64_str">save_base64_str</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

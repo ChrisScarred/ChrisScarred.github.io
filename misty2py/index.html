@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>misty2py API documentation</title>
+<meta name="description" content="Misty2py is a Python package for Misty II development using [Misty&#39;s REST API](https://docs.mistyrobotics.com/misty-ii/rest-api/api-reference/) …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>misty2py</code></h1>
+</header>
+<section id="section-intro">
+<p>Misty2py is a Python package for Misty II development using <a href="https://docs.mistyrobotics.com/misty-ii/rest-api/api-reference/">Misty's REST API</a>.</p>
+<h2 id="features">Features</h2>
+<p>Misty2py can be used to:</p>
+<ul>
+<li><strong>perform actions</strong> via sending a <code>POST</code> or <code>DELETE</code> requests to Misty's API;</li>
+<li><strong>obtain information</strong> via sending a <code>GET</code> request to Misty's API;</li>
+<li><strong>receive streams of data</strong> via subscribing to event types on Misty's Websockets API.</li>
+</ul>
+<p>Misty2py uses following concepts:</p>
+<ul>
+<li><strong>action keywords</strong> - keywords for endpoints of Misty's API that correspond to performing actions;</li>
+<li><strong>information keywords</strong> - keywords for endpoints of Misty's API that correspond to retrieving information;</li>
+<li><strong>data shortcuts</strong> - keywords for commonly used data that is supplied to Misty's API as the body of a <code>POST</code> request.</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="poetry">Poetry</h3>
+<p>To install misty2py, run <code>pip install <a title="misty2py" href="#misty2py">misty2py</a></code>.</p>
+<h3 id="from-source">From source</h3>
+<ul>
+<li>
+<p>If this is your first time using <code><a title="misty2py" href="#misty2py">misty2py</a></code> from source, do following:</p>
+</li>
+<li>
+<p>Get Poetry (<code>python -m pip install poetry</code>) if you do not have it yet.</p>
+</li>
+<li>Copy <code>.env.example</code> to <code>.env</code>.</li>
+<li>Replace the placeholder values in the new <code>.env</code> file.</li>
+<li>
+<p>Run <code>poetry install</code> to obtain all dependencies.</p>
+</li>
+<li>
+<p>Run the desired script via <code>poetry run python -m [name]</code> where <code>[name]</code> is the placeholder for the module location (in Python notation).</p>
+</li>
+<li>If the scripts run but your Misty does not seem to respond, you have most likely provided an incorrect IP address for <code>MISTY_IP_ADDRESS</code> in <code>.env</code>.</li>
+<li>Pytests can be run via <code>poetry run pytest .</code>.</li>
+<li>The coverage report can be obtained via <code>poetry run pytest --cov-report html --cov=misty2py tests</code> for HTML output or via <code>poetry run pytest --cov=misty2py tests</code> for terminal output.</li>
+</ul>
+<h2 id="contribute">Contribute</h2>
+<p>This project is not currently open for contributions. However, you can report issues via the <a href="https://github.com/ChrisScarred/misty2py/issues">Issues Tracker</a> and inspect the <a href="https://github.com/ChrisScarred/misty2py">Source Code</a>.</p>
+<h2 id="license">License</h2>
+<p>This project is licensed under the MIT License.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="getting-started">Getting started</h3>
+<ul>
+<li>Start by making <strong>a new instance</strong> of <code><a title="misty2py.robot" href="robot.html">misty2py.robot</a></code>'s <code>Misty</code> by <code>misty_robot = Misty("ip_address_here")</code></li>
+<li>Substitute <code>ip_address_here</code> with the IP address of your Misty.</li>
+<li><code><a title="misty2py.utils.env_loader" href="utils/env_loader.html">misty2py.utils.env_loader</a></code> module contains <code>EnvLoader</code> class that can be used to load Misty's IP from the .env file in your project's home directory:<ul>
+<li>Create the <code>.env</code> file and write <code>MISTY_IP_ADDRESS="[ip_address_here]"</code> in it.</li>
+<li>Initialise an <code>EnvLoader</code> object via <code>env_loader = EnvLoader()</code>; this loads the environment variables.</li>
+<li>Use <code>env_loader.get_ip()</code> to obtain the IP address.</li>
+</ul>
+</li>
+<li>Use the method <code>misty_robot.perform_action()</code> to tell Misty to <strong>perform an action</strong>.</li>
+<li>Use the method <code>misty_robot.get_info()</code> to tell Misty to <strong>return information</strong>.</li>
+<li>Use the method <code>misty_robot.event()</code> to initialise, obtain and stop <strong>continuous streams of data</strong> from Misty's event types.</li>
+</ul>
+<h3 id="obtaining-information">Obtaining information</h3>
+<p>Obtaining digital information is handled by <code>misty2py.robot::get_info</code> method.</p>
+<p><code>misty2py.robot::get_info</code> has following arguments:</p>
+<ul>
+<li><code>info_name</code> - <em>required;</em> the string information keyword corresponding to an endpoint in Misty's API;</li>
+<li><code>params</code> - <em>optional;</em> a dictionary of parameter name and parameter value pairs, defaults to <code>{}</code>.</li>
+</ul>
+<h3 id="performing-actions">Performing actions</h3>
+<p>Performing physical and digital actions including removal of non-system files is handled by <code>misty2py.robot::perform_action()</code> method.</p>
+<p><code>misty2py.robot::perform_action()</code> has following arguments:</p>
+<ul>
+<li><code>action_name</code> - <em>required;</em> the string action keyword corresponding to an endpoint in Misty's API;</li>
+<li><code>data</code> - <em>optional;</em> the data to pass to the request as a dictionary or a data shortcut (string), defaults to <code>{}</code>.</li>
+</ul>
+<h3 id="event-types">Event types</h3>
+<p>To obtain event data in Misty's framework, it is required to <strong>subscribe</strong> to an event type on Misty's websocket server. Misty's websocket server then streams data to the websocket client, in this implementation via a separate thread. To <strong>access this data,</strong> <code>misty2py.robot::event</code> method must be called with <code>"get_data"</code> parameter from the main thread. When data are no longer required to be streamed to the client, an event type can be <strong>unsubscribed</strong> to kill the event thread.</p>
+<h4 id="subscription">Subscription</h4>
+<p>Subscribe to an event via <code>misty2py.robot::event</code> with the parameter <code>"subscribe"</code> and following keyword arguments:</p>
+<ul>
+<li><code>type</code> - <em>required;</em> event type string as documented in <a href="https://docs.mistyrobotics.com/misty-ii/robot/sensor-data/" title="Misty Robotics Event Types">Event Types Docs</a>.</li>
+<li><code>name</code> - <em>optional;</em> a custom event name string; must be unique.</li>
+<li><code>return_property</code> - <em>optional;</em> the property to return from Misty's websockets; all properties are returned if return_property is not supplied.</li>
+<li><code>debounce</code> - <em>optional;</em> the interval in ms at which new information is sent; defaults to 250.</li>
+<li><code>len_data_entries</code> - <em>optional;</em> the maximum number of data entries to keep (discards in fifo style); defaults to 10.</li>
+<li><code>event_emitter</code> - <em>optional;</em> an event emitter function which emits an event upon message recieval. Supplies the message content as an argument.</li>
+</ul>
+<h4 id="accessing-the-data-and-the-log">Accessing the data and the log</h4>
+<p>Access the data of an event or its log via <code>misty2py.robot::event</code> with the parameter <code>"get_data"</code> or <code>"get_log"</code> and a keyword argument <code>name</code> (the name of the event).</p>
+<h4 id="unsubscribing">Unsubscribing</h4>
+<p>Unsubscribe from an event via <code>misty2py.robot::event</code> with the parameter <code>"unsubscribe"</code> and a keyword argument <code>name</code> (the name of the event).</p>
+<h4 id="basic-events-usage-example">Basic events usage example</h4>
+<pre><code class="language-python">import time
+
+from misty2py.robot import Misty
+from misty2py.utils.env_loader import EnvLoader
+
+env_loader = EnvLoader
+
+m = Misty(env_loader.get_ip())
+
+d = m.event(&quot;subscribe&quot;, type = &quot;BatteryCharge&quot;)
+e_name = d.get(&quot;event_name&quot;)
+
+time.sleep(1)
+
+d = m.event(&quot;get_data&quot;, name = e_name)
+
+d = m.event(&quot;unsubscribe&quot;, name = e_name)
+</code></pre>
+<h4 id="event-emitter-usage-example">Event emitter usage example</h4>
+<pre><code class="language-python">import time
+from pymitter import EventEmitter
+
+from misty2py.robot import Misty
+from misty2py.utils.env_loader import EnvLoader
+
+env_loader = EnvLoader
+
+m = Misty(env_loader.get_ip())
+ee = EventEmitter()
+event_name = &quot;myevent_001&quot;
+
+@ee.on(event_name)
+def listener(data):
+    print(data)
+
+d = m.event(&quot;subscribe&quot;, type = &quot;BatteryCharge&quot;, 
+            name = event_name, event_emitter = ee)
+
+time.sleep(2)
+
+d = m.event(&quot;unsubscribe&quot;, name = event_name)
+</code></pre>
+<h3 id="adding-custom-keywords-and-shortcuts">Adding custom keywords and shortcuts</h3>
+<p>Custom keywords and shortcuts can be passed to a Misty object while declaring a new instance by using the optional arguments:</p>
+<ul>
+<li><code>custom_info</code> for custom information keywords (a dictionary with keys being the information keywords and values being the endpoints),</li>
+<li><code>custom_actions</code> for custom action keywords (a dictionary with keys being the action keywords and values being a dictionary <code>{"endpoint" : "edpoint_value", "method" : "method_value"}</code> where <code>method_value</code> is either <code>post</code> or <code>delete</code>),</li>
+<li><code>custom_data</code> for custom data shortcuts (a dictionary with keys being the data shortcuts and values being the dictionary of data values).</li>
+</ul>
+<p>An example:</p>
+<pre><code class="language-python">custom_allowed_infos = {
+    &quot;hazards_settings&quot;: &quot;api/hazards/settings&quot;
+}
+
+custom_allowed_data = {
+    &quot;amazement&quot;: {
+        &quot;FileName&quot;: &quot;s_Amazement.wav&quot;
+    },
+    &quot;red&quot;: {
+        &quot;red&quot;: &quot;255&quot;,
+        &quot;green&quot;: &quot;0&quot;,
+        &quot;blue&quot;: &quot;0&quot;
+    }
+}
+
+custom_allowed_actions = {
+    &quot;audio_play&quot; : {
+        &quot;endpoint&quot; : &quot;api/audio/play&quot;,
+        &quot;method&quot; : &quot;post&quot;
+    },
+    &quot;delete_audio&quot; : {
+        &quot;endpoint&quot; : &quot;api/audio&quot;,
+        &quot;method&quot; : &quot;delete&quot;
+    }
+}
+
+misty_robot = Misty(&quot;0.0.0.0&quot;, 
+    custom_info=custom_allowed_infos, 
+    custom_actions=custom_allowed_actions, 
+    custom_data=custom_allowed_data)
+</code></pre>
+<h2 id="default-keywords-and-shortcuts">Default Keywords and Shortcuts</h2>
+<details>
+<summary>List of supported action keywords</summary>
+<ul>
+<li><code>led</code> for <strong>post</strong> request to <code>api/led</code> endpoint</li>
+<li><code>led_trans</code> for <strong>post</strong> request to <code>api/led/transition</code> endpoint</li>
+<li><code>notification_settings</code> for <strong>post</strong> request to <code>api/notification/settings</code> endpoint</li>
+<li><code>audio_upload</code> for <strong>post</strong> request <code>api/audio</code> to endpoint</li>
+<li><code>audio_play</code> for <strong>post</strong> request to <code>api/audio/play</code> endpoint</li>
+<li><code>audio_pause</code> for <strong>post</strong> request to <code>api/audio/pause</code> endpoint</li>
+<li><code>audio_stop</code> for <strong>post</strong> request to <code>api/audio/stop</code> endpoint</li>
+<li><code>audio_delete</code> for <strong>delete</strong> request to <code>api/audio</code> endpoint</li>
+<li><code>audio_record_start</code> for <strong>post</strong> request to <code>api/audio/record/start</code> endpoint</li>
+<li><code>audio_record_stop</code> for <strong>post</strong> request to <code>api/audio/record/stop</code> endpoint</li>
+<li><code>audio_disable</code> for <strong>post</strong> request to <code>api/services/audio/disable</code> endpoint</li>
+<li><code>audio_enable</code> for <strong>post</strong> request to <code>api/services/audio/enable</code> endpoint</li>
+<li><code>image_upload</code> for <strong>post</strong> request to <code>api/images</code> endpoint</li>
+<li><code>image_show</code> for <strong>post</strong> request to <code>api/images/display</code> endpoint</li>
+<li><code>image_settings</code> for <strong>post</strong> request to <code>api/images/settings</code> endpoint</li>
+<li><code>image_delete</code> for <strong>delete</strong> request to <code>api/images</code> endpoint</li>
+<li><code>text_show</code> for <strong>post</strong> request to <code>api/text/display</code> endpoint</li>
+<li><code>text_settings</code> for <strong>post</strong> request to <code>api/text/settings</code> endpoint</li>
+<li><code>video_upload</code> for <strong>post</strong> request to <code>api/videos</code> endpoint</li>
+<li><code>video_show</code> for <strong>post</strong> request to <code>api/videos/display</code> endpoint</li>
+<li><code>video_settings</code> for <strong>post</strong> request to <code>api/videos/settings</code> endpoint</li>
+<li><code>video_delete</code> for <strong>delete</strong> request to <code>api/videos</code> endpoint</li>
+<li><code>blink_mapping_delete</code> for <strong>delete</strong> request to <code>api/blink/images</code> endpoint</li>
+<li><code>slam_enable</code> for <strong>post</strong> request to <code>api/services/slam/enable</code> endpoint</li>
+<li><code>slam_disable</code> for <strong>post</strong> request to <code>api/services/slam/disable</code> endpoint</li>
+<li><code>slam_sensors_reset</code> for <strong>post</strong> request to <code>api/slam/reset</code> endpoint</li>
+<li><code>slam_mapping_start</code> for <strong>post</strong> request to <code>api/slam/map/start</code> endpoint</li>
+<li><code>slam_mapping_stop</code> for <strong>post</strong> request to <code>api/slam/map/stop</code> endpoint</li>
+<li><code>slam_map_current</code> for <strong>post</strong> request to <code>api/slam/map/current</code> endpoint</li>
+<li><code>slam_map_rename</code> for <strong>post</strong> request to <code>api/slam/map/rename</code> endpoint</li>
+<li><code>slam_infrared_settings</code> for <strong>post</strong> request to <code>api/slam/settings/ir</code> endpoint</li>
+<li><code>slam_visible_settings</code> for <strong>post</strong> request to <code>api/slam/settings/visible</code> endpoint</li>
+<li><code>slam_map_delete</code> for <strong>delete</strong> request to <code>api/slam/map</code> endpoint</li>
+<li><code>slam_docking_locate_start</code> for <strong>post</strong> request to <code>api/slam/docking/start</code> endpoint</li>
+<li><code>slam_docking_locate_stop</code> for <strong>post</strong> request to <code>api/slam/docking/stop</code> endpoint</li>
+<li><code>streaming_slam_start</code> for <strong>post</strong> request to <code>api/slam/streaming/start</code> endpoint</li>
+<li><code>streaming_slam_stop</code> for <strong>post</strong> request to <code>api/slam/streaming/stop</code> endpoint</li>
+<li><code>slam_track_start</code> for <strong>post</strong> request to <code>api/slam/track/start</code> endpoint</li>
+<li><code>slam_track_stop</code> for <strong>post</strong> request to <code>api/slam/track/stop</code> endpoint</li>
+<li><code>recording_start</code> for <strong>post</strong> request to <code>api/videos/recordings/start</code> endpoint</li>
+<li><code>recording_stop</code> for <strong>post</strong> request to <code>api/videos/recordings/stop</code> endpoint</li>
+<li><code>recording_rename</code> for <strong>post</strong> request to <code>api/videos/recordings/rename</code> endpoint</li>
+<li><code>recording_delete</code> for <strong>delete</strong> request to <code>api/videos/recordings</code> endpoint</li>
+<li><code>face_detection_start</code> for <strong>post</strong> request to <code>api/faces/detection/start</code> endpoint</li>
+<li><code>face_detection_stop</code> for <strong>post</strong> request to <code>api/faces/detection/stop</code> endpoint</li>
+<li><code>face_recognition_start</code> for <strong>post</strong> request to <code>api/faces/recognition/start</code> endpoint</li>
+<li><code>face_recognition_stop</code> for <strong>post</strong> request to <code>api/faces/recognition/stop</code> endpoint</li>
+<li><code>face_train_start</code> for <strong>post</strong> request to <code>api/faces/training/start</code> endpoint</li>
+<li><code>face_train_cancel</code> for <strong>post</strong> request to <code>api/faces/training/cancel</code> endpoint</li>
+<li><code>face_delete</code> for <strong>delete</strong> request to <code>api/faces</code> endpoint</li>
+<li><code>skill_upload</code> for <strong>post</strong> request to <code>api/skills</code> endpoint</li>
+<li><code>skill_start</code> for <strong>post</strong> request to <code>api/skills/start</code> endpoint</li>
+<li><code>skills_reload</code> for <strong>post</strong> request to <code>api/skills/reload</code> endpoint</li>
+<li><code>skill_load</code> for <strong>post</strong> request to <code>api/skills/load</code> endpoint</li>
+<li><code>skill_cancel</code> for <strong>post</strong> request to <code>api/skills/cancel</code> endpoint</li>
+<li><code>skill_delete</code> for <strong>delete</strong> request to <code>api/skills</code> endpoint</li>
+<li><code>wifi_add</code> for <strong>post</strong> request to <code>api/networks/create</code> endpoint</li>
+<li><code>wifi_connect</code> for <strong>post</strong> request to <code>api/networks</code> endpoint</li>
+<li><code>wifi_delete</code> for <strong>delete</strong> request to <code>api/networks</code> endpoint</li>
+<li><code>wifi_hotspot_start</code> for <strong>post</strong> request to <code>api/networks/hotspot/start</code> endpoint</li>
+<li><code>wifi_hotspot_stop</code> for <strong>post</strong> request to <code>api/networks/hotspot/stop</code> endpoint</li>
+<li><code>write_serial</code> for <strong>post</strong> request to <code>api/serial</code> endpoint</li>
+<li><code>event_listener</code> for <strong>post</strong> request to <code>api/skills/event</code> endpoint</li>
+<li><code>website_show</code> for <strong>post</strong> request to <code>api/webviews/display</code> endpoint</li>
+<li><code>website_settings</code> for <strong>post</strong> request to <code>api/webviews/settings</code> endpoint</li>
+<li><code>blink_on</code> for <strong>post</strong> request to <code>api/blink</code> endpoint</li>
+<li><code>blink_settings</code> for <strong>post</strong> request to <code>api/blink/settings</code> endpoint</li>
+<li><code>display_settings</code> for <strong>post</strong> request to <code>api/display/settings</code> endpoint</li>
+<li><code>flashlight_on</code> for <strong>post</strong> request to <code>api/flashlight</code> endpoint</li>
+<li><code>speak</code> for <strong>post</strong> request to <code>api/tts/speak</code> endpoint</li>
+<li><code>speak_stop</code> for <strong>post</strong> request to <code>api/tts/stop</code> endpoint</li>
+<li><code>speech_capture</code> for <strong>post</strong> request to <code>api/audio/speech/capture</code> endpoint</li>
+<li><code>drive</code> for <strong>post</strong> request to <code>api/drive</code> endpoint</li>
+<li><code>drive_arc</code> for <strong>post</strong> request to <code>api/drive/arc</code> endpoint</li>
+<li><code>drive_heading</code> for <strong>post</strong> request to <code>api/drive/hdt</code> endpoint</li>
+<li><code>drive_time</code> for <strong>post</strong> request to <code>api/drive/time</code> endpoint</li>
+<li><code>drive_track</code> for <strong>post</strong> request to <code>api/drive/track</code> endpoint</li>
+<li><code>drive_stop</code> for <strong>post</strong> request to <code>api/drive/stop</code> endpoint</li>
+<li><code>drive_to_loc</code> for <strong>post</strong> request to <code>api/drive/coordinates</code> endpoint</li>
+<li><code>drive_on_path</code> for <strong>post</strong> request to <code>api/drive/path</code> endpoint</li>
+<li><code>halt</code> for <strong>post</strong> request to <code>api/halt</code> endpoint</li>
+<li><code>arm_move</code> for <strong>post</strong> request to <code>api/arms</code> endpoint</li>
+<li><code>arms_move</code> for <strong>post</strong> request to <code>api/arms/set</code> endpoint</li>
+<li><code>head_move</code> for <strong>post</strong> request to <code>api/head</code> endpoint</li>
+<li><code>hazard_settings</code> for <strong>post</strong> request to <code>api/hazard/updatebasesettings</code> endpoint</li>
+<li><code>streaming_av_start</code> for <strong>post</strong> request to <code>api/avstreaming/start</code> endpoint</li>
+<li><code>streaming_av_stop</code> for <strong>post</strong> request to <code>api/avstreaming/stop</code> endpoint</li>
+<li><code>streaming_av_disable</code> for <strong>post</strong> request to <code>api/services/avstreaming/disable</code> endpoint</li>
+<li><code>streaming_av_enable</code> for <strong>post</strong> request to <code>api/services/avstreaming/enable</code> endpoint</li>
+<li><code>keyphrase_recognition_start</code> for <strong>post</strong> request to <code>api/audio/keyphrase/start</code> endpoint</li>
+<li><code>keyphrase_recognition_stop</code> for <strong>post</strong> request to <code>api/audio/keyphrase/stop</code> endpoint</li>
+<li><code>update_allow</code> for <strong>post</strong> request to <code>api/system/update/allow</code> endpoint</li>
+<li><code>update_perform</code> for <strong>post</strong> request to <code>api/system/update</code> endpoint</li>
+<li><code>update_perform_targeted</code> for <strong>post</strong> request to <code>api/system/update/component</code> endpoint</li>
+<li><code>update_prevent</code> for <strong>post</strong> request to <code>api/system/update/prevent</code> endpoint</li>
+<li><code>error_text_clear</code> for <strong>post</strong> request to <code>api/text/error/clear</code> endpoint</li>
+<li><code>camera_disable</code> for <strong>post</strong> request to <code>api/services/camera/disable</code> endpoint</li>
+<li><code>camera_enable</code> for <strong>post</strong> request to <code>api/services/camera/enable</code> endpoint</li>
+<li><code>restart</code> for <strong>post</strong> request to <code>api/reboot</code> endpoint</li>
+<li><code>volume_settings</code> for <strong>post</strong> request to <code>api/audio/volume</code> endpoint</li>
+<li><code>logs_settings</code> for <strong>post</strong> request to <code>api/logs/level</code> endpoint</li>
+<li><code>websocket_settings</code> for <strong>post</strong> request to <code>api/websocket/version</code> endpoint</li>
+<li><code>external_request</code> for <strong>post</strong> request to <code>api/request</code> endpoint</li>
+</ul>
+</details>
+<details>
+<summary>List of supported information keywords</summary>
+<ul>
+<li><code>audio_file</code> for <strong>get</strong> request to <code>api/audio</code> endpoint</li>
+<li><code>audio_list</code> for <strong>get</strong> request to <code>api/audio/list</code> endpoint</li>
+<li><code>audio_status</code> for <strong>get</strong> request to <code>api/services/audio</code> endpoint</li>
+<li><code>image_file</code> for <strong>get</strong> request to <code>api/images</code> endpoint</li>
+<li><code>image_list</code> for <strong>get</strong> request to <code>api/images/list</code> endpoint</li>
+<li><code>video_file</code> for <strong>get</strong> request to <code>api/videos</code> endpoint</li>
+<li><code>video_list</code> for <strong>get</strong> request to <code>api/videos/list</code> endpoint</li>
+<li><code>av_status</code> for <strong>get</strong> request to <code>api/services/avstreaming</code> endpoint</li>
+<li><code>sensor_values</code> for <strong>get</strong> request to <code>api/serial</code> endpoint</li>
+<li><code>map_file</code> for <strong>get</strong> request to <code>api/slam/map</code> endpoint</li>
+<li><code>current_map_id</code> for <strong>get</strong> request to <code>api/slam/map/current</code> endpoint</li>
+<li><code>map_id_list</code> for <strong>get</strong> request to <code>api/slam/map/ids</code> endpoint</li>
+<li><code>slam_diagnostics</code> for <strong>get</strong> request to <code>api/slam/diagnostics</code> endpoint</li>
+<li><code>slam_path</code> for <strong>get</strong> request to <code>api/slam/path</code> endpoint</li>
+<li><code>slam_status</code> for <strong>get</strong> request to <code>api/slam/status</code> endpoint</li>
+<li><code>slam_enabled</code> for <strong>get</strong> request to <code>api/services/slam</code> endpoint</li>
+<li><code>picture_depth</code> for <strong>get</strong> request to <code>api/cameras/depth</code> endpoint</li>
+<li><code>picture_fisheye</code> for <strong>get</strong> request to <code>api/cameras/fisheye</code> endpoint</li>
+<li><code>picture_rgb</code> for <strong>get</strong> request to <code>api/cameras/rgb</code> endpoint</li>
+<li><code>faces_known</code> for <strong>get</strong> request to <code>api/faces</code> endpoint</li>
+<li><code>recording_file</code> for <strong>get</strong> request to <code>api/videos/recordings</code> endpoint</li>
+<li><code>recording_list</code> for <strong>get</strong> request to <code>api/videos/recordings/list</code> endpoint</li>
+<li><code>skills_running</code> for <strong>get</strong> request to <code>api/skills/running</code> endpoint</li>
+<li><code>skills_known</code> for <strong>get</strong> request to <code>api/skills</code> endpoint</li>
+<li><code>wifis_available</code> for <strong>get</strong> request to <code>api/networks/scan</code> endpoint</li>
+<li><code>wifis_saved</code> for <strong>get</strong> request to <code>api/networks</code> endpoint</li>
+<li><code>battery_status</code> for <strong>get</strong> request to <code>api/battery</code> endpoint</li>
+<li><code>camera_status</code> for <strong>get</strong> request to <code>api/services/camera</code> endpoint</li>
+<li><code>blink_settings</code> for <strong>get</strong> request to <code>api/blink/settings</code> endpoint</li>
+<li><code>hazards_settings</code> for <strong>get</strong> request to <code>api/hazards/settings</code> endpoint</li>
+<li><code>camera_settings</code> for <strong>get</strong> request to <code>api/camera</code> endpoint</li>
+<li><code>slam_visible_settings</code> for <strong>get</strong> request to <code>api/slam/settings/visible</code> endpoint</li>
+<li><code>slam_infrared_settings</code> for <strong>get</strong> request to <code>api/slam/settings/ir</code> endpoint</li>
+<li><code>update_settings</code> for <strong>get</strong> request to <code>api/system/update/settings</code> endpoint</li>
+<li><code>device</code> for <strong>get</strong> request to <code>api/device</code> endpoint</li>
+<li><code>help</code> for <strong>get</strong> request to <code>api/help</code> endpoint</li>
+<li><code>log</code> for <strong>get</strong> request to <code>api/logs</code> endpoint</li>
+<li><code>log_level</code> for <strong>get</strong> request to <code>api/logs/level</code> endpoint</li>
+<li><code>update_available</code> for <strong>get</strong> request to <code>api/system/updates</code> endpoint</li>
+<li><code>websockets</code> for <strong>get</strong> request to <code>api/websockets</code> endpoint</li>
+<li><code>websocket_version</code> for <strong>get</strong> request to <code>api/websocket/version</code></li>
+</ul>
+</details>
+<details>
+<summary>List of supported data shortcuts</summary>
+<ul>
+<li><code>led_off</code> for <code>{&quot;red&quot;: &quot;0&quot;, &quot;green&quot;: &quot;0&quot;, &quot;blue&quot;: &quot;0&quot;}</code></li>
+<li><code>white_light</code> for <code>{&quot;red&quot;: &quot;255&quot;, &quot;green&quot;: &quot;255&quot;, &quot;blue&quot;: &quot;255&quot;}</code></li>
+<li><code>red_light</code> for <code>{&quot;red&quot;: &quot;255&quot;, &quot;green&quot;: &quot;0&quot;, &quot;blue&quot;: &quot;0&quot;}</code></li>
+<li><code>green_light</code> for <code>{&quot;red&quot;: &quot;0&quot;, &quot;green&quot;: &quot;255&quot;, &quot;blue&quot;: &quot;0&quot;}</code></li>
+<li><code>blue_light</code> for <code>{&quot;red&quot;: &quot;0&quot;, &quot;green&quot;: &quot;0&quot;, &quot;blue&quot;: &quot;255&quot;}</code></li>
+<li><code>yellow_light</code> for <code>{&quot;red&quot;: &quot;255&quot;, &quot;green&quot;: &quot;255&quot;, &quot;blue&quot;: &quot;0&quot;}</code></li>
+<li><code>cyan_light</code> for <code>{&quot;red&quot;: &quot;0&quot;, &quot;green&quot;: &quot;255&quot;, &quot;blue&quot;: &quot;255&quot;}</code></li>
+<li><code>magenta_light</code> for <code>{&quot;red&quot;: &quot;255&quot;, &quot;green&quot;: &quot;0&quot;, &quot;blue&quot;: &quot;255&quot;}</code></li>
+<li><code>orange_light</code> for <code>{&quot;red&quot;: &quot;255&quot;, &quot;green&quot;: &quot;125&quot;, &quot;blue&quot;: &quot;0&quot;}</code></li>
+<li><code>lime_light</code> for <code>{&quot;red&quot;: &quot;125&quot;, &quot;green&quot;: &quot;255&quot;, &quot;blue&quot;: &quot;0&quot;}</code></li>
+<li><code>aqua_light</code> for <code>{&quot;red&quot;: &quot;0&quot;, &quot;green&quot;: &quot;255&quot;, &quot;blue&quot;: &quot;125&quot;}</code></li>
+<li><code>azure_light</code> for <code>{&quot;red&quot;: &quot;0&quot;, &quot;green&quot;: &quot;125&quot;, &quot;blue&quot;: &quot;255&quot;}</code></li>
+<li><code>violet_light</code> for <code>{&quot;red&quot;: &quot;125&quot;, &quot;green&quot;: &quot;0&quot;, &quot;blue&quot;: &quot;255&quot;}</code></li>
+<li><code>pink_light</code> for <code>{&quot;red&quot;: &quot;255&quot;, &quot;green&quot;: &quot;0&quot;, &quot;blue&quot;: &quot;125&quot;}</code></li>
+<li><code>low_volume</code> for <code>{&quot;Volume&quot;: &quot;5&quot;}</code></li>
+<li><code>image_admiration</code> for <code>{&quot;FileName&quot;: &quot;e_Admiration.jpg&quot;}</code></li>
+<li><code>image_aggressiveness</code> for <code>{&quot;FileName&quot;: &quot;e_Aggressiveness.jpg&quot;}</code></li>
+<li><code>image_amazement</code> for <code>{&quot;FileName&quot;: &quot;e_Amazement.jpg&quot;}</code></li>
+<li><code>image_anger</code> for <code>{&quot;FileName&quot;: &quot;e_Anger.jpg&quot;}</code></li>
+<li><code>image_concerned</code> for <code>{&quot;FileName&quot;: &quot;e_ApprehensionConcerned.jpg&quot;}</code></li>
+<li><code>image_contempt</code> for <code>{&quot;FileName&quot;: &quot;e_Contempt.jpg&quot;}</code></li>
+<li><code>image_content_left</code> for <code>{&quot;FileName&quot;: &quot;e_ContentLeft.jpg&quot;}</code></li>
+<li><code>image_content_right</code> for <code>{&quot;FileName&quot;: &quot;e_ContentRight.jpg&quot;}</code></li>
+<li><code>image_content_default</code> for <code>{&quot;FileName&quot;: &quot;e_DefaultContent.jpg&quot;}</code></li>
+<li><code>image_disgust</code> for <code>{&quot;FileName&quot;: &quot;e_Disgust.jpg&quot;}</code></li>
+<li><code>image_disoriented</code> for <code>{&quot;FileName&quot;: &quot;e_Disoriented.jpg&quot;}</code></li>
+<li><code>image_hilarious</code> for <code>{&quot;FileName&quot;: &quot;e_EcstacyHilarious.jpg&quot;}</code></li>
+<li><code>image_starry_eyed</code> for <code>{&quot;FileName&quot;: &quot;e_EcstacyStarryEyed.jpg&quot;}</code></li>
+<li><code>image_fear</code> for <code>{&quot;FileName&quot;: &quot;e_Fear.jpg&quot;}</code></li>
+<li><code>image_grief</code> for <code>{&quot;FileName&quot;: &quot;e_Grief.jpg&quot;}</code></li>
+<li><code>image_joy_1</code> for <code>{&quot;FileName&quot;: &quot;e_Joy.jpg&quot;}</code></li>
+<li><code>image_joy_2</code> for <code>{&quot;FileName&quot;: &quot;e_Joy2.jpg&quot;}</code></li>
+<li><code>image_goofy_1</code> for <code>{&quot;FileName&quot;: &quot;e_JoyGoofy.jpg&quot;}</code></li>
+<li><code>image_goofy_2</code> for <code>{&quot;FileName&quot;: &quot;e_JoyGoofy2.jpg&quot;}</code></li>
+<li><code>image_goofy_3</code> for <code>{&quot;FileName&quot;: &quot;e_JoyGoofy3.jpg&quot;}</code></li>
+<li><code>image_love</code> for <code>{&quot;FileName&quot;: &quot;e_Love.jpg&quot;}</code></li>
+<li><code>image_rage_1</code> for <code>{&quot;FileName&quot;: &quot;e_Rage.jpg&quot;}</code></li>
+<li><code>image_rage_2</code> for <code>{&quot;FileName&quot;: &quot;e_Rage2.jpg&quot;}</code></li>
+<li><code>image_rage_3</code> for <code>{&quot;FileName&quot;: &quot;e_Rage3.jpg&quot;}</code></li>
+<li><code>image_rage_4</code> for <code>{&quot;FileName&quot;: &quot;e_Rage4.jpg&quot;}</code></li>
+<li><code>image_remorse</code> for <code>{&quot;FileName&quot;: &quot;e_RemorseShame.jpg&quot;}</code></li>
+<li><code>image_sadness</code> for <code>{&quot;FileName&quot;: &quot;e_Sadness.jpg&quot;}</code></li>
+<li><code>image_sleping_1</code> for <code>{&quot;FileName&quot;: &quot;e_Sleeping.jpg&quot;}</code></li>
+<li><code>image_sleeping_2</code> for <code>{&quot;FileName&quot;: &quot;e_SleepingZZZ.jpg&quot;}</code></li>
+<li><code>image_sleepy_1</code> for <code>{&quot;FileName&quot;: &quot;e_Sleepy.jpg&quot;}</code></li>
+<li><code>image_sleepy_2</code> for <code>{&quot;FileName&quot;: &quot;e_Sleepy2.jpg&quot;}</code></li>
+<li><code>image_sleepy_3</code> for <code>{&quot;FileName&quot;: &quot;e_Sleepy3.jpg&quot;}</code></li>
+<li><code>image_sleepy_4</code> for <code>{&quot;FileName&quot;: &quot;e_Sleepy4.jpg&quot;}</code></li>
+<li><code>image_surprise</code> for <code>{&quot;FileName&quot;: &quot;e_Surprise.jpg&quot;}</code></li>
+<li><code>image_system_black_screen</code> for <code>{&quot;FileName&quot;: &quot;e_SystemBlackScreen.jpg&quot;}</code></li>
+<li><code>image_system_blink_large</code> for <code>{&quot;FileName&quot;: &quot;e_SystemBlinkLarge.jpg&quot;}</code></li>
+<li><code>image_system_blink_standard</code> for <code>{&quot;FileName&quot;: &quot;e_SystemBlinkStandard.jpg&quot;}</code></li>
+<li><code>image_system_camera</code> for <code>{&quot;FileName&quot;: &quot;e_SystemCamera.jpg&quot;}</code></li>
+<li><code>image_system_flash</code> for <code>{&quot;FileName&quot;: &quot;e_SystemFlash.jpg&quot;}</code></li>
+<li><code>image_system_gear_prompt</code> for <code>{&quot;FileName&quot;: &quot;e_SystemGearPrompt.jpg&quot;}</code></li>
+<li><code>image_system_logo_prompt</code> for <code>{&quot;FileName&quot;: &quot;e_SystemLogoPrompt.jpg&quot;}</code></li>
+<li><code>image_terror_1</code> for <code>{&quot;FileName&quot;: &quot;e_Terror.jpg&quot;}</code></li>
+<li><code>image_terror_2</code> for <code>{&quot;FileName&quot;: &quot;e_Terror2.jpg&quot;}</code></li>
+<li><code>image_terror_left</code> for <code>{&quot;FileName&quot;: &quot;e_TerrorLeft.jpg&quot;}</code></li>
+<li><code>image_terror_right</code> for <code>{&quot;FileName&quot;: &quot;e_TerrorRight.jpg&quot;}</code></li>
+<li><code>sound_acceptance</code> for <code>{&quot;FileName&quot;: &quot;s_Acceptance.wav&quot;}</code></li>
+<li><code>sound_amazement_1</code> for <code>{&quot;FileName&quot;: &quot;s_Amazement.wav&quot;}</code></li>
+<li><code>sound_amazement_2</code> for <code>{&quot;FileName&quot;: &quot;s_Amazement2.wav&quot;}</code></li>
+<li><code>sound_anger_1</code> for <code>{&quot;FileName&quot;: &quot;s_Anger.wav&quot;}</code></li>
+<li><code>sound_anger_2</code> for <code>{&quot;FileName&quot;: &quot;s_Anger2.wav&quot;}</code></li>
+<li><code>sound_anger_3</code> for <code>{&quot;FileName&quot;: &quot;s_Anger3.wav&quot;}</code></li>
+<li><code>sound_anger_4</code> for <code>{&quot;FileName&quot;: &quot;s_Anger4.wav&quot;}</code></li>
+<li><code>sound_annoyance_1</code> for <code>{&quot;FileName&quot;: &quot;s_Annoyance.wav&quot;}</code></li>
+<li><code>sound_annoyance_2</code> for <code>{&quot;FileName&quot;: &quot;s_Annoyance2.wav&quot;}</code></li>
+<li><code>sound_annoyance_3</code> for <code>{&quot;FileName&quot;: &quot;s_Annoyance3.wav&quot;}</code></li>
+<li><code>sound_annoyance_4</code> for <code>{&quot;FileName&quot;: &quot;s_Annoyance4.wav&quot;}</code></li>
+<li><code>sound_awe_1</code> for <code>{&quot;FileName&quot;: &quot;s_Awe.wav&quot;}</code></li>
+<li><code>sound_awe_2</code> for <code>{&quot;FileName&quot;: &quot;s_Awe2.wav&quot;}</code></li>
+<li><code>sound_awe_3</code> for <code>{&quot;FileName&quot;: &quot;s_Awe3.wav&quot;}</code></li>
+<li><code>sound_boredom</code> for <code>{&quot;FileName&quot;: &quot;s_Boredom.wav&quot;}</code></li>
+<li><code>sound_disapproval</code> for <code>{&quot;FileName&quot;: &quot;s_Disapproval.wav&quot;}</code></li>
+<li><code>sound_disgust_1</code> for <code>{&quot;FileName&quot;: &quot;s_Disgust.wav&quot;}</code></li>
+<li><code>sound_disgust_2</code> for <code>{&quot;FileName&quot;: &quot;s_Disgust2.wav&quot;}</code></li>
+<li><code>sound_disgust_3</code> for <code>{&quot;FileName&quot;: &quot;s_Disgust3.wav&quot;}</code></li>
+<li><code>sound_disoriented_1</code> for <code>{&quot;FileName&quot;: &quot;s_DisorientedConfused.wav&quot;}</code></li>
+<li><code>sound_disoriented_2</code> for <code>{&quot;FileName&quot;: &quot;s_DisorientedConfused2.wav&quot;}</code></li>
+<li><code>sound_disoriented_3</code> for <code>{&quot;FileName&quot;: &quot;s_DisorientedConfused3.wav&quot;}</code></li>
+<li><code>sound_disoriented_4</code> for <code>{&quot;FileName&quot;: &quot;s_DisorientedConfused4.wav&quot;}</code></li>
+<li><code>sound_disoriented_5</code> for <code>{&quot;FileName&quot;: &quot;s_DisorientedConfused5.wav&quot;}</code></li>
+<li><code>sound_disoriented_6</code> for <code>{&quot;FileName&quot;: &quot;s_DisorientedConfused6.wav&quot;}</code></li>
+<li><code>sound_distraction</code> for <code>{&quot;FileName&quot;: &quot;s_Distraction.wav&quot;}</code></li>
+<li><code>sound_ecstacy_1</code> for <code>{&quot;FileName&quot;: &quot;s_Ecstacy.wav&quot;}</code></li>
+<li><code>sound_ecstacy_2</code> for <code>{&quot;FileName&quot;: &quot;s_Ecstacy2.wav&quot;}</code></li>
+<li><code>sound_fear</code> for <code>{&quot;FileName&quot;: &quot;s_Fear.wav&quot;}</code></li>
+<li><code>sound_grief_1</code> for <code>{&quot;FileName&quot;: &quot;s_Grief.wav&quot;}</code></li>
+<li><code>sound_grief_2</code> for <code>{&quot;FileName&quot;: &quot;s_Grief2.wav&quot;}</code></li>
+<li><code>sound_grief_3</code> for <code>{&quot;FileName&quot;: &quot;s_Grief3.wav&quot;}</code></li>
+<li><code>sound_grief_4</code> for <code>{&quot;FileName&quot;: &quot;s_Grief4.wav&quot;}</code></li>
+<li><code>sound_joy_1</code> for <code>{&quot;FileName&quot;: &quot;s_Joy.wav&quot;}</code></li>
+<li><code>sound_joy_2</code> for <code>{&quot;FileName&quot;: &quot;s_Joy2.wav&quot;}</code></li>
+<li><code>sound_joy_3</code> for <code>{&quot;FileName&quot;: &quot;s_Joy3.wav&quot;}</code></li>
+<li><code>sound_joy_4</code> for <code>{&quot;FileName&quot;: &quot;s_Joy4.wav&quot;}</code></li>
+<li><code>sound_loathing</code> for <code>{&quot;FileName&quot;: &quot;s_Loathing.wav&quot;}</code></li>
+<li><code>sound_love</code> for <code>{&quot;FileName&quot;: &quot;s_Love.wav&quot;}</code></li>
+<li><code>sound_phrase_bye_bye</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseByeBye.wav&quot;}</code></li>
+<li><code>sound_phrase_evil</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseEvilAhHa.wav&quot;}</code></li>
+<li><code>sound_phrase_hello</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseHello.wav&quot;}</code></li>
+<li><code>sound_phrase_no</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseNoNoNo.wav&quot;}</code></li>
+<li><code>sound_phrase_oopsy</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseOopsy.wav&quot;}</code></li>
+<li><code>sound_phrase_ow</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseOwOwOw.wav&quot;}</code></li>
+<li><code>sound_phrase_oww</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseOwwww.wav&quot;}</code></li>
+<li><code>sound_phrase_uh</code> for <code>{&quot;FileName&quot;: &quot;s_PhraseUhOh.wav&quot;}</code></li>
+<li><code>sound_rage</code> for <code>{&quot;FileName&quot;: &quot;s_Rage.wav&quot;}</code></li>
+<li><code>sound_sadness_1</code> for <code>{&quot;FileName&quot;: &quot;s_Sadness.wav&quot;}</code></li>
+<li><code>sound_sadness_2</code> for <code>{&quot;FileName&quot;: &quot;s_Sadness2.wav&quot;}</code></li>
+<li><code>sound_sadness_3</code> for <code>{&quot;FileName&quot;: &quot;s_Sadness3.wav&quot;}</code></li>
+<li><code>sound_sadness_4</code> for <code>{&quot;FileName&quot;: &quot;s_Sadness4.wav&quot;}</code></li>
+<li><code>sound_sadness_5</code> for <code>{&quot;FileName&quot;: &quot;s_Sadness5.wav&quot;}</code></li>
+<li><code>sound_sadness_6</code> for <code>{&quot;FileName&quot;: &quot;s_Sadness6.wav&quot;}</code></li>
+<li><code>sound_sadness_7</code> for <code>{&quot;FileName&quot;: &quot;s_Sadness7.wav&quot;}</code></li>
+<li><code>sound_sleepy_1</code> for <code>{&quot;FileName&quot;: &quot;s_Sleepy.wav&quot;}</code></li>
+<li><code>sound_sleepy_2</code> for <code>{&quot;FileName&quot;: &quot;s_Sleepy2.wav&quot;}</code></li>
+<li><code>sound_sleepy_3</code> for <code>{&quot;FileName&quot;: &quot;s_Sleepy3.wav&quot;}</code></li>
+<li><code>sound_sleepy_4</code> for <code>{&quot;FileName&quot;: &quot;s_Sleepy4.wav&quot;}</code></li>
+<li><code>sound_sleepy_snore</code> for <code>{&quot;FileName&quot;: &quot;s_SleepySnore.wav&quot;}</code></li>
+<li><code>sound_camera_shutter</code> for <code>{&quot;FileName&quot;: &quot;s_SystemCameraShutter.wav&quot;}</code></li>
+<li><code>sound_failure</code> for <code>{&quot;FileName&quot;: &quot;s_SystemFailure.wav&quot;}</code></li>
+<li><code>sound_success</code> for <code>{&quot;FileName&quot;: &quot;s_SystemSuccess.wav&quot;}</code></li>
+<li><code>sound_wake</code> for <code>{&quot;FileName&quot;: &quot;s_SystemWakeWord.wav&quot;}</code></li>
+</ul>
+</details>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Misty2py is a Python package for Misty II development using [Misty&#39;s REST API](https://docs.mistyrobotics.com/misty-ii/rest-api/api-reference/).
+
+## Features
+Misty2py can be used to:
+
+- **perform actions** via sending a `POST` or `DELETE` requests to Misty&#39;s API;
+- **obtain information** via sending a `GET` request to Misty&#39;s API;
+- **receive streams of data** via subscribing to event types on Misty&#39;s Websockets API.
+
+Misty2py uses following concepts:
+
+- **action keywords** - keywords for endpoints of Misty&#39;s API that correspond to performing actions;
+- **information keywords** - keywords for endpoints of Misty&#39;s API that correspond to retrieving information;
+- **data shortcuts** - keywords for commonly used data that is supplied to Misty&#39;s API as the body of a `POST` request.
+
+## Installation
+
+### Poetry
+
+To install misty2py, run `pip install misty2py`.
+
+### From source
+
+- If this is your first time using `misty2py` from source, do following:
+
+  - Get Poetry (`python -m pip install poetry`) if you do not have it yet.
+  - Copy `.env.example` to `.env`.
+  - Replace the placeholder values in the new `.env` file.
+  - Run `poetry install` to obtain all dependencies.
+
+- Run the desired script via `poetry run python -m [name]` where `[name]` is the placeholder for the module location (in Python notation).
+- If the scripts run but your Misty does not seem to respond, you have most likely provided an incorrect IP address for `MISTY_IP_ADDRESS` in `.env`.
+- Pytests can be run via `poetry run pytest .`.
+- The coverage report can be obtained via `poetry run pytest --cov-report html --cov=misty2py tests` for HTML output or via `poetry run pytest --cov=misty2py tests` for terminal output.
+
+## Contribute
+
+This project is not currently open for contributions. However, you can report issues via the [Issues Tracker](https://github.com/ChrisScarred/misty2py/issues) and inspect the [Source Code](https://github.com/ChrisScarred/misty2py).
+
+## License
+
+This project is licensed under the MIT License.
+
+## Usage
+
+### Getting started
+
+- Start by making **a new instance** of `misty2py.robot`&#39;s `Misty` by `misty_robot = Misty(&#34;ip_address_here&#34;)`
+  - Substitute `ip_address_here` with the IP address of your Misty.
+  - `misty2py.utils.env_loader` module contains `EnvLoader` class that can be used to load Misty&#39;s IP from the .env file in your project&#39;s home directory:
+    - Create the `.env` file and write `MISTY_IP_ADDRESS=&#34;[ip_address_here]&#34;` in it.
+    - Initialise an `EnvLoader` object via `env_loader = EnvLoader()`; this loads the environment variables.
+    - Use `env_loader.get_ip()` to obtain the IP address.
+- Use the method `misty_robot.perform_action()` to tell Misty to **perform an action**.
+- Use the method `misty_robot.get_info()` to tell Misty to **return information**.
+- Use the method `misty_robot.event()` to initialise, obtain and stop **continuous streams of data** from Misty&#39;s event types.
+
+### Obtaining information
+
+Obtaining digital information is handled by `misty2py.robot::get_info` method.
+
+`misty2py.robot::get_info` has following arguments:
+
+- `info_name` - *required;* the string information keyword corresponding to an endpoint in Misty&#39;s API;
+- `params` - *optional;* a dictionary of parameter name and parameter value pairs, defaults to `{}`.
+
+### Performing actions
+
+Performing physical and digital actions including removal of non-system files is handled by `misty2py.robot::perform_action()` method.
+
+`misty2py.robot::perform_action()` has following arguments:
+
+- `action_name` - *required;* the string action keyword corresponding to an endpoint in Misty&#39;s API;
+- `data` - *optional;* the data to pass to the request as a dictionary or a data shortcut (string), defaults to `{}`.
+
+### Event types
+
+To obtain event data in Misty&#39;s framework, it is required to **subscribe** to an event type on Misty&#39;s websocket server. Misty&#39;s websocket server then streams data to the websocket client, in this implementation via a separate thread. To **access this data,** `misty2py.robot::event` method must be called with `&#34;get_data&#34;` parameter from the main thread. When data are no longer required to be streamed to the client, an event type can be **unsubscribed** to kill the event thread.
+
+#### Subscription
+
+Subscribe to an event via `misty2py.robot::event` with the parameter `&#34;subscribe&#34;` and following keyword arguments:
+
+- `type` - *required;* event type string as documented in [Event Types Docs](https://docs.mistyrobotics.com/misty-ii/robot/sensor-data/ &#34;Misty Robotics Event Types&#34;).
+- `name` - *optional;* a custom event name string; must be unique.
+- `return_property` - *optional;* the property to return from Misty&#39;s websockets; all properties are returned if return_property is not supplied.
+- `debounce` - *optional;* the interval in ms at which new information is sent; defaults to 250.
+- `len_data_entries` - *optional;* the maximum number of data entries to keep (discards in fifo style); defaults to 10.
+- `event_emitter` - *optional;* an event emitter function which emits an event upon message recieval. Supplies the message content as an argument.
+
+#### Accessing the data and the log
+
+Access the data of an event or its log via `misty2py.robot::event` with the parameter `&#34;get_data&#34;` or `&#34;get_log&#34;` and a keyword argument `name` (the name of the event).
+
+#### Unsubscribing
+
+Unsubscribe from an event via `misty2py.robot::event` with the parameter `&#34;unsubscribe&#34;` and a keyword argument `name` (the name of the event).
+
+#### Basic events usage example
+
+```python
+import time
+
+from misty2py.robot import Misty
+from misty2py.utils.env_loader import EnvLoader
+
+env_loader = EnvLoader
+
+m = Misty(env_loader.get_ip())
+
+d = m.event(&#34;subscribe&#34;, type = &#34;BatteryCharge&#34;)
+e_name = d.get(&#34;event_name&#34;)
+
+time.sleep(1)
+
+d = m.event(&#34;get_data&#34;, name = e_name)
+
+d = m.event(&#34;unsubscribe&#34;, name = e_name)
+```
+
+#### Event emitter usage example
+
+```python
+import time
+from pymitter import EventEmitter
+
+from misty2py.robot import Misty
+from misty2py.utils.env_loader import EnvLoader
+
+env_loader = EnvLoader
+
+m = Misty(env_loader.get_ip())
+ee = EventEmitter()
+event_name = &#34;myevent_001&#34;
+
+@ee.on(event_name)
+def listener(data):
+    print(data)
+
+d = m.event(&#34;subscribe&#34;, type = &#34;BatteryCharge&#34;, 
+            name = event_name, event_emitter = ee)
+
+time.sleep(2)
+
+d = m.event(&#34;unsubscribe&#34;, name = event_name)
+```
+
+### Adding custom keywords and shortcuts
+
+Custom keywords and shortcuts can be passed to a Misty object while declaring a new instance by using the optional arguments:
+
+- `custom_info` for custom information keywords (a dictionary with keys being the information keywords and values being the endpoints),
+- `custom_actions` for custom action keywords (a dictionary with keys being the action keywords and values being a dictionary `{&#34;endpoint&#34; : &#34;edpoint_value&#34;, &#34;method&#34; : &#34;method_value&#34;}` where `method_value` is either `post` or `delete`),
+- `custom_data` for custom data shortcuts (a dictionary with keys being the data shortcuts and values being the dictionary of data values).
+
+An example:
+
+```python
+custom_allowed_infos = {
+    &#34;hazards_settings&#34;: &#34;api/hazards/settings&#34;
+}
+
+custom_allowed_data = {
+    &#34;amazement&#34;: {
+        &#34;FileName&#34;: &#34;s_Amazement.wav&#34;
+    },
+    &#34;red&#34;: {
+        &#34;red&#34;: &#34;255&#34;,
+        &#34;green&#34;: &#34;0&#34;,
+        &#34;blue&#34;: &#34;0&#34;
+    }
+}
+
+custom_allowed_actions = {
+    &#34;audio_play&#34; : {
+        &#34;endpoint&#34; : &#34;api/audio/play&#34;,
+        &#34;method&#34; : &#34;post&#34;
+    },
+    &#34;delete_audio&#34; : {
+        &#34;endpoint&#34; : &#34;api/audio&#34;,
+        &#34;method&#34; : &#34;delete&#34;
+    }
+}
+
+misty_robot = Misty(&#34;0.0.0.0&#34;, 
+    custom_info=custom_allowed_infos, 
+    custom_actions=custom_allowed_actions, 
+    custom_data=custom_allowed_data)
+```
+
+
+## Default Keywords and Shortcuts
+
+&lt;details&gt; 
+  &lt;summary&gt;List of supported action keywords&lt;/summary&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;led&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/led&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;led_trans&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/led/transition&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;notification_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/notification/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_upload&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request &lt;code&gt;api/audio&lt;/code&gt; to endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_play&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/play&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_pause&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/pause&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/audio&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_record_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/record/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_record_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/record/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_disable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/audio/disable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_enable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/audio/enable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_upload&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/images&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_show&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/images/display&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/images/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/images&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;text_show&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/text/display&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;text_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/text/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;video_upload&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/videos&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;video_show&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/videos/display&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;video_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/videos/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;video_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/videos&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;blink_mapping_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/blink/images&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_enable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/slam/enable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_disable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/slam/disable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_sensors_reset&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/reset&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_mapping_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/map/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_mapping_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/map/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_map_current&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/map/current&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_map_rename&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/map/rename&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_infrared_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/settings/ir&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_visible_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/settings/visible&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_map_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/slam/map&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_docking_locate_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/docking/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_docking_locate_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/docking/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;streaming_slam_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/streaming/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;streaming_slam_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/streaming/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_track_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/track/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_track_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/slam/track/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recording_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/videos/recordings/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recording_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/videos/recordings/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recording_rename&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/videos/recordings/rename&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recording_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/videos/recordings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;face_detection_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/faces/detection/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;face_detection_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/faces/detection/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;face_recognition_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/faces/recognition/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;face_recognition_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/faces/recognition/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;face_train_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/faces/training/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;face_train_cancel&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/faces/training/cancel&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;face_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/faces&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skill_upload&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/skills&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skill_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/skills/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skills_reload&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/skills/reload&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skill_load&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/skills/load&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skill_cancel&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/skills/cancel&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skill_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/skills&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wifi_add&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/networks/create&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wifi_connect&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/networks&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wifi_delete&lt;/code&gt; for &lt;strong&gt;delete&lt;/strong&gt; request to &lt;code&gt;api/networks&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wifi_hotspot_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/networks/hotspot/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wifi_hotspot_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/networks/hotspot/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;write_serial&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/serial&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;event_listener&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/skills/event&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;website_show&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/webviews/display&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;website_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/webviews/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;blink_on&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/blink&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;blink_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/blink/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;display_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/display/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;flashlight_on&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/flashlight&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;speak&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/tts/speak&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;speak_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/tts/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;speech_capture&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/speech/capture&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive_arc&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive/arc&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive_heading&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive/hdt&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive_time&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive/time&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive_track&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive/track&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive_to_loc&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive/coordinates&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;drive_on_path&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/drive/path&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;halt&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/halt&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;arm_move&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/arms&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;arms_move&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/arms/set&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;head_move&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/head&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hazard_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/hazard/updatebasesettings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;streaming_av_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/avstreaming/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;streaming_av_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/avstreaming/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;streaming_av_disable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/avstreaming/disable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;streaming_av_enable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/avstreaming/enable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;keyphrase_recognition_start&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/keyphrase/start&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;keyphrase_recognition_stop&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/keyphrase/stop&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;update_allow&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/system/update/allow&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;update_perform&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/system/update&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;update_perform_targeted&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/system/update/component&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;update_prevent&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/system/update/prevent&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;error_text_clear&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/text/error/clear&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;camera_disable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/camera/disable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;camera_enable&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/services/camera/enable&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;restart&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/reboot&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;volume_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/audio/volume&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;logs_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/logs/level&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;websocket_settings&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/websocket/version&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;external_request&lt;/code&gt; for &lt;strong&gt;post&lt;/strong&gt; request to &lt;code&gt;api/request&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/details&gt;
+
+&lt;details&gt; 
+  &lt;summary&gt;List of supported information keywords&lt;/summary&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;audio_file&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/audio&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_list&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/audio/list&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audio_status&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/services/audio&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_file&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/images&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_list&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/images/list&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;video_file&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/videos&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;video_list&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/videos/list&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;av_status&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/services/avstreaming&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sensor_values&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/serial&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map_file&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/map&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;current_map_id&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/map/current&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;map_id_list&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/map/ids&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_diagnostics&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/diagnostics&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_path&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/path&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_status&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/status&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_enabled&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/services/slam&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;picture_depth&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/cameras/depth&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;picture_fisheye&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/cameras/fisheye&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;picture_rgb&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/cameras/rgb&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;faces_known&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/faces&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recording_file&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/videos/recordings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;recording_list&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/videos/recordings/list&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skills_running&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/skills/running&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;skills_known&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/skills&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wifis_available&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/networks/scan&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;wifis_saved&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/networks&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;battery_status&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/battery&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;camera_status&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/services/camera&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;blink_settings&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/blink/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hazards_settings&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/hazards/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;camera_settings&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/camera&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_visible_settings&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/settings/visible&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;slam_infrared_settings&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/slam/settings/ir&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;update_settings&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/system/update/settings&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;device&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/device&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;help&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/help&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;log&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/logs&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;log_level&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/logs/level&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;update_available&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/system/updates&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;websockets&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/websockets&lt;/code&gt; endpoint&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;websocket_version&lt;/code&gt; for &lt;strong&gt;get&lt;/strong&gt; request to &lt;code&gt;api/websocket/version&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/details&gt;
+
+&lt;details&gt; 
+  &lt;summary&gt;List of supported data shortcuts&lt;/summary&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;led_off&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;0&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;white_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;255&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;red_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;0&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;green_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;0&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;blue_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;255&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;yellow_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;0&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cyan_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;255&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;magenta_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;255&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;orange_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;125&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;0&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lime_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;125&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;0&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;aqua_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;125&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;azure_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;125&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;255&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;violet_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;125&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;255&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pink_light&lt;/code&gt; for &lt;code&gt;{&amp;quot;red&amp;quot;: &amp;quot;255&amp;quot;, &amp;quot;green&amp;quot;: &amp;quot;0&amp;quot;, &amp;quot;blue&amp;quot;: &amp;quot;125&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;low_volume&lt;/code&gt; for &lt;code&gt;{&amp;quot;Volume&amp;quot;: &amp;quot;5&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_admiration&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Admiration.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_aggressiveness&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Aggressiveness.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_amazement&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Amazement.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_anger&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Anger.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_concerned&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_ApprehensionConcerned.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_contempt&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Contempt.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_content_left&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_ContentLeft.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_content_right&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_ContentRight.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_content_default&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_DefaultContent.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_disgust&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Disgust.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_disoriented&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Disoriented.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_hilarious&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_EcstacyHilarious.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_starry_eyed&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_EcstacyStarryEyed.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_fear&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Fear.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_grief&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Grief.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_joy_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Joy.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_joy_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Joy2.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_goofy_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_JoyGoofy.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_goofy_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_JoyGoofy2.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_goofy_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_JoyGoofy3.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_love&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Love.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_rage_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Rage.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_rage_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Rage2.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_rage_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Rage3.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_rage_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Rage4.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_remorse&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_RemorseShame.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_sadness&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Sadness.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_sleping_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Sleeping.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_sleeping_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SleepingZZZ.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_sleepy_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Sleepy.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_sleepy_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Sleepy2.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_sleepy_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Sleepy3.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_sleepy_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Sleepy4.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_surprise&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Surprise.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_system_black_screen&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SystemBlackScreen.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_system_blink_large&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SystemBlinkLarge.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_system_blink_standard&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SystemBlinkStandard.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_system_camera&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SystemCamera.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_system_flash&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SystemFlash.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_system_gear_prompt&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SystemGearPrompt.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_system_logo_prompt&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_SystemLogoPrompt.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_terror_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Terror.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_terror_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_Terror2.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_terror_left&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_TerrorLeft.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;image_terror_right&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;e_TerrorRight.jpg&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_acceptance&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Acceptance.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_amazement_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Amazement.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_amazement_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Amazement2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_anger_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Anger.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_anger_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Anger2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_anger_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Anger3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_anger_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Anger4.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_annoyance_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Annoyance.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_annoyance_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Annoyance2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_annoyance_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Annoyance3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_annoyance_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Annoyance4.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_awe_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Awe.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_awe_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Awe2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_awe_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Awe3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_boredom&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Boredom.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disapproval&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Disapproval.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disgust_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Disgust.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disgust_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Disgust2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disgust_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Disgust3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disoriented_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_DisorientedConfused.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disoriented_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_DisorientedConfused2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disoriented_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_DisorientedConfused3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disoriented_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_DisorientedConfused4.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disoriented_5&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_DisorientedConfused5.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_disoriented_6&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_DisorientedConfused6.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_distraction&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Distraction.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_ecstacy_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Ecstacy.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_ecstacy_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Ecstacy2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_fear&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Fear.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_grief_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Grief.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_grief_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Grief2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_grief_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Grief3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_grief_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Grief4.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_joy_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Joy.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_joy_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Joy2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_joy_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Joy3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_joy_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Joy4.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_loathing&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Loathing.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_love&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Love.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_bye_bye&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseByeBye.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_evil&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseEvilAhHa.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_hello&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseHello.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_no&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseNoNoNo.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_oopsy&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseOopsy.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_ow&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseOwOwOw.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_oww&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseOwwww.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_phrase_uh&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_PhraseUhOh.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_rage&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Rage.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sadness_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sadness.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sadness_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sadness2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sadness_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sadness3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sadness_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sadness4.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sadness_5&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sadness5.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sadness_6&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sadness6.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sadness_7&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sadness7.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sleepy_1&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sleepy.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sleepy_2&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sleepy2.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sleepy_3&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sleepy3.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sleepy_4&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_Sleepy4.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_sleepy_snore&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_SleepySnore.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_camera_shutter&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_SystemCameraShutter.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_failure&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_SystemFailure.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_success&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_SystemSuccess.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sound_wake&lt;/code&gt; for &lt;code&gt;{&amp;quot;FileName&amp;quot;: &amp;quot;s_SystemWakeWord.wav&amp;quot;}&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/details&gt;
+&#34;&#34;&#34;</code></pre>
+</details>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="misty2py.action" href="action.html">misty2py.action</a></code></dt>
+<dd>
+<div class="desc"><p>This module's function is to send action requests via the action keywords matching to Misty's API endpoints, sending action requests and matching data …</p></div>
+</dd>
+<dt><code class="name"><a title="misty2py.basic_skills" href="basic_skills/index.html">misty2py.basic_skills</a></code></dt>
+<dd>
+<div class="desc"><p>This sub-package implements a few essential behaviours of Misty, such as audio-visual expressions, movement and speech.</p></div>
+</dd>
+<dt><code class="name"><a title="misty2py.information" href="information.html">misty2py.information</a></code></dt>
+<dd>
+<div class="desc"><p>This module's function is to send information requests via the information keywords matching to Misty's API endpoints, sending information requests …</p></div>
+</dd>
+<dt><code class="name"><a title="misty2py.misty_event" href="misty_event.html">misty2py.misty_event</a></code></dt>
+<dd>
+<div class="desc"><p>This module handles the communication of misty2py with Misty's WebSockets API and the communication between different threads created within misty2py …</p></div>
+</dd>
+<dt><code class="name"><a title="misty2py.robot" href="robot.html">misty2py.robot</a></code></dt>
+<dd>
+<div class="desc"><p>The module contains the class Misty which represents a Misty II robot.</p></div>
+</dd>
+<dt><code class="name"><a title="misty2py.utils" href="utils/index.html">misty2py.utils</a></code></dt>
+<dd>
+<div class="desc"><p>This sub-package contains utility functions.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#installation">Installation</a><ul>
+<li><a href="#poetry">Poetry</a></li>
+<li><a href="#from-source">From source</a></li>
+</ul>
+</li>
+<li><a href="#contribute">Contribute</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#getting-started">Getting started</a></li>
+<li><a href="#obtaining-information">Obtaining information</a></li>
+<li><a href="#performing-actions">Performing actions</a></li>
+<li><a href="#event-types">Event types</a><ul>
+<li><a href="#subscription">Subscription</a></li>
+<li><a href="#accessing-the-data-and-the-log">Accessing the data and the log</a></li>
+<li><a href="#unsubscribing">Unsubscribing</a></li>
+<li><a href="#basic-events-usage-example">Basic events usage example</a></li>
+<li><a href="#event-emitter-usage-example">Event emitter usage example</a></li>
+</ul>
+</li>
+<li><a href="#adding-custom-keywords-and-shortcuts">Adding custom keywords and shortcuts</a></li>
+</ul>
+</li>
+<li><a href="#default-keywords-and-shortcuts">Default Keywords and Shortcuts</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="misty2py.action" href="action.html">misty2py.action</a></code></li>
+<li><code><a title="misty2py.basic_skills" href="basic_skills/index.html">misty2py.basic_skills</a></code></li>
+<li><code><a title="misty2py.information" href="information.html">misty2py.information</a></code></li>
+<li><code><a title="misty2py.misty_event" href="misty_event.html">misty2py.misty_event</a></code></li>
+<li><code><a title="misty2py.robot" href="robot.html">misty2py.robot</a></code></li>
+<li><code><a title="misty2py.utils" href="utils/index.html">misty2py.utils</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

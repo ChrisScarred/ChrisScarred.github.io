@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>misty2py_skills.face_recognition API documentation</title>
+<meta name="description" content="This module implements a face recognition skill that allows Misty to greet people with their chosen name." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>misty2py_skills.face_recognition</code></h1>
+</header>
+<section id="section-intro">
+<p>This module implements a face recognition skill that allows Misty to greet people with their chosen name.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;This module implements a face recognition skill that allows Misty to greet people with their chosen name.
+&#34;&#34;&#34;
+import time
+from enum import Enum
+from typing import Dict, List
+
+from misty2py.basic_skills.cancel_skills import cancel_skills
+from misty2py.basic_skills.speak import speak
+from misty2py.response import success_of_action_dict
+from misty2py.robot import Misty
+from misty2py.utils.generators import get_random_string
+from misty2py.utils.status import Status
+from misty2py.utils.utils import get_misty
+from pymitter import EventEmitter
+
+ee = EventEmitter()
+misty_glob = get_misty()
+status = Status()
+event_face_rec = &#34;face_rec_%s&#34; % get_random_string(6)
+event_face_train = &#34;face_train_%s&#34; % get_random_string(6)
+
+UPDATE_TIME = 1
+&#34;&#34;&#34;The minimum amount of time (in seconds) that must pass between Misty greets the same person again.&#34;&#34;&#34;
+UNKNOWN_LABEL = &#34;unknown person&#34;
+&#34;&#34;&#34;The label used by Misty&#39;s REST API for an unknown face.&#34;&#34;&#34;
+TESTING_NAME = &#34;chris&#34;
+&#34;&#34;&#34;The name of the person testing this module. For convenience, the faces commencing with this name are forgotten in at beginning of the skill so they can be learnt again.&#34;&#34;&#34;
+
+
+class UserResponses:
+    &#34;&#34;&#34;Represents responses that a user can give to different prompts used in this skill.
+    &#34;&#34;&#34;
+    YES = frozenset([&#34;yes&#34;, &#34;y&#34;])
+    NO = frozenset([&#34;no&#34;, &#34;n&#34;])
+    STOP = frozenset([&#34;stop&#34;, &#34;s&#34;, &#34;terminate&#34;])
+
+
+class StatusLabels(Enum):
+    &#34;&#34;&#34;Represents states in which the skill can be.
+    &#34;&#34;&#34;
+    MAIN = &#34;running_main&#34;
+    &#34;&#34;&#34;The main state of waiting for a face recognition event.&#34;&#34;&#34;
+    PROMPT = &#34;running_train_prompt&#34;
+    &#34;&#34;&#34;The state of running the training prompt and waiting for the user&#39;s response.&#34;&#34;&#34;
+    TRAIN = &#34;running_training&#34;
+    &#34;&#34;&#34;The face training state.&#34;&#34;&#34;
+    INIT = &#34;running_training_initialisation&#34;
+    &#34;&#34;&#34;The state of the initialisation of face training.&#34;&#34;&#34;
+    GREET = &#34;running_greeting&#34;
+    &#34;&#34;&#34;The state of greeting a person.&#34;&#34;&#34;
+    TALK = &#34;talking&#34;
+    &#34;&#34;&#34;The state of talking.&#34;&#34;&#34;
+
+
+@ee.on(event_face_rec)
+def listener(data: Dict) -&gt; None:
+    &#34;&#34;&#34;Reacts to a face recognition event.
+
+    Only greets a person if the current status of the skill is not training, talking or greeting. Does not greet the person if they were greeted the previous time less than `UPDATE_TIME` seconds ago. Greets the person if they are a different person than the person greeted the previous time less than `UPDATE_TIME` seconds ago.
+
+    Args:
+        data (Dict): The data received from Misty&#39;s WebSocket API along with the face recognition event.
+    &#34;&#34;&#34;
+    if status.get_(&#34;status&#34;) == StatusLabels.MAIN:
+        prev_time = status.get_(&#34;time&#34;)
+        prev_label = status.get_(&#34;data&#34;)
+        curr_label = data.get(&#34;label&#34;)
+        curr_time = time.time()
+        if curr_time - prev_time &gt; UPDATE_TIME:
+            handle_recognition(misty_glob, curr_label, curr_time)
+        elif curr_label != prev_label:
+            handle_recognition(misty_glob, curr_label, curr_time)
+        status.set_(time=curr_time)
+
+
+@ee.on(event_face_train)
+def listener(data: Dict) -&gt; None:
+    &#34;&#34;&#34;Handles face training events and terminates the training session if the data states the training is complete.
+
+    Args:
+        data (Dict): The data received from Misty&#39;s WebSocket API along with the face training event.
+    &#34;&#34;&#34;
+    if data.get(&#34;message&#34;) == &#34;Face training embedding phase complete.&#34;:
+        speak_wrapper(misty_glob, &#34;Thank you, the training is complete now.&#34;)
+        status.set_(status=StatusLabels.MAIN)
+        d = misty_glob.event(&#34;unsubscribe&#34;, name=event_face_train).parse_to_dict()
+        print(d)
+
+
+def user_from_face_id(face_id: str) -&gt; str:
+    &#34;&#34;&#34;Returns the name from a face ID.
+    &#34;&#34;&#34;
+    return face_id.split(&#34;_&#34;)[0].capitalize()
+
+
+def training_prompt(misty: Misty):
+    &#34;&#34;&#34;Misty asks whether to begin a face training session.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.PROMPT)
+    speak_wrapper(
+        misty,
+        &#34;Hello! I do not know you yet, do you want to begin the face training session?&#34;,
+    )
+    print(&#34;An unknown face detected.\nDo you want to start training (yes/no)? [no]&#34;)
+
+
+def speak_wrapper(misty: Misty, utterance: str) -&gt; None:
+    &#34;&#34;&#34;Changes status to `StatusLabels.TALK` while Misty is talking.
+    &#34;&#34;&#34;
+    prev_stat = status.get_(&#34;status&#34;)
+    status.set_(status=StatusLabels.TALK)
+    print(speak(misty, utterance))
+    status.set_(status=prev_stat)
+
+
+def handle_greeting(misty: Misty, user_name: str) -&gt; None:
+    &#34;&#34;&#34;Greets a person.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.GREET)
+    utterance = f&#34;Hello, {user_from_face_id(user_name)}!&#34;
+    speak_wrapper(misty, utterance)
+    status.set_(status=StatusLabels.MAIN)
+
+
+def handle_recognition(misty: Misty, label: str, det_time: float) -&gt; None:
+    &#34;&#34;&#34;Handles recognition of a face.
+    &#34;&#34;&#34;
+    status.set_(data=label, time=det_time)
+    if label == UNKNOWN_LABEL:
+        training_prompt(misty)
+    else:
+        handle_greeting(misty, label)
+
+
+def initialise_training(misty: Misty):
+    &#34;&#34;&#34;Initialises the face training session, including prompting the user to enter their name.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.INIT)
+    speak_wrapper(
+        misty,
+        &#34;&lt;p&gt;How should I call you?&lt;/p&gt;&lt;p&gt;Please enter your name in the terminal.&lt;/p&gt;&#34;,
+    )
+    print(&#34;Enter your name (the first name suffices)&#34;)
+
+
+def perform_training(misty: Misty, name: str) -&gt; None:
+    &#34;&#34;&#34;Performs the training.
+
+    Args:
+        misty (Misty): The Misty to learn the user&#39;s face.
+        name (str): The name of the user.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.TRAIN)
+    d = misty.get_info(&#34;faces_known&#34;).parse_to_dict().get(&#34;rest_response&#34;, {})
+    new_name = name
+    if not d.get(&#34;result&#34;) is None:
+        while new_name in d.get(&#34;result&#34;):
+            new_name = name + &#34;_&#34; + get_random_string(3)
+        if new_name != name:
+            print(f&#34;The name {name} is already in use, using {new_name} instead.&#34;)
+    if new_name == &#34;&#34;:
+        new_name = get_random_string(6)
+        print(f&#34;The name {name} is invalid, using {new_name} instead.&#34;)
+
+    d = misty.perform_action(&#34;face_train_start&#34;, data={&#34;FaceId&#34;: new_name}).parse_to_dict()
+    print(d)
+    speak_wrapper(misty, &#34;The training has commenced, please do not look away now.&#34;)
+    misty.event(
+        &#34;subscribe&#34;, type=&#34;FaceTraining&#34;, name=event_face_train, event_emitter=ee
+    )
+
+
+def handle_user_input(misty: Misty, user_input: str) -&gt; None:
+    &#34;&#34;&#34;Handles keyboard inputs.
+    &#34;&#34;&#34;
+    if user_input in UserResponses.YES and status.get_(&#34;status&#34;) == StatusLabels.PROMPT:
+        initialise_training(misty)
+
+    elif (
+        status.get_(&#34;status&#34;) == StatusLabels.INIT
+        and not user_input in UserResponses.STOP
+    ):
+        perform_training(misty, user_input)
+
+    elif (
+        status.get_(&#34;status&#34;) == StatusLabels.INIT and user_input in UserResponses.STOP
+    ):
+        d = misty.perform_action(&#34;face_train_cancel&#34;).parse_to_dict()
+        print(d)
+        status.set_(status=StatusLabels.MAIN)
+
+    elif (
+        status.get_(&#34;status&#34;) == StatusLabels.TALK and user_input in UserResponses.STOP
+    ):
+        d = misty.perform_action(&#34;speak_stop&#34;).parse_to_dict()
+        print(d)
+        status.set_(status=StatusLabels.MAIN)
+
+    elif status.get_(&#34;status&#34;) == StatusLabels.PROMPT:
+        print(&#34;Training not initialised.&#34;)
+        status.set_(status=StatusLabels.MAIN)
+
+
+def purge_testing_faces(misty: Misty, known_faces: List) -&gt; None:
+    &#34;&#34;&#34;Forgets the faces of users that start with `TESTING NAME`.
+    &#34;&#34;&#34;
+    for face in known_faces:
+        if face.startswith(TESTING_NAME):
+            d = misty.perform_action(&#34;face_delete&#34;, data={&#34;FaceId&#34;: face}).parse_to_dict().get(&#34;rest_response&#34;, {})
+            if d.get(&#34;success&#34;):
+                print(&#34;Successfully forgot the face of %s.&#34; % face)
+            else:
+                print(&#34;Failed to forget the face of %s.&#34; % face)
+
+
+def face_recognition(misty: Misty) -&gt; Dict:
+    &#34;&#34;&#34;Misty detects a face, if she knows the person, she greets them by their name, else she prompts them to join a face training session.
+
+    Args:
+        misty (Misty): The Misty to perform the skill.
+
+    Returns:
+        Dict: The dictionary with `&#34;overall_success&#34;` key (bool) and keys for every action performed (dictionarised Misty2pyResponse). 
+    &#34;&#34;&#34;
+    cancel_skills(misty)
+    set_volume = misty.perform_action(&#34;volume_settings&#34;, data=&#34;low_volume&#34;).parse_to_dict()
+
+    get_faces_known = misty.get_info(&#34;faces_known&#34;).parse_to_dict().get(&#34;rest_response&#34;, {})
+    known_faces = get_faces_known.get(&#34;result&#34;)
+    if not known_faces is None:
+        print(&#34;Your misty currently knows these faces: %s.&#34; % &#34;, &#34;.join(known_faces))
+        purge_testing_faces(misty, known_faces)
+    else:
+        print(&#34;Your Misty currently does not know any faces.&#34;)
+
+    start_face_recognition = misty.perform_action(&#34;face_recognition_start&#34;).parse_to_dict()
+
+    subscribe_face_recognition = misty.event(
+        &#34;subscribe&#34;, type=&#34;FaceRecognition&#34;, name=event_face_rec, event_emitter=ee
+    ).parse_to_dict()
+    status.set_(status=StatusLabels.MAIN)
+    print(subscribe_face_recognition)
+
+    print(&#34;&gt;&gt;&gt; Type &#39;stop&#39; to terminate &lt;&lt;&lt;&#34;)
+    user_input = &#34;&#34;
+    while not (
+        user_input in UserResponses.STOP and status.get_(&#34;status&#34;) == StatusLabels.MAIN
+    ):
+        user_input = input().lower()
+        handle_user_input(misty, user_input)
+
+    unsubscribe_face_recognition = misty.event(&#34;unsubscribe&#34;, name=event_face_rec).parse_to_dict()
+    print(unsubscribe_face_recognition)
+
+    face_recognition_stop = misty.perform_action(&#34;face_recognition_stop&#34;).parse_to_dict()
+
+    speak_wrapper(misty, &#34;Bye!&#34;)
+
+    return success_of_action_dict(
+        set_volume = set_volume,
+        get_faces_known = get_faces_known,
+        start_face_recognition = start_face_recognition,
+        subscribe_face_recognition = subscribe_face_recognition,
+        unsubscribe_face_recognition = unsubscribe_face_recognition,
+        face_recognition_stop = face_recognition_stop,
+    )
+
+
+if __name__ == &#34;__main__&#34;:
+    print(face_recognition(misty_glob))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="misty2py_skills.face_recognition.TESTING_NAME"><code class="name">var <span class="ident">TESTING_NAME</span></code></dt>
+<dd>
+<div class="desc"><p>The name of the person testing this module. For convenience, the faces commencing with this name are forgotten in at beginning of the skill so they can be learnt again.</p></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.UNKNOWN_LABEL"><code class="name">var <span class="ident">UNKNOWN_LABEL</span></code></dt>
+<dd>
+<div class="desc"><p>The label used by Misty's REST API for an unknown face.</p></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.UPDATE_TIME"><code class="name">var <span class="ident">UPDATE_TIME</span></code></dt>
+<dd>
+<div class="desc"><p>The minimum amount of time (in seconds) that must pass between Misty greets the same person again.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="misty2py_skills.face_recognition.face_recognition"><code class="name flex">
+<span>def <span class="ident">face_recognition</span></span>(<span>misty: misty2py.robot.Misty) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Misty detects a face, if she knows the person, she greets them by their name, else she prompts them to join a face training session.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
+<dd>The Misty to perform the skill.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>The dictionary with <code>"overall_success"</code> key (bool) and keys for every action performed (dictionarised Misty2pyResponse).</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def face_recognition(misty: Misty) -&gt; Dict:
+    &#34;&#34;&#34;Misty detects a face, if she knows the person, she greets them by their name, else she prompts them to join a face training session.
+
+    Args:
+        misty (Misty): The Misty to perform the skill.
+
+    Returns:
+        Dict: The dictionary with `&#34;overall_success&#34;` key (bool) and keys for every action performed (dictionarised Misty2pyResponse). 
+    &#34;&#34;&#34;
+    cancel_skills(misty)
+    set_volume = misty.perform_action(&#34;volume_settings&#34;, data=&#34;low_volume&#34;).parse_to_dict()
+
+    get_faces_known = misty.get_info(&#34;faces_known&#34;).parse_to_dict().get(&#34;rest_response&#34;, {})
+    known_faces = get_faces_known.get(&#34;result&#34;)
+    if not known_faces is None:
+        print(&#34;Your misty currently knows these faces: %s.&#34; % &#34;, &#34;.join(known_faces))
+        purge_testing_faces(misty, known_faces)
+    else:
+        print(&#34;Your Misty currently does not know any faces.&#34;)
+
+    start_face_recognition = misty.perform_action(&#34;face_recognition_start&#34;).parse_to_dict()
+
+    subscribe_face_recognition = misty.event(
+        &#34;subscribe&#34;, type=&#34;FaceRecognition&#34;, name=event_face_rec, event_emitter=ee
+    ).parse_to_dict()
+    status.set_(status=StatusLabels.MAIN)
+    print(subscribe_face_recognition)
+
+    print(&#34;&gt;&gt;&gt; Type &#39;stop&#39; to terminate &lt;&lt;&lt;&#34;)
+    user_input = &#34;&#34;
+    while not (
+        user_input in UserResponses.STOP and status.get_(&#34;status&#34;) == StatusLabels.MAIN
+    ):
+        user_input = input().lower()
+        handle_user_input(misty, user_input)
+
+    unsubscribe_face_recognition = misty.event(&#34;unsubscribe&#34;, name=event_face_rec).parse_to_dict()
+    print(unsubscribe_face_recognition)
+
+    face_recognition_stop = misty.perform_action(&#34;face_recognition_stop&#34;).parse_to_dict()
+
+    speak_wrapper(misty, &#34;Bye!&#34;)
+
+    return success_of_action_dict(
+        set_volume = set_volume,
+        get_faces_known = get_faces_known,
+        start_face_recognition = start_face_recognition,
+        subscribe_face_recognition = subscribe_face_recognition,
+        unsubscribe_face_recognition = unsubscribe_face_recognition,
+        face_recognition_stop = face_recognition_stop,
+    )</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.handle_greeting"><code class="name flex">
+<span>def <span class="ident">handle_greeting</span></span>(<span>misty: misty2py.robot.Misty, user_name: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Greets a person.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def handle_greeting(misty: Misty, user_name: str) -&gt; None:
+    &#34;&#34;&#34;Greets a person.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.GREET)
+    utterance = f&#34;Hello, {user_from_face_id(user_name)}!&#34;
+    speak_wrapper(misty, utterance)
+    status.set_(status=StatusLabels.MAIN)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.handle_recognition"><code class="name flex">
+<span>def <span class="ident">handle_recognition</span></span>(<span>misty: misty2py.robot.Misty, label: str, det_time: float) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Handles recognition of a face.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def handle_recognition(misty: Misty, label: str, det_time: float) -&gt; None:
+    &#34;&#34;&#34;Handles recognition of a face.
+    &#34;&#34;&#34;
+    status.set_(data=label, time=det_time)
+    if label == UNKNOWN_LABEL:
+        training_prompt(misty)
+    else:
+        handle_greeting(misty, label)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.handle_user_input"><code class="name flex">
+<span>def <span class="ident">handle_user_input</span></span>(<span>misty: misty2py.robot.Misty, user_input: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Handles keyboard inputs.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def handle_user_input(misty: Misty, user_input: str) -&gt; None:
+    &#34;&#34;&#34;Handles keyboard inputs.
+    &#34;&#34;&#34;
+    if user_input in UserResponses.YES and status.get_(&#34;status&#34;) == StatusLabels.PROMPT:
+        initialise_training(misty)
+
+    elif (
+        status.get_(&#34;status&#34;) == StatusLabels.INIT
+        and not user_input in UserResponses.STOP
+    ):
+        perform_training(misty, user_input)
+
+    elif (
+        status.get_(&#34;status&#34;) == StatusLabels.INIT and user_input in UserResponses.STOP
+    ):
+        d = misty.perform_action(&#34;face_train_cancel&#34;).parse_to_dict()
+        print(d)
+        status.set_(status=StatusLabels.MAIN)
+
+    elif (
+        status.get_(&#34;status&#34;) == StatusLabels.TALK and user_input in UserResponses.STOP
+    ):
+        d = misty.perform_action(&#34;speak_stop&#34;).parse_to_dict()
+        print(d)
+        status.set_(status=StatusLabels.MAIN)
+
+    elif status.get_(&#34;status&#34;) == StatusLabels.PROMPT:
+        print(&#34;Training not initialised.&#34;)
+        status.set_(status=StatusLabels.MAIN)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.initialise_training"><code class="name flex">
+<span>def <span class="ident">initialise_training</span></span>(<span>misty: misty2py.robot.Misty)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initialises the face training session, including prompting the user to enter their name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def initialise_training(misty: Misty):
+    &#34;&#34;&#34;Initialises the face training session, including prompting the user to enter their name.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.INIT)
+    speak_wrapper(
+        misty,
+        &#34;&lt;p&gt;How should I call you?&lt;/p&gt;&lt;p&gt;Please enter your name in the terminal.&lt;/p&gt;&#34;,
+    )
+    print(&#34;Enter your name (the first name suffices)&#34;)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.listener"><code class="name flex">
+<span>def <span class="ident">listener</span></span>(<span>data: Dict) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Handles face training events and terminates the training session if the data states the training is complete.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>Dict</code></dt>
+<dd>The data received from Misty's WebSocket API along with the face training event.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@ee.on(event_face_train)
+def listener(data: Dict) -&gt; None:
+    &#34;&#34;&#34;Handles face training events and terminates the training session if the data states the training is complete.
+
+    Args:
+        data (Dict): The data received from Misty&#39;s WebSocket API along with the face training event.
+    &#34;&#34;&#34;
+    if data.get(&#34;message&#34;) == &#34;Face training embedding phase complete.&#34;:
+        speak_wrapper(misty_glob, &#34;Thank you, the training is complete now.&#34;)
+        status.set_(status=StatusLabels.MAIN)
+        d = misty_glob.event(&#34;unsubscribe&#34;, name=event_face_train).parse_to_dict()
+        print(d)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.perform_training"><code class="name flex">
+<span>def <span class="ident">perform_training</span></span>(<span>misty: misty2py.robot.Misty, name: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Performs the training.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
+<dd>The Misty to learn the user's face.</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the user.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def perform_training(misty: Misty, name: str) -&gt; None:
+    &#34;&#34;&#34;Performs the training.
+
+    Args:
+        misty (Misty): The Misty to learn the user&#39;s face.
+        name (str): The name of the user.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.TRAIN)
+    d = misty.get_info(&#34;faces_known&#34;).parse_to_dict().get(&#34;rest_response&#34;, {})
+    new_name = name
+    if not d.get(&#34;result&#34;) is None:
+        while new_name in d.get(&#34;result&#34;):
+            new_name = name + &#34;_&#34; + get_random_string(3)
+        if new_name != name:
+            print(f&#34;The name {name} is already in use, using {new_name} instead.&#34;)
+    if new_name == &#34;&#34;:
+        new_name = get_random_string(6)
+        print(f&#34;The name {name} is invalid, using {new_name} instead.&#34;)
+
+    d = misty.perform_action(&#34;face_train_start&#34;, data={&#34;FaceId&#34;: new_name}).parse_to_dict()
+    print(d)
+    speak_wrapper(misty, &#34;The training has commenced, please do not look away now.&#34;)
+    misty.event(
+        &#34;subscribe&#34;, type=&#34;FaceTraining&#34;, name=event_face_train, event_emitter=ee
+    )</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.purge_testing_faces"><code class="name flex">
+<span>def <span class="ident">purge_testing_faces</span></span>(<span>misty: misty2py.robot.Misty, known_faces: List) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Forgets the faces of users that start with <code>TESTING NAME</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def purge_testing_faces(misty: Misty, known_faces: List) -&gt; None:
+    &#34;&#34;&#34;Forgets the faces of users that start with `TESTING NAME`.
+    &#34;&#34;&#34;
+    for face in known_faces:
+        if face.startswith(TESTING_NAME):
+            d = misty.perform_action(&#34;face_delete&#34;, data={&#34;FaceId&#34;: face}).parse_to_dict().get(&#34;rest_response&#34;, {})
+            if d.get(&#34;success&#34;):
+                print(&#34;Successfully forgot the face of %s.&#34; % face)
+            else:
+                print(&#34;Failed to forget the face of %s.&#34; % face)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.speak_wrapper"><code class="name flex">
+<span>def <span class="ident">speak_wrapper</span></span>(<span>misty: misty2py.robot.Misty, utterance: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Changes status to <code><a title="misty2py_skills.face_recognition.StatusLabels.TALK" href="#misty2py_skills.face_recognition.StatusLabels.TALK">StatusLabels.TALK</a></code> while Misty is talking.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def speak_wrapper(misty: Misty, utterance: str) -&gt; None:
+    &#34;&#34;&#34;Changes status to `StatusLabels.TALK` while Misty is talking.
+    &#34;&#34;&#34;
+    prev_stat = status.get_(&#34;status&#34;)
+    status.set_(status=StatusLabels.TALK)
+    print(speak(misty, utterance))
+    status.set_(status=prev_stat)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.training_prompt"><code class="name flex">
+<span>def <span class="ident">training_prompt</span></span>(<span>misty: misty2py.robot.Misty)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Misty asks whether to begin a face training session.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def training_prompt(misty: Misty):
+    &#34;&#34;&#34;Misty asks whether to begin a face training session.
+    &#34;&#34;&#34;
+    status.set_(status=StatusLabels.PROMPT)
+    speak_wrapper(
+        misty,
+        &#34;Hello! I do not know you yet, do you want to begin the face training session?&#34;,
+    )
+    print(&#34;An unknown face detected.\nDo you want to start training (yes/no)? [no]&#34;)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.face_recognition.user_from_face_id"><code class="name flex">
+<span>def <span class="ident">user_from_face_id</span></span>(<span>face_id: str) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the name from a face ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def user_from_face_id(face_id: str) -&gt; str:
+    &#34;&#34;&#34;Returns the name from a face ID.
+    &#34;&#34;&#34;
+    return face_id.split(&#34;_&#34;)[0].capitalize()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="misty2py_skills.face_recognition.StatusLabels"><code class="flex name class">
+<span>class <span class="ident">StatusLabels</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents states in which the skill can be.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StatusLabels(Enum):
+    &#34;&#34;&#34;Represents states in which the skill can be.
+    &#34;&#34;&#34;
+    MAIN = &#34;running_main&#34;
+    &#34;&#34;&#34;The main state of waiting for a face recognition event.&#34;&#34;&#34;
+    PROMPT = &#34;running_train_prompt&#34;
+    &#34;&#34;&#34;The state of running the training prompt and waiting for the user&#39;s response.&#34;&#34;&#34;
+    TRAIN = &#34;running_training&#34;
+    &#34;&#34;&#34;The face training state.&#34;&#34;&#34;
+    INIT = &#34;running_training_initialisation&#34;
+    &#34;&#34;&#34;The state of the initialisation of face training.&#34;&#34;&#34;
+    GREET = &#34;running_greeting&#34;
+    &#34;&#34;&#34;The state of greeting a person.&#34;&#34;&#34;
+    TALK = &#34;talking&#34;
+    &#34;&#34;&#34;The state of talking.&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="misty2py_skills.face_recognition.StatusLabels.GREET"><code class="name">var <span class="ident">GREET</span></code></dt>
+<dd>
+<div class="desc"><p>The state of greeting a person.</p></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.StatusLabels.INIT"><code class="name">var <span class="ident">INIT</span></code></dt>
+<dd>
+<div class="desc"><p>The state of the initialisation of face training.</p></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.StatusLabels.MAIN"><code class="name">var <span class="ident">MAIN</span></code></dt>
+<dd>
+<div class="desc"><p>The main state of waiting for a face recognition event.</p></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.StatusLabels.PROMPT"><code class="name">var <span class="ident">PROMPT</span></code></dt>
+<dd>
+<div class="desc"><p>The state of running the training prompt and waiting for the user's response.</p></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.StatusLabels.TALK"><code class="name">var <span class="ident">TALK</span></code></dt>
+<dd>
+<div class="desc"><p>The state of talking.</p></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.StatusLabels.TRAIN"><code class="name">var <span class="ident">TRAIN</span></code></dt>
+<dd>
+<div class="desc"><p>The face training state.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="misty2py_skills.face_recognition.UserResponses"><code class="flex name class">
+<span>class <span class="ident">UserResponses</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents responses that a user can give to different prompts used in this skill.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UserResponses:
+    &#34;&#34;&#34;Represents responses that a user can give to different prompts used in this skill.
+    &#34;&#34;&#34;
+    YES = frozenset([&#34;yes&#34;, &#34;y&#34;])
+    NO = frozenset([&#34;no&#34;, &#34;n&#34;])
+    STOP = frozenset([&#34;stop&#34;, &#34;s&#34;, &#34;terminate&#34;])</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="misty2py_skills.face_recognition.UserResponses.NO"><code class="name">var <span class="ident">NO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.UserResponses.STOP"><code class="name">var <span class="ident">STOP</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="misty2py_skills.face_recognition.UserResponses.YES"><code class="name">var <span class="ident">YES</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="misty2py_skills" href="index.html">misty2py_skills</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="misty2py_skills.face_recognition.TESTING_NAME" href="#misty2py_skills.face_recognition.TESTING_NAME">TESTING_NAME</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.UNKNOWN_LABEL" href="#misty2py_skills.face_recognition.UNKNOWN_LABEL">UNKNOWN_LABEL</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.UPDATE_TIME" href="#misty2py_skills.face_recognition.UPDATE_TIME">UPDATE_TIME</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="misty2py_skills.face_recognition.face_recognition" href="#misty2py_skills.face_recognition.face_recognition">face_recognition</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.handle_greeting" href="#misty2py_skills.face_recognition.handle_greeting">handle_greeting</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.handle_recognition" href="#misty2py_skills.face_recognition.handle_recognition">handle_recognition</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.handle_user_input" href="#misty2py_skills.face_recognition.handle_user_input">handle_user_input</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.initialise_training" href="#misty2py_skills.face_recognition.initialise_training">initialise_training</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.listener" href="#misty2py_skills.face_recognition.listener">listener</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.perform_training" href="#misty2py_skills.face_recognition.perform_training">perform_training</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.purge_testing_faces" href="#misty2py_skills.face_recognition.purge_testing_faces">purge_testing_faces</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.speak_wrapper" href="#misty2py_skills.face_recognition.speak_wrapper">speak_wrapper</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.training_prompt" href="#misty2py_skills.face_recognition.training_prompt">training_prompt</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.user_from_face_id" href="#misty2py_skills.face_recognition.user_from_face_id">user_from_face_id</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="misty2py_skills.face_recognition.StatusLabels" href="#misty2py_skills.face_recognition.StatusLabels">StatusLabels</a></code></h4>
+<ul class="two-column">
+<li><code><a title="misty2py_skills.face_recognition.StatusLabels.GREET" href="#misty2py_skills.face_recognition.StatusLabels.GREET">GREET</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.StatusLabels.INIT" href="#misty2py_skills.face_recognition.StatusLabels.INIT">INIT</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.StatusLabels.MAIN" href="#misty2py_skills.face_recognition.StatusLabels.MAIN">MAIN</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.StatusLabels.PROMPT" href="#misty2py_skills.face_recognition.StatusLabels.PROMPT">PROMPT</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.StatusLabels.TALK" href="#misty2py_skills.face_recognition.StatusLabels.TALK">TALK</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.StatusLabels.TRAIN" href="#misty2py_skills.face_recognition.StatusLabels.TRAIN">TRAIN</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="misty2py_skills.face_recognition.UserResponses" href="#misty2py_skills.face_recognition.UserResponses">UserResponses</a></code></h4>
+<ul class="">
+<li><code><a title="misty2py_skills.face_recognition.UserResponses.NO" href="#misty2py_skills.face_recognition.UserResponses.NO">NO</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.UserResponses.STOP" href="#misty2py_skills.face_recognition.UserResponses.STOP">STOP</a></code></li>
+<li><code><a title="misty2py_skills.face_recognition.UserResponses.YES" href="#misty2py_skills.face_recognition.UserResponses.YES">YES</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

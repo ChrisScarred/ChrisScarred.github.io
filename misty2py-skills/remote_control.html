@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>misty2py_skills.remote_control API documentation</title>
+<meta name="description" content="This module contains a skill that allows the user to remotely control Misty using a keyboard." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>misty2py_skills.remote_control</code></h1>
+</header>
+<section id="section-intro">
+<p>This module contains a skill that allows the user to remotely control Misty using a keyboard.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;This module contains a skill that allows the user to remotely control Misty using a keyboard.
+&#34;&#34;&#34;
+from typing import Dict, Union
+
+from misty2py.basic_skills.cancel_skills import cancel_skills
+from misty2py.basic_skills.movement import Movement
+from misty2py.response import success_of_action_list
+from misty2py.utils.status import ActionLog
+from misty2py.utils.utils import get_misty
+from pynput import keyboard
+
+misty = get_misty()
+moves = Movement()
+actions = ActionLog()
+
+FORW_KEY = keyboard.KeyCode.from_char(&#34;w&#34;)
+&#34;&#34;&#34;The key for driving forward.&#34;&#34;&#34;
+BACK_KEY = keyboard.KeyCode.from_char(&#34;s&#34;)
+&#34;&#34;&#34;The key for driving backward.&#34;&#34;&#34;
+L_KEY = keyboard.KeyCode.from_char(&#34;a&#34;)
+&#34;&#34;&#34;The key for driving left.&#34;&#34;&#34;
+R_KEY = keyboard.KeyCode.from_char(&#34;d&#34;)
+&#34;&#34;&#34;The key for driving right.&#34;&#34;&#34;
+STOP_KEY = keyboard.KeyCode.from_char(&#34;x&#34;)
+&#34;&#34;&#34;The key for stopping Misty&#39;s movement.&#34;&#34;&#34;
+TERM_KEY = keyboard.Key.esc
+&#34;&#34;&#34;The key for terminating the skill.&#34;&#34;&#34;
+BASE_VELOCITY = 20
+&#34;&#34;&#34;The default velocity of the remote-controlled Misty.&#34;&#34;&#34;
+TURN_VELOCITY = 10
+&#34;&#34;&#34;The default turning velocity of the remote-controlled Misty.&#34;&#34;&#34;
+BASE_ANGLE = 50
+&#34;&#34;&#34;The default angle of turning.&#34;&#34;&#34;
+
+def handle_input(key: Union[keyboard.Key, keyboard.KeyCode]):
+    &#34;&#34;&#34;Receives the kyboard inputs and transforms them into Misty&#39;s actions.
+
+    Args:
+        key (Union[keyboard.Key, keyboard.KeyCode]): the key pressed.
+    &#34;&#34;&#34;
+    if key == L_KEY:
+        actions.append_(
+            {&#34;drive_left&#34;: moves.drive_left(misty, TURN_VELOCITY, BASE_ANGLE)}
+        )
+    elif key == R_KEY:
+        actions.append_(
+            {&#34;drive_right&#34;: moves.drive_right(misty, TURN_VELOCITY, BASE_ANGLE)}
+        )
+    elif key == FORW_KEY:
+        actions.append_({&#34;drive_forward&#34;: moves.drive_forward(misty, BASE_VELOCITY)})
+    elif key == BACK_KEY:
+        actions.append_({&#34;drive_backward&#34;: moves.drive_backward(misty, BASE_VELOCITY)})
+    elif key == STOP_KEY:
+        actions.append_({&#34;stop_driving&#34;: moves.stop_driving(misty)})
+    elif key == TERM_KEY:
+        return False
+
+
+def handle_release(key: keyboard.Key):
+    &#34;&#34;&#34;The method required by the keyboard package but not used in this skill.
+    &#34;&#34;&#34;
+    pass
+
+
+def remote_control() -&gt; Dict:
+    &#34;&#34;&#34;A skill that allows the user to remotely control Misty using a keyboard.
+
+    Returns:
+        Dict: The dictionary with `&#34;overall_success&#34;` key (bool) and keys for every action performed (dictionarised Misty2pyResponse).
+    &#34;&#34;&#34;
+    cancel_skills(misty)
+    print(
+        f&#34;&gt;&gt;&gt; Press {TERM_KEY} to terminate; control the movement via {L_KEY}, {BACK_KEY}, {R_KEY}, {FORW_KEY}; stop moving with {STOP_KEY}. &lt;&lt;&lt;&#34;
+    )
+    with keyboard.Listener(
+        on_press=handle_input, on_release=handle_release
+    ) as listener:
+        listener.join()
+
+    return success_of_action_list(actions.get_())
+
+
+if __name__ == &#34;__main__&#34;:
+    print(remote_control())</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="misty2py_skills.remote_control.BACK_KEY"><code class="name">var <span class="ident">BACK_KEY</span></code></dt>
+<dd>
+<div class="desc"><p>The key for driving backward.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.BASE_ANGLE"><code class="name">var <span class="ident">BASE_ANGLE</span></code></dt>
+<dd>
+<div class="desc"><p>The default angle of turning.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.BASE_VELOCITY"><code class="name">var <span class="ident">BASE_VELOCITY</span></code></dt>
+<dd>
+<div class="desc"><p>The default velocity of the remote-controlled Misty.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.FORW_KEY"><code class="name">var <span class="ident">FORW_KEY</span></code></dt>
+<dd>
+<div class="desc"><p>The key for driving forward.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.L_KEY"><code class="name">var <span class="ident">L_KEY</span></code></dt>
+<dd>
+<div class="desc"><p>The key for driving left.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.R_KEY"><code class="name">var <span class="ident">R_KEY</span></code></dt>
+<dd>
+<div class="desc"><p>The key for driving right.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.STOP_KEY"><code class="name">var <span class="ident">STOP_KEY</span></code></dt>
+<dd>
+<div class="desc"><p>The key for stopping Misty's movement.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.TERM_KEY"><code class="name">var <span class="ident">TERM_KEY</span></code></dt>
+<dd>
+<div class="desc"><p>The key for terminating the skill.</p></div>
+</dd>
+<dt id="misty2py_skills.remote_control.TURN_VELOCITY"><code class="name">var <span class="ident">TURN_VELOCITY</span></code></dt>
+<dd>
+<div class="desc"><p>The default turning velocity of the remote-controlled Misty.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="misty2py_skills.remote_control.handle_input"><code class="name flex">
+<span>def <span class="ident">handle_input</span></span>(<span>key: Union[pynput.keyboard._win32.Key, pynput.keyboard._win32.KeyCode])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Receives the kyboard inputs and transforms them into Misty's actions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>key</code></strong> :&ensp;<code>Union[keyboard.Key, keyboard.KeyCode]</code></dt>
+<dd>the key pressed.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def handle_input(key: Union[keyboard.Key, keyboard.KeyCode]):
+    &#34;&#34;&#34;Receives the kyboard inputs and transforms them into Misty&#39;s actions.
+
+    Args:
+        key (Union[keyboard.Key, keyboard.KeyCode]): the key pressed.
+    &#34;&#34;&#34;
+    if key == L_KEY:
+        actions.append_(
+            {&#34;drive_left&#34;: moves.drive_left(misty, TURN_VELOCITY, BASE_ANGLE)}
+        )
+    elif key == R_KEY:
+        actions.append_(
+            {&#34;drive_right&#34;: moves.drive_right(misty, TURN_VELOCITY, BASE_ANGLE)}
+        )
+    elif key == FORW_KEY:
+        actions.append_({&#34;drive_forward&#34;: moves.drive_forward(misty, BASE_VELOCITY)})
+    elif key == BACK_KEY:
+        actions.append_({&#34;drive_backward&#34;: moves.drive_backward(misty, BASE_VELOCITY)})
+    elif key == STOP_KEY:
+        actions.append_({&#34;stop_driving&#34;: moves.stop_driving(misty)})
+    elif key == TERM_KEY:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.remote_control.handle_release"><code class="name flex">
+<span>def <span class="ident">handle_release</span></span>(<span>key: pynput.keyboard._win32.Key)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The method required by the keyboard package but not used in this skill.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def handle_release(key: keyboard.Key):
+    &#34;&#34;&#34;The method required by the keyboard package but not used in this skill.
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.remote_control.remote_control"><code class="name flex">
+<span>def <span class="ident">remote_control</span></span>(<span>) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A skill that allows the user to remotely control Misty using a keyboard.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>The dictionary with <code>"overall_success"</code> key (bool) and keys for every action performed (dictionarised Misty2pyResponse).</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remote_control() -&gt; Dict:
+    &#34;&#34;&#34;A skill that allows the user to remotely control Misty using a keyboard.
+
+    Returns:
+        Dict: The dictionary with `&#34;overall_success&#34;` key (bool) and keys for every action performed (dictionarised Misty2pyResponse).
+    &#34;&#34;&#34;
+    cancel_skills(misty)
+    print(
+        f&#34;&gt;&gt;&gt; Press {TERM_KEY} to terminate; control the movement via {L_KEY}, {BACK_KEY}, {R_KEY}, {FORW_KEY}; stop moving with {STOP_KEY}. &lt;&lt;&lt;&#34;
+    )
+    with keyboard.Listener(
+        on_press=handle_input, on_release=handle_release
+    ) as listener:
+        listener.join()
+
+    return success_of_action_list(actions.get_())</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="misty2py_skills" href="index.html">misty2py_skills</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="two-column">
+<li><code><a title="misty2py_skills.remote_control.BACK_KEY" href="#misty2py_skills.remote_control.BACK_KEY">BACK_KEY</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.BASE_ANGLE" href="#misty2py_skills.remote_control.BASE_ANGLE">BASE_ANGLE</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.BASE_VELOCITY" href="#misty2py_skills.remote_control.BASE_VELOCITY">BASE_VELOCITY</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.FORW_KEY" href="#misty2py_skills.remote_control.FORW_KEY">FORW_KEY</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.L_KEY" href="#misty2py_skills.remote_control.L_KEY">L_KEY</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.R_KEY" href="#misty2py_skills.remote_control.R_KEY">R_KEY</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.STOP_KEY" href="#misty2py_skills.remote_control.STOP_KEY">STOP_KEY</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.TERM_KEY" href="#misty2py_skills.remote_control.TERM_KEY">TERM_KEY</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.TURN_VELOCITY" href="#misty2py_skills.remote_control.TURN_VELOCITY">TURN_VELOCITY</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="misty2py_skills.remote_control.handle_input" href="#misty2py_skills.remote_control.handle_input">handle_input</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.handle_release" href="#misty2py_skills.remote_control.handle_release">handle_release</a></code></li>
+<li><code><a title="misty2py_skills.remote_control.remote_control" href="#misty2py_skills.remote_control.remote_control">remote_control</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

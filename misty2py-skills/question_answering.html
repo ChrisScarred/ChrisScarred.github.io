@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>misty2py_skills.question_answering API documentation</title>
+<meta name="description" content="This module implements a skill that allows a person to have a simple dialogue with Misty." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>misty2py_skills.question_answering</code></h1>
+</header>
+<section id="section-intro">
+<p>This module implements a skill that allows a person to have a simple dialogue with Misty.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;This module implements a skill that allows a person to have a simple dialogue with Misty.
+&#34;&#34;&#34;
+import datetime
+import os
+from enum import Enum
+from typing import Dict, List, Tuple
+
+import speech_recognition as sr
+from dotenv import dotenv_values
+from misty2py.basic_skills.cancel_skills import cancel_skills
+from misty2py.response import success_of_action_list
+from misty2py.utils.base64 import *
+from misty2py.utils.generators import get_random_string
+from misty2py.utils.status import ActionLog, Status
+from misty2py.utils.utils import (get_abs_path, get_base_fname_without_ext,
+                                  get_files_in_dir, get_misty)
+from num2words import num2words
+from pymitter import EventEmitter
+
+
+class SpeechTranscripter:
+    &#34;&#34;&#34;Represents the speech transcribing component of Wit.ai.
+    &#34;&#34;&#34;
+    def __init__(self, wit_ai_key: str) -&gt; None:
+        &#34;&#34;&#34;Initialises the speech transcripyer.
+
+        Args:
+            wit_ai_key (str): The API key for Wit.ai.
+        &#34;&#34;&#34;
+        self.key = wit_ai_key
+        self.recogniser = sr.Recognizer()
+
+    def load_wav(self, audio_path: str) -&gt; sr.AudioFile:
+        &#34;&#34;&#34;Loads an audio (.wav) file.
+
+        Args:
+            audio_path (str): The absolute path to the audio file in .wav format to transcribe.
+
+        Returns:
+            sr.AudioFile: The speech_recognition package representation of an audio file.
+        &#34;&#34;&#34;
+        with sr.AudioFile(audio_path) as source:
+            return self.recogniser.record(source)
+
+    def audio_to_text(self, audio: sr.AudioSource, show_all: bool = False) -&gt; Dict:
+        &#34;&#34;&#34;Transcribes an audio of a valid speech_recognition package defined format to plaintext.
+
+        Args:
+            audio (sr.AudioSource): The audio to transcribe.
+            show_all (bool, optional): Whether to return all possible transcriptions (`True`) or the one in which Wit.ai is most confident (`False`). Defaults to `False`.
+
+        Returns:
+            Dict: [description]
+        &#34;&#34;&#34;
+        try:
+            transcription = self.recogniser.recognize_wit(
+                audio, key=self.key, show_all=show_all
+            )
+            return {&#34;success&#34;: True, &#34;content&#34;: transcription}
+
+        except sr.UnknownValueError:
+            return {&#34;success&#34;: True, &#34;content&#34;: &#34;unknown&#34;}
+
+        except sr.RequestError as e:
+            return {
+                &#34;success&#34;: False,
+                &#34;content&#34;: &#34;Invalid request.&#34;,
+                &#34;error_details&#34;: str(e),
+            }
+
+
+ee = EventEmitter()
+misty = get_misty()
+status = Status()
+action_log = ActionLog()
+event_name = &#34;user_speech_&#34; + get_random_string(6)
+values = dotenv_values(&#34;.env&#34;)
+speech_transcripter = SpeechTranscripter(values.get(&#34;WIT_AI_KEY&#34;, &#34;&#34;))
+
+SAVE_DIR = get_abs_path(&#34;data&#34;)
+&#34;&#34;&#34;The location where a speech file is saved.&#34;&#34;&#34;
+SPEECH_FILE = &#34;capture_Dialogue.wav&#34;
+&#34;&#34;&#34;The name od a speech file on Misty&#39;s server.&#34;&#34;&#34;
+
+
+class StatusLabels(Enum):
+    &#34;&#34;&#34;Respresentes states in which the dialogue skill can be.
+    &#34;&#34;&#34;
+    REINIT = &#34;reinit&#34;
+    &#34;&#34;&#34;The re-initialisation state when waiting for the person to talk.&#34;&#34;&#34;
+    LISTEN = &#34;listening&#34;
+    &#34;&#34;&#34;The state of listening to a person.&#34;&#34;&#34;
+    PREP = &#34;prepare_reply&#34;
+    &#34;&#34;&#34;The state of preparing a reply, including choosing the fitting reply.&#34;&#34;&#34;
+    INFER = &#34;infering&#34;
+    &#34;&#34;&#34;The state of infering the meaning of a person&#39;s speech.&#34;&#34;&#34;
+    STOP = &#34;stop&#34;
+    &#34;&#34;&#34;The terminating state.&#34;&#34;&#34;
+    SPEAK = &#34;ready_to_speak&#34;
+    &#34;&#34;&#34;The speaking state.&#34;&#34;&#34;
+
+
+@ee.on(event_name)
+def listener(data: Dict):
+    &#34;&#34;&#34;Reacts to a capture speech event by commencing inferrence if speech was captured or by re-initialising the process in case of an initialisation error.
+    &#34;&#34;&#34;
+    if data.get(&#34;errorCode&#34;, -1) == 0:
+        status.set_(status=StatusLabels.INFER)
+
+    if data.get(&#34;errorCode&#34;, -1) == 3:
+        status.set_(status=StatusLabels.REINIT)
+
+
+def get_next_file_name(dir_: str) -&gt; str:
+    &#34;&#34;&#34;Generates the next file name in a directory whose files are named incrementally with strings representing integers, zero-padded to four characters.
+    &#34;&#34;&#34;
+    files = get_files_in_dir(dir_)
+    highest = 0
+    if len(files) &gt; 0:
+        highest = max([int(get_base_fname_without_ext(f).lstrip(&#34;0&#34;)) for f in files])
+    return os.path.join(dir_, &#34;%s.wav&#34; % str(highest + 1).zfill(4))
+
+
+def get_all_audio_file_names() -&gt; List[str]:
+    &#34;&#34;&#34;Obtains the list of audio files on Misty&#39;s server.
+    &#34;&#34;&#34;
+    dict_list = misty.get_info(&#34;audio_list&#34;).parse_to_dict().get(&#34;rest_response&#34;, {}).get(&#34;result&#34;, [])
+    audio_list = []
+    for d in dict_list:
+        audio_list.append(d.get(&#34;name&#34;))
+    return audio_list
+
+
+def speech_capture() -&gt; None:
+    &#34;&#34;&#34;Captures speech.
+    &#34;&#34;&#34;
+    print(&#34;Listening&#34;)
+
+    audio_status = misty.get_info(&#34;audio_status&#34;).parse_to_dict()
+    action_log.append_({&#34;audio_status&#34;: audio_status})
+
+    if not audio_status.get(&#34;result&#34;):
+        enable_audio = misty.perform_action(&#34;audio_enable&#34;).parse_to_dict()
+        if not enable_audio.get(&#34;rest_response&#34;, {}).get(&#34;result&#34;):
+            action_log.append_({&#34;enable_audio&#34;: enable_audio})
+            status.set_(status=StatusLabels.STOP)
+            return
+
+    set_volume = misty.perform_action(&#34;volume_settings&#34;, data=&#34;low_volume&#34;).parse_to_dict()
+    action_log.append_({&#34;set_volume&#34;: set_volume})
+
+    capture_speech = misty.perform_action(
+        &#34;speech_capture&#34;, data={&#34;RequireKeyPhrase&#34;: False}
+    ).parse_to_dict()
+    action_log.append_({&#34;capture_speech&#34;: capture_speech})
+    status.set_(status=StatusLabels.LISTEN)
+
+
+def perform_inference() -&gt; None:
+    &#34;&#34;&#34;Transcribes the newest obtained captured speech.
+    &#34;&#34;&#34;
+    print(&#34;Analysing&#34;)
+    label = StatusLabels.REINIT
+    data = &#34;&#34;
+
+    if SPEECH_FILE in get_all_audio_file_names():
+        speech_json = misty.get_info(
+            &#34;audio_file&#34;, params={&#34;FileName&#34;: SPEECH_FILE, &#34;Base64&#34;: &#34;true&#34;}
+        )
+        speech_base64 = speech_json.get(&#34;result&#34;, {}).get(&#34;base64&#34;, &#34;&#34;)
+        if len(speech_base64) &gt; 0:
+            f_name = get_next_file_name(SAVE_DIR)
+            base64_to_content(speech_base64, save_path=f_name)
+            speech_wav = speech_transcripter.load_wav(f_name)
+            speech_text = speech_transcripter.audio_to_text(speech_wav, show_all=True)
+            label = StatusLabels.PREP
+            data = speech_text
+
+    status.set_(status=label, data=data)
+
+
+def get_intents_keywords(entities: Dict) -&gt; Tuple[List[str], List[str]]:
+    &#34;&#34;&#34;Obtains the list of intents and the list of keywords from an Wit.ai entity.
+    &#34;&#34;&#34;
+    intents = []
+    keywords = []
+    for key, val in entities.items():
+        if key == &#34;intent&#34;:
+            intents.extend([dct.get(&#34;value&#34;) for dct in val])
+        else:
+            keywords.append(key)
+    return intents, keywords
+
+
+def choose_reply() -&gt; None:
+    &#34;&#34;&#34;Chooses the reply to the newest recorded speech by inferring the keywords and intents of the speech and matching the fitting reply to them.
+    &#34;&#34;&#34;
+    print(&#34;Preparing the reply&#34;)
+
+    data = status.get_(&#34;data&#34;)
+    if isinstance(data, Dict):
+        data = data.get(&#34;content&#34;, {})
+
+    intents, keywords = get_intents_keywords(data.get(&#34;entities&#34;, {}))
+    utterance_type = &#34;unknown&#34;
+
+    if &#34;greet&#34; in intents:
+        if &#34;hello&#34; in keywords:
+            utterance_type = &#34;hello&#34;
+        elif &#34;goodbye&#34; in keywords:
+            utterance_type = &#34;goodbye&#34;
+        else:
+            utterance_type = &#34;hello&#34;
+
+    elif &#34;datetime&#34; in intents:
+        if &#34;date&#34; in keywords:
+            utterance_type = &#34;date&#34;
+        elif &#34;month&#34; in keywords:
+            utterance_type = &#34;month&#34;
+        elif &#34;year&#34; in keywords:
+            utterance_type = &#34;year&#34;
+
+    elif &#34;test&#34; in intents:
+        utterance_type = &#34;test&#34;
+
+    status.set_(status=StatusLabels.SPEAK, data=utterance_type)
+
+
+def speak(utterance: str) -&gt; None:
+    &#34;&#34;&#34;Misty speaks the `utterance`.
+    &#34;&#34;&#34;
+    print(utterance)
+
+    speaking = misty.perform_action(
+        &#34;speak&#34;,
+        data={&#34;Text&#34;: utterance, &#34;Flush&#34;: &#34;true&#34;},
+    ).parse_to_dict()
+    action_log.append_({&#34;speaking&#34;: speaking})
+
+    label = StatusLabels.REINIT
+    if status.get_(&#34;data&#34;) == &#34;goodbye&#34;:
+        label = StatusLabels.STOP
+
+    status.set_(status=label)
+
+
+def perform_reply() -&gt; None:
+    &#34;&#34;&#34;Formulates and speaks the reply based on the reply type obtained in the previous step (choosing a reply).
+    &#34;&#34;&#34;
+    print(&#34;Replying&#34;)
+    reply_type = status.get_(&#34;data&#34;)
+
+    if reply_type == &#34;test&#34;:
+        speak(&#34;I received your test.&#34;)
+
+    elif reply_type == &#34;unknown&#34;:
+        speak(&#34;I am sorry, I do not understand.&#34;)
+
+    elif reply_type == &#34;hello&#34;:
+        speak(&#34;Hello!&#34;)
+
+    elif reply_type == &#34;goodbye&#34;:
+        speak(&#34;Goodbye!&#34;)
+
+    elif reply_type == &#34;year&#34;:
+        now = datetime.datetime.now()
+        speak(&#34;It is the year %s.&#34; % num2words(now.year))
+
+    elif reply_type == &#34;month&#34;:
+        now = datetime.datetime.now()
+        speak(&#34;It is the month of %s.&#34; % now.strftime(&#34;%B&#34;))
+
+    elif reply_type == &#34;date&#34;:
+        now = datetime.datetime.now()
+        speak(
+            &#34;It is the %s of %s, year %s.&#34;
+            % (
+                num2words(now.day, to=&#34;ordinal&#34;),
+                now.strftime(&#34;%B&#34;),
+                num2words(now.year),
+            )
+        )
+
+
+def subscribe():
+    &#34;&#34;&#34;Subscribes to VoiceRecord event.
+    &#34;&#34;&#34;
+    subscribe_voice_record = misty.event(
+        &#34;subscribe&#34;, type=&#34;VoiceRecord&#34;, name=event_name, event_emitter=ee
+    ).parse_to_dict()
+    action_log.append_({&#34;subscribe_voice_record&#34;: subscribe_voice_record})
+
+
+def unsubscribe():
+    &#34;&#34;&#34;Unsubscribes from VoiceRecord event.
+    &#34;&#34;&#34;
+    unsubscribe_voice_record = misty.event(&#34;unsubscribe&#34;, name=event_name).parse_to_dict()
+    action_log.append_({&#34;unsubscribe_voice_record&#34;: unsubscribe_voice_record})
+
+
+def question_answering() -&gt; Dict:
+    &#34;&#34;&#34;A skill that allows a person to have a simple dialogue with Misty.
+
+    Returns:
+        Dict: The dictionary with `&#34;overall_success&#34;` key (bool) and keys for every action performed (dictionarised Misty2pyResponse). 
+    &#34;&#34;&#34;
+    cancel_skills(misty)
+    subscribe()
+    status.set_(status=StatusLabels.REINIT)
+
+    while status.get_(&#34;status&#34;) != StatusLabels.STOP:
+        current_status = status.get_(&#34;status&#34;)
+
+        if current_status == StatusLabels.REINIT:
+            speech_capture()
+
+        elif current_status == StatusLabels.INFER:
+            perform_inference()
+
+        elif current_status == StatusLabels.PREP:
+            choose_reply()
+
+        elif current_status == StatusLabels.SPEAK:
+            perform_reply()
+
+    unsubscribe()
+    return success_of_action_list(action_log.get_())
+
+
+if __name__ == &#34;__main__&#34;:
+    print(question_answering())</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="misty2py_skills.question_answering.SAVE_DIR"><code class="name">var <span class="ident">SAVE_DIR</span></code></dt>
+<dd>
+<div class="desc"><p>The location where a speech file is saved.</p></div>
+</dd>
+<dt id="misty2py_skills.question_answering.SPEECH_FILE"><code class="name">var <span class="ident">SPEECH_FILE</span></code></dt>
+<dd>
+<div class="desc"><p>The name od a speech file on Misty's server.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="misty2py_skills.question_answering.choose_reply"><code class="name flex">
+<span>def <span class="ident">choose_reply</span></span>(<span>) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Chooses the reply to the newest recorded speech by inferring the keywords and intents of the speech and matching the fitting reply to them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def choose_reply() -&gt; None:
+    &#34;&#34;&#34;Chooses the reply to the newest recorded speech by inferring the keywords and intents of the speech and matching the fitting reply to them.
+    &#34;&#34;&#34;
+    print(&#34;Preparing the reply&#34;)
+
+    data = status.get_(&#34;data&#34;)
+    if isinstance(data, Dict):
+        data = data.get(&#34;content&#34;, {})
+
+    intents, keywords = get_intents_keywords(data.get(&#34;entities&#34;, {}))
+    utterance_type = &#34;unknown&#34;
+
+    if &#34;greet&#34; in intents:
+        if &#34;hello&#34; in keywords:
+            utterance_type = &#34;hello&#34;
+        elif &#34;goodbye&#34; in keywords:
+            utterance_type = &#34;goodbye&#34;
+        else:
+            utterance_type = &#34;hello&#34;
+
+    elif &#34;datetime&#34; in intents:
+        if &#34;date&#34; in keywords:
+            utterance_type = &#34;date&#34;
+        elif &#34;month&#34; in keywords:
+            utterance_type = &#34;month&#34;
+        elif &#34;year&#34; in keywords:
+            utterance_type = &#34;year&#34;
+
+    elif &#34;test&#34; in intents:
+        utterance_type = &#34;test&#34;
+
+    status.set_(status=StatusLabels.SPEAK, data=utterance_type)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.get_all_audio_file_names"><code class="name flex">
+<span>def <span class="ident">get_all_audio_file_names</span></span>(<span>) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains the list of audio files on Misty's server.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_audio_file_names() -&gt; List[str]:
+    &#34;&#34;&#34;Obtains the list of audio files on Misty&#39;s server.
+    &#34;&#34;&#34;
+    dict_list = misty.get_info(&#34;audio_list&#34;).parse_to_dict().get(&#34;rest_response&#34;, {}).get(&#34;result&#34;, [])
+    audio_list = []
+    for d in dict_list:
+        audio_list.append(d.get(&#34;name&#34;))
+    return audio_list</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.get_intents_keywords"><code class="name flex">
+<span>def <span class="ident">get_intents_keywords</span></span>(<span>entities: Dict) ‑> Tuple[List[str], List[str]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains the list of intents and the list of keywords from an Wit.ai entity.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_intents_keywords(entities: Dict) -&gt; Tuple[List[str], List[str]]:
+    &#34;&#34;&#34;Obtains the list of intents and the list of keywords from an Wit.ai entity.
+    &#34;&#34;&#34;
+    intents = []
+    keywords = []
+    for key, val in entities.items():
+        if key == &#34;intent&#34;:
+            intents.extend([dct.get(&#34;value&#34;) for dct in val])
+        else:
+            keywords.append(key)
+    return intents, keywords</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.get_next_file_name"><code class="name flex">
+<span>def <span class="ident">get_next_file_name</span></span>(<span>dir_: str) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates the next file name in a directory whose files are named incrementally with strings representing integers, zero-padded to four characters.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_next_file_name(dir_: str) -&gt; str:
+    &#34;&#34;&#34;Generates the next file name in a directory whose files are named incrementally with strings representing integers, zero-padded to four characters.
+    &#34;&#34;&#34;
+    files = get_files_in_dir(dir_)
+    highest = 0
+    if len(files) &gt; 0:
+        highest = max([int(get_base_fname_without_ext(f).lstrip(&#34;0&#34;)) for f in files])
+    return os.path.join(dir_, &#34;%s.wav&#34; % str(highest + 1).zfill(4))</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.listener"><code class="name flex">
+<span>def <span class="ident">listener</span></span>(<span>data: Dict)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reacts to a capture speech event by commencing inferrence if speech was captured or by re-initialising the process in case of an initialisation error.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@ee.on(event_name)
+def listener(data: Dict):
+    &#34;&#34;&#34;Reacts to a capture speech event by commencing inferrence if speech was captured or by re-initialising the process in case of an initialisation error.
+    &#34;&#34;&#34;
+    if data.get(&#34;errorCode&#34;, -1) == 0:
+        status.set_(status=StatusLabels.INFER)
+
+    if data.get(&#34;errorCode&#34;, -1) == 3:
+        status.set_(status=StatusLabels.REINIT)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.perform_inference"><code class="name flex">
+<span>def <span class="ident">perform_inference</span></span>(<span>) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transcribes the newest obtained captured speech.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def perform_inference() -&gt; None:
+    &#34;&#34;&#34;Transcribes the newest obtained captured speech.
+    &#34;&#34;&#34;
+    print(&#34;Analysing&#34;)
+    label = StatusLabels.REINIT
+    data = &#34;&#34;
+
+    if SPEECH_FILE in get_all_audio_file_names():
+        speech_json = misty.get_info(
+            &#34;audio_file&#34;, params={&#34;FileName&#34;: SPEECH_FILE, &#34;Base64&#34;: &#34;true&#34;}
+        )
+        speech_base64 = speech_json.get(&#34;result&#34;, {}).get(&#34;base64&#34;, &#34;&#34;)
+        if len(speech_base64) &gt; 0:
+            f_name = get_next_file_name(SAVE_DIR)
+            base64_to_content(speech_base64, save_path=f_name)
+            speech_wav = speech_transcripter.load_wav(f_name)
+            speech_text = speech_transcripter.audio_to_text(speech_wav, show_all=True)
+            label = StatusLabels.PREP
+            data = speech_text
+
+    status.set_(status=label, data=data)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.perform_reply"><code class="name flex">
+<span>def <span class="ident">perform_reply</span></span>(<span>) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Formulates and speaks the reply based on the reply type obtained in the previous step (choosing a reply).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def perform_reply() -&gt; None:
+    &#34;&#34;&#34;Formulates and speaks the reply based on the reply type obtained in the previous step (choosing a reply).
+    &#34;&#34;&#34;
+    print(&#34;Replying&#34;)
+    reply_type = status.get_(&#34;data&#34;)
+
+    if reply_type == &#34;test&#34;:
+        speak(&#34;I received your test.&#34;)
+
+    elif reply_type == &#34;unknown&#34;:
+        speak(&#34;I am sorry, I do not understand.&#34;)
+
+    elif reply_type == &#34;hello&#34;:
+        speak(&#34;Hello!&#34;)
+
+    elif reply_type == &#34;goodbye&#34;:
+        speak(&#34;Goodbye!&#34;)
+
+    elif reply_type == &#34;year&#34;:
+        now = datetime.datetime.now()
+        speak(&#34;It is the year %s.&#34; % num2words(now.year))
+
+    elif reply_type == &#34;month&#34;:
+        now = datetime.datetime.now()
+        speak(&#34;It is the month of %s.&#34; % now.strftime(&#34;%B&#34;))
+
+    elif reply_type == &#34;date&#34;:
+        now = datetime.datetime.now()
+        speak(
+            &#34;It is the %s of %s, year %s.&#34;
+            % (
+                num2words(now.day, to=&#34;ordinal&#34;),
+                now.strftime(&#34;%B&#34;),
+                num2words(now.year),
+            )
+        )</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.question_answering"><code class="name flex">
+<span>def <span class="ident">question_answering</span></span>(<span>) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A skill that allows a person to have a simple dialogue with Misty.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>The dictionary with <code>"overall_success"</code> key (bool) and keys for every action performed (dictionarised Misty2pyResponse).</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def question_answering() -&gt; Dict:
+    &#34;&#34;&#34;A skill that allows a person to have a simple dialogue with Misty.
+
+    Returns:
+        Dict: The dictionary with `&#34;overall_success&#34;` key (bool) and keys for every action performed (dictionarised Misty2pyResponse). 
+    &#34;&#34;&#34;
+    cancel_skills(misty)
+    subscribe()
+    status.set_(status=StatusLabels.REINIT)
+
+    while status.get_(&#34;status&#34;) != StatusLabels.STOP:
+        current_status = status.get_(&#34;status&#34;)
+
+        if current_status == StatusLabels.REINIT:
+            speech_capture()
+
+        elif current_status == StatusLabels.INFER:
+            perform_inference()
+
+        elif current_status == StatusLabels.PREP:
+            choose_reply()
+
+        elif current_status == StatusLabels.SPEAK:
+            perform_reply()
+
+    unsubscribe()
+    return success_of_action_list(action_log.get_())</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.speak"><code class="name flex">
+<span>def <span class="ident">speak</span></span>(<span>utterance: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Misty speaks the <code>utterance</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def speak(utterance: str) -&gt; None:
+    &#34;&#34;&#34;Misty speaks the `utterance`.
+    &#34;&#34;&#34;
+    print(utterance)
+
+    speaking = misty.perform_action(
+        &#34;speak&#34;,
+        data={&#34;Text&#34;: utterance, &#34;Flush&#34;: &#34;true&#34;},
+    ).parse_to_dict()
+    action_log.append_({&#34;speaking&#34;: speaking})
+
+    label = StatusLabels.REINIT
+    if status.get_(&#34;data&#34;) == &#34;goodbye&#34;:
+        label = StatusLabels.STOP
+
+    status.set_(status=label)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.speech_capture"><code class="name flex">
+<span>def <span class="ident">speech_capture</span></span>(<span>) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Captures speech.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def speech_capture() -&gt; None:
+    &#34;&#34;&#34;Captures speech.
+    &#34;&#34;&#34;
+    print(&#34;Listening&#34;)
+
+    audio_status = misty.get_info(&#34;audio_status&#34;).parse_to_dict()
+    action_log.append_({&#34;audio_status&#34;: audio_status})
+
+    if not audio_status.get(&#34;result&#34;):
+        enable_audio = misty.perform_action(&#34;audio_enable&#34;).parse_to_dict()
+        if not enable_audio.get(&#34;rest_response&#34;, {}).get(&#34;result&#34;):
+            action_log.append_({&#34;enable_audio&#34;: enable_audio})
+            status.set_(status=StatusLabels.STOP)
+            return
+
+    set_volume = misty.perform_action(&#34;volume_settings&#34;, data=&#34;low_volume&#34;).parse_to_dict()
+    action_log.append_({&#34;set_volume&#34;: set_volume})
+
+    capture_speech = misty.perform_action(
+        &#34;speech_capture&#34;, data={&#34;RequireKeyPhrase&#34;: False}
+    ).parse_to_dict()
+    action_log.append_({&#34;capture_speech&#34;: capture_speech})
+    status.set_(status=StatusLabels.LISTEN)</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.subscribe"><code class="name flex">
+<span>def <span class="ident">subscribe</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Subscribes to VoiceRecord event.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def subscribe():
+    &#34;&#34;&#34;Subscribes to VoiceRecord event.
+    &#34;&#34;&#34;
+    subscribe_voice_record = misty.event(
+        &#34;subscribe&#34;, type=&#34;VoiceRecord&#34;, name=event_name, event_emitter=ee
+    ).parse_to_dict()
+    action_log.append_({&#34;subscribe_voice_record&#34;: subscribe_voice_record})</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.unsubscribe"><code class="name flex">
+<span>def <span class="ident">unsubscribe</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unsubscribes from VoiceRecord event.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unsubscribe():
+    &#34;&#34;&#34;Unsubscribes from VoiceRecord event.
+    &#34;&#34;&#34;
+    unsubscribe_voice_record = misty.event(&#34;unsubscribe&#34;, name=event_name).parse_to_dict()
+    action_log.append_({&#34;unsubscribe_voice_record&#34;: unsubscribe_voice_record})</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="misty2py_skills.question_answering.SpeechTranscripter"><code class="flex name class">
+<span>class <span class="ident">SpeechTranscripter</span></span>
+<span>(</span><span>wit_ai_key: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the speech transcribing component of Wit.ai.</p>
+<p>Initialises the speech transcripyer.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>wit_ai_key</code></strong> :&ensp;<code>str</code></dt>
+<dd>The API key for Wit.ai.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SpeechTranscripter:
+    &#34;&#34;&#34;Represents the speech transcribing component of Wit.ai.
+    &#34;&#34;&#34;
+    def __init__(self, wit_ai_key: str) -&gt; None:
+        &#34;&#34;&#34;Initialises the speech transcripyer.
+
+        Args:
+            wit_ai_key (str): The API key for Wit.ai.
+        &#34;&#34;&#34;
+        self.key = wit_ai_key
+        self.recogniser = sr.Recognizer()
+
+    def load_wav(self, audio_path: str) -&gt; sr.AudioFile:
+        &#34;&#34;&#34;Loads an audio (.wav) file.
+
+        Args:
+            audio_path (str): The absolute path to the audio file in .wav format to transcribe.
+
+        Returns:
+            sr.AudioFile: The speech_recognition package representation of an audio file.
+        &#34;&#34;&#34;
+        with sr.AudioFile(audio_path) as source:
+            return self.recogniser.record(source)
+
+    def audio_to_text(self, audio: sr.AudioSource, show_all: bool = False) -&gt; Dict:
+        &#34;&#34;&#34;Transcribes an audio of a valid speech_recognition package defined format to plaintext.
+
+        Args:
+            audio (sr.AudioSource): The audio to transcribe.
+            show_all (bool, optional): Whether to return all possible transcriptions (`True`) or the one in which Wit.ai is most confident (`False`). Defaults to `False`.
+
+        Returns:
+            Dict: [description]
+        &#34;&#34;&#34;
+        try:
+            transcription = self.recogniser.recognize_wit(
+                audio, key=self.key, show_all=show_all
+            )
+            return {&#34;success&#34;: True, &#34;content&#34;: transcription}
+
+        except sr.UnknownValueError:
+            return {&#34;success&#34;: True, &#34;content&#34;: &#34;unknown&#34;}
+
+        except sr.RequestError as e:
+            return {
+                &#34;success&#34;: False,
+                &#34;content&#34;: &#34;Invalid request.&#34;,
+                &#34;error_details&#34;: str(e),
+            }</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="misty2py_skills.question_answering.SpeechTranscripter.audio_to_text"><code class="name flex">
+<span>def <span class="ident">audio_to_text</span></span>(<span>self, audio: speech_recognition.AudioSource, show_all: bool = False) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transcribes an audio of a valid speech_recognition package defined format to plaintext.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>audio</code></strong> :&ensp;<code>sr.AudioSource</code></dt>
+<dd>The audio to transcribe.</dd>
+<dt><strong><code>show_all</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether to return all possible transcriptions (<code>True</code>) or the one in which Wit.ai is most confident (<code>False</code>). Defaults to <code>False</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>[description]</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def audio_to_text(self, audio: sr.AudioSource, show_all: bool = False) -&gt; Dict:
+    &#34;&#34;&#34;Transcribes an audio of a valid speech_recognition package defined format to plaintext.
+
+    Args:
+        audio (sr.AudioSource): The audio to transcribe.
+        show_all (bool, optional): Whether to return all possible transcriptions (`True`) or the one in which Wit.ai is most confident (`False`). Defaults to `False`.
+
+    Returns:
+        Dict: [description]
+    &#34;&#34;&#34;
+    try:
+        transcription = self.recogniser.recognize_wit(
+            audio, key=self.key, show_all=show_all
+        )
+        return {&#34;success&#34;: True, &#34;content&#34;: transcription}
+
+    except sr.UnknownValueError:
+        return {&#34;success&#34;: True, &#34;content&#34;: &#34;unknown&#34;}
+
+    except sr.RequestError as e:
+        return {
+            &#34;success&#34;: False,
+            &#34;content&#34;: &#34;Invalid request.&#34;,
+            &#34;error_details&#34;: str(e),
+        }</code></pre>
+</details>
+</dd>
+<dt id="misty2py_skills.question_answering.SpeechTranscripter.load_wav"><code class="name flex">
+<span>def <span class="ident">load_wav</span></span>(<span>self, audio_path: str) ‑> speech_recognition.AudioFile</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loads an audio (.wav) file.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>audio_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>The absolute path to the audio file in .wav format to transcribe.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>sr.AudioFile</code></dt>
+<dd>The speech_recognition package representation of an audio file.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_wav(self, audio_path: str) -&gt; sr.AudioFile:
+    &#34;&#34;&#34;Loads an audio (.wav) file.
+
+    Args:
+        audio_path (str): The absolute path to the audio file in .wav format to transcribe.
+
+    Returns:
+        sr.AudioFile: The speech_recognition package representation of an audio file.
+    &#34;&#34;&#34;
+    with sr.AudioFile(audio_path) as source:
+        return self.recogniser.record(source)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="misty2py_skills.question_answering.StatusLabels"><code class="flex name class">
+<span>class <span class="ident">StatusLabels</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Respresentes states in which the dialogue skill can be.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StatusLabels(Enum):
+    &#34;&#34;&#34;Respresentes states in which the dialogue skill can be.
+    &#34;&#34;&#34;
+    REINIT = &#34;reinit&#34;
+    &#34;&#34;&#34;The re-initialisation state when waiting for the person to talk.&#34;&#34;&#34;
+    LISTEN = &#34;listening&#34;
+    &#34;&#34;&#34;The state of listening to a person.&#34;&#34;&#34;
+    PREP = &#34;prepare_reply&#34;
+    &#34;&#34;&#34;The state of preparing a reply, including choosing the fitting reply.&#34;&#34;&#34;
+    INFER = &#34;infering&#34;
+    &#34;&#34;&#34;The state of infering the meaning of a person&#39;s speech.&#34;&#34;&#34;
+    STOP = &#34;stop&#34;
+    &#34;&#34;&#34;The terminating state.&#34;&#34;&#34;
+    SPEAK = &#34;ready_to_speak&#34;
+    &#34;&#34;&#34;The speaking state.&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="misty2py_skills.question_answering.StatusLabels.INFER"><code class="name">var <span class="ident">INFER</span></code></dt>
+<dd>
+<div class="desc"><p>The state of infering the meaning of a person's speech.</p></div>
+</dd>
+<dt id="misty2py_skills.question_answering.StatusLabels.LISTEN"><code class="name">var <span class="ident">LISTEN</span></code></dt>
+<dd>
+<div class="desc"><p>The state of listening to a person.</p></div>
+</dd>
+<dt id="misty2py_skills.question_answering.StatusLabels.PREP"><code class="name">var <span class="ident">PREP</span></code></dt>
+<dd>
+<div class="desc"><p>The state of preparing a reply, including choosing the fitting reply.</p></div>
+</dd>
+<dt id="misty2py_skills.question_answering.StatusLabels.REINIT"><code class="name">var <span class="ident">REINIT</span></code></dt>
+<dd>
+<div class="desc"><p>The re-initialisation state when waiting for the person to talk.</p></div>
+</dd>
+<dt id="misty2py_skills.question_answering.StatusLabels.SPEAK"><code class="name">var <span class="ident">SPEAK</span></code></dt>
+<dd>
+<div class="desc"><p>The speaking state.</p></div>
+</dd>
+<dt id="misty2py_skills.question_answering.StatusLabels.STOP"><code class="name">var <span class="ident">STOP</span></code></dt>
+<dd>
+<div class="desc"><p>The terminating state.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="misty2py_skills" href="index.html">misty2py_skills</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="misty2py_skills.question_answering.SAVE_DIR" href="#misty2py_skills.question_answering.SAVE_DIR">SAVE_DIR</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.SPEECH_FILE" href="#misty2py_skills.question_answering.SPEECH_FILE">SPEECH_FILE</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="misty2py_skills.question_answering.choose_reply" href="#misty2py_skills.question_answering.choose_reply">choose_reply</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.get_all_audio_file_names" href="#misty2py_skills.question_answering.get_all_audio_file_names">get_all_audio_file_names</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.get_intents_keywords" href="#misty2py_skills.question_answering.get_intents_keywords">get_intents_keywords</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.get_next_file_name" href="#misty2py_skills.question_answering.get_next_file_name">get_next_file_name</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.listener" href="#misty2py_skills.question_answering.listener">listener</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.perform_inference" href="#misty2py_skills.question_answering.perform_inference">perform_inference</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.perform_reply" href="#misty2py_skills.question_answering.perform_reply">perform_reply</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.question_answering" href="#misty2py_skills.question_answering.question_answering">question_answering</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.speak" href="#misty2py_skills.question_answering.speak">speak</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.speech_capture" href="#misty2py_skills.question_answering.speech_capture">speech_capture</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.subscribe" href="#misty2py_skills.question_answering.subscribe">subscribe</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.unsubscribe" href="#misty2py_skills.question_answering.unsubscribe">unsubscribe</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="misty2py_skills.question_answering.SpeechTranscripter" href="#misty2py_skills.question_answering.SpeechTranscripter">SpeechTranscripter</a></code></h4>
+<ul class="">
+<li><code><a title="misty2py_skills.question_answering.SpeechTranscripter.audio_to_text" href="#misty2py_skills.question_answering.SpeechTranscripter.audio_to_text">audio_to_text</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.SpeechTranscripter.load_wav" href="#misty2py_skills.question_answering.SpeechTranscripter.load_wav">load_wav</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="misty2py_skills.question_answering.StatusLabels" href="#misty2py_skills.question_answering.StatusLabels">StatusLabels</a></code></h4>
+<ul class="two-column">
+<li><code><a title="misty2py_skills.question_answering.StatusLabels.INFER" href="#misty2py_skills.question_answering.StatusLabels.INFER">INFER</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.StatusLabels.LISTEN" href="#misty2py_skills.question_answering.StatusLabels.LISTEN">LISTEN</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.StatusLabels.PREP" href="#misty2py_skills.question_answering.StatusLabels.PREP">PREP</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.StatusLabels.REINIT" href="#misty2py_skills.question_answering.StatusLabels.REINIT">REINIT</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.StatusLabels.SPEAK" href="#misty2py_skills.question_answering.StatusLabels.SPEAK">SPEAK</a></code></li>
+<li><code><a title="misty2py_skills.question_answering.StatusLabels.STOP" href="#misty2py_skills.question_answering.StatusLabels.STOP">STOP</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

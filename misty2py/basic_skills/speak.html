@@ -33,7 +33,7 @@ from typing import Dict
 
 from misty2py.robot import Misty
 from misty2py.utils.generators import get_random_string
-from misty2py.utils.messages import compose_json_reply
+from misty2py.response import compose_custom_response
 
 
 def speak(misty: Misty, utterance: str) -&gt; Dict:
@@ -44,16 +44,13 @@ def speak(misty: Misty, utterance: str) -&gt; Dict:
         utterance (str): The utterance to speak.
 
     Returns:
-        Dict: the response, including the `status` keyword and the `message` keyword which contains the utterance spoken.
+        Dict: the enhanced dictionarised Misty2pyResponse.
     &#34;&#34;&#34;
     result = misty.perform_action(
         &#34;speak&#34;,
-        data={
-            &#34;Text&#34;: utterance,
-            &#34;UtteranceId&#34;: &#34;utterance_&#34; + get_random_string(6)
-            },
-    )
-    return compose_json_reply(
+        data={&#34;Text&#34;: utterance, &#34;UtteranceId&#34;: &#34;utterance_&#34; + get_random_string(6)},
+    ).parse_to_dict()
+    return compose_custom_response(
         result,
         success_message=&#34;Talking successful. Utterance: `%s`.&#34; % utterance,
         fail_message=&#34;Talking failed. Utterance: `%s`.&#34; % utterance,
@@ -82,7 +79,7 @@ def speak(misty: Misty, utterance: str) -&gt; Dict:
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>Dict</code></dt>
-<dd>the response, including the <code>status</code> keyword and the <code>message</code> keyword which contains the utterance spoken.</dd>
+<dd>the enhanced dictionarised Misty2pyResponse.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -96,16 +93,13 @@ def speak(misty: Misty, utterance: str) -&gt; Dict:
         utterance (str): The utterance to speak.
 
     Returns:
-        Dict: the response, including the `status` keyword and the `message` keyword which contains the utterance spoken.
+        Dict: the enhanced dictionarised Misty2pyResponse.
     &#34;&#34;&#34;
     result = misty.perform_action(
         &#34;speak&#34;,
-        data={
-            &#34;Text&#34;: utterance,
-            &#34;UtteranceId&#34;: &#34;utterance_&#34; + get_random_string(6)
-            },
-    )
-    return compose_json_reply(
+        data={&#34;Text&#34;: utterance, &#34;UtteranceId&#34;: &#34;utterance_&#34; + get_random_string(6)},
+    ).parse_to_dict()
+    return compose_custom_response(
         result,
         success_message=&#34;Talking successful. Utterance: `%s`.&#34; % utterance,
         fail_message=&#34;Talking failed. Utterance: `%s`.&#34; % utterance,

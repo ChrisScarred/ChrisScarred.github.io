@@ -32,9 +32,10 @@
 import json
 from os import path
 from typing import Dict
-from urllib.parse import urlencode
 
 import requests
+
+from misty2py.response import *
 
 this_directory = path.abspath(path.dirname(__file__))
 INFOS_JSON = str(path.join(this_directory, &#34;allowed_infos.json&#34;))
@@ -44,19 +45,22 @@ class Get:
     &#34;&#34;&#34;A class representing the GET url request method.
 
     Attributes:
-        ip (str): The IP address where the requests are sent
+        ip (str): The IP address for the URL where the requests are sent.
+        protocol (str): The protocol for the URL where the requests are sent.
         allowed_infos (dict): The dictionary of information keywords matching to the Misty&#39;s API endpoints.
     &#34;&#34;&#34;
 
-    def __init__(self, ip: str, custom_allowed_infos: Dict = {}) -&gt; None:
+    def __init__(self, ip: str, protocol: str, custom_allowed_infos: Dict = {}) -&gt; None:
         &#34;&#34;&#34;Initialises a Get object.
 
         Args:
-            ip (str): The IP address where the requests are sent.
+            ip (str): The IP address for the URL where the requests are sent.
+            protocol (str): The protocol for the URL where the requests are sent.
             custom_allowed_infos (Dict, optional): The dictionary of custom information keywords. Defaults to `{}`.
         &#34;&#34;&#34;
 
         self.ip = ip
+        self.protocol = protocol
 
         allowed_infos = custom_allowed_infos
         f = open(INFOS_JSON)
@@ -65,28 +69,36 @@ class Get:
 
         self.allowed_infos = allowed_infos
 
-    def get_info(self, endpoint: str) -&gt; Dict:
+    def get_info(self, endpoint: str, params: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends a GET request.
 
         Args:
             endpoint (str): The API endpoint to which the request is sent.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
-        r = requests.get(&#34;http://%s/%s&#34; % (self.ip, endpoint))
+        r = requests.get(
+            &#34;%s://%s/%s&#34; % (self.protocol, self.ip, endpoint), params=params
+        )
         try:
-            return r.json()
+            return Misty2pyResponse(True, rest_response=r.json())
+
         except Exception as e:
-            return {&#34;status&#34;: &#34;Success&#34;, &#34;content&#34;: r.content, &#34;error_msg&#34;: e}
+            return Misty2pyResponse(
+                False,
+                rest_response=r.content,
+                error_msg=e,
+                error_type=Misty2pyErrorType.UNKNOWN,
+            )
 
 
 class Info(Get):
     &#34;&#34;&#34;A class representing an information request from Misty.
     A subclass of Get().&#34;&#34;&#34;
 
-    def get_info(self, info_name: str, params: Dict = {}) -&gt; Dict:
+    def get_info(self, info_name: str, params: Dict = {}) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends an information request to Misty.
 
         Args:
@@ -94,33 +106,23 @@ class Info(Get):
             params (Dict): dict of parameter name and parameter value. Defaults to `{}`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         if info_name not in self.allowed_infos.keys():
-            response = {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Command `%s` not supported.&#34; % info_name,
-            }
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Command `%s` not supported.&#34; % info_name,
+                error_type=Misty2pyErrorType.COMMAND,
+            )
 
-        else:
-            endpoint = self.allowed_infos[info_name]
+        endpoint = self.allowed_infos[info_name]
 
-            if len(params) &gt; 0:
-                endpoint += &#34;?&#34;
-                query_string = urlencode(params)
-                endpoint += query_string
+        try:
+            return super().get_info(endpoint, params)
 
-            try:
-                response = super().get_info(endpoint)
-
-            except Exception as e:
-                response = {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occured. Error message: `%s`&#34; % e,
-                }
-
-        return response</code></pre>
+        except Exception as e:
+            return unknown_error(e)</code></pre>
 </details>
 </section>
 <section>
@@ -134,14 +136,16 @@ class Info(Get):
 <dl>
 <dt id="misty2py.information.Get"><code class="flex name class">
 <span>class <span class="ident">Get</span></span>
-<span>(</span><span>ip: str, custom_allowed_infos: Dict = {})</span>
+<span>(</span><span>ip: str, protocol: str, custom_allowed_infos: Dict = {})</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class representing the GET url request method.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>The IP address where the requests are sent</dd>
+<dd>The IP address for the URL where the requests are sent.</dd>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>The protocol for the URL where the requests are sent.</dd>
 <dt><strong><code>allowed_infos</code></strong> :&ensp;<code>dict</code></dt>
 <dd>The dictionary of information keywords matching to the Misty's API endpoints.</dd>
 </dl>
@@ -149,7 +153,9 @@ class Info(Get):
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>The IP address where the requests are sent.</dd>
+<dd>The IP address for the URL where the requests are sent.</dd>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>The protocol for the URL where the requests are sent.</dd>
 <dt><strong><code>custom_allowed_infos</code></strong> :&ensp;<code>Dict</code>, optional</dt>
 <dd>The dictionary of custom information keywords. Defaults to <code>{}</code>.</dd>
 </dl></div>
@@ -161,19 +167,22 @@ class Info(Get):
     &#34;&#34;&#34;A class representing the GET url request method.
 
     Attributes:
-        ip (str): The IP address where the requests are sent
+        ip (str): The IP address for the URL where the requests are sent.
+        protocol (str): The protocol for the URL where the requests are sent.
         allowed_infos (dict): The dictionary of information keywords matching to the Misty&#39;s API endpoints.
     &#34;&#34;&#34;
 
-    def __init__(self, ip: str, custom_allowed_infos: Dict = {}) -&gt; None:
+    def __init__(self, ip: str, protocol: str, custom_allowed_infos: Dict = {}) -&gt; None:
         &#34;&#34;&#34;Initialises a Get object.
 
         Args:
-            ip (str): The IP address where the requests are sent.
+            ip (str): The IP address for the URL where the requests are sent.
+            protocol (str): The protocol for the URL where the requests are sent.
             custom_allowed_infos (Dict, optional): The dictionary of custom information keywords. Defaults to `{}`.
         &#34;&#34;&#34;
 
         self.ip = ip
+        self.protocol = protocol
 
         allowed_infos = custom_allowed_infos
         f = open(INFOS_JSON)
@@ -182,21 +191,29 @@ class Info(Get):
 
         self.allowed_infos = allowed_infos
 
-    def get_info(self, endpoint: str) -&gt; Dict:
+    def get_info(self, endpoint: str, params: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends a GET request.
 
         Args:
             endpoint (str): The API endpoint to which the request is sent.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
-        r = requests.get(&#34;http://%s/%s&#34; % (self.ip, endpoint))
+        r = requests.get(
+            &#34;%s://%s/%s&#34; % (self.protocol, self.ip, endpoint), params=params
+        )
         try:
-            return r.json()
+            return Misty2pyResponse(True, rest_response=r.json())
+
         except Exception as e:
-            return {&#34;status&#34;: &#34;Success&#34;, &#34;content&#34;: r.content, &#34;error_msg&#34;: e}</code></pre>
+            return Misty2pyResponse(
+                False,
+                rest_response=r.content,
+                error_msg=e,
+                error_type=Misty2pyErrorType.UNKNOWN,
+            )</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -205,7 +222,7 @@ class Info(Get):
 <h3>Methods</h3>
 <dl>
 <dt id="misty2py.information.Get.get_info"><code class="name flex">
-<span>def <span class="ident">get_info</span></span>(<span>self, endpoint: str) ‑> Dict</span>
+<span>def <span class="ident">get_info</span></span>(<span>self, endpoint: str, params: Dict) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sends a GET request.</p>
@@ -216,35 +233,43 @@ class Info(Get):
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The response from Misty's REST API.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_info(self, endpoint: str) -&gt; Dict:
+<pre><code class="python">def get_info(self, endpoint: str, params: Dict) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Sends a GET request.
 
     Args:
         endpoint (str): The API endpoint to which the request is sent.
 
     Returns:
-        Dict: The response from Misty&#39;s REST API.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
     &#34;&#34;&#34;
 
-    r = requests.get(&#34;http://%s/%s&#34; % (self.ip, endpoint))
+    r = requests.get(
+        &#34;%s://%s/%s&#34; % (self.protocol, self.ip, endpoint), params=params
+    )
     try:
-        return r.json()
+        return Misty2pyResponse(True, rest_response=r.json())
+
     except Exception as e:
-        return {&#34;status&#34;: &#34;Success&#34;, &#34;content&#34;: r.content, &#34;error_msg&#34;: e}</code></pre>
+        return Misty2pyResponse(
+            False,
+            rest_response=r.content,
+            error_msg=e,
+            error_type=Misty2pyErrorType.UNKNOWN,
+        )</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="misty2py.information.Info"><code class="flex name class">
 <span>class <span class="ident">Info</span></span>
-<span>(</span><span>ip: str, custom_allowed_infos: Dict = {})</span>
+<span>(</span><span>ip: str, protocol: str, custom_allowed_infos: Dict = {})</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class representing an information request from Misty.
@@ -253,7 +278,9 @@ A subclass of Get().</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>The IP address where the requests are sent.</dd>
+<dd>The IP address for the URL where the requests are sent.</dd>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>The protocol for the URL where the requests are sent.</dd>
 <dt><strong><code>custom_allowed_infos</code></strong> :&ensp;<code>Dict</code>, optional</dt>
 <dd>The dictionary of custom information keywords. Defaults to <code>{}</code>.</dd>
 </dl></div>
@@ -265,7 +292,7 @@ A subclass of Get().</p>
     &#34;&#34;&#34;A class representing an information request from Misty.
     A subclass of Get().&#34;&#34;&#34;
 
-    def get_info(self, info_name: str, params: Dict = {}) -&gt; Dict:
+    def get_info(self, info_name: str, params: Dict = {}) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends an information request to Misty.
 
         Args:
@@ -273,33 +300,23 @@ A subclass of Get().</p>
             params (Dict): dict of parameter name and parameter value. Defaults to `{}`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         if info_name not in self.allowed_infos.keys():
-            response = {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Command `%s` not supported.&#34; % info_name,
-            }
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Command `%s` not supported.&#34; % info_name,
+                error_type=Misty2pyErrorType.COMMAND,
+            )
 
-        else:
-            endpoint = self.allowed_infos[info_name]
+        endpoint = self.allowed_infos[info_name]
 
-            if len(params) &gt; 0:
-                endpoint += &#34;?&#34;
-                query_string = urlencode(params)
-                endpoint += query_string
+        try:
+            return super().get_info(endpoint, params)
 
-            try:
-                response = super().get_info(endpoint)
-
-            except Exception as e:
-                response = {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occured. Error message: `%s`&#34; % e,
-                }
-
-        return response</code></pre>
+        except Exception as e:
+            return unknown_error(e)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -308,7 +325,7 @@ A subclass of Get().</p>
 <h3>Methods</h3>
 <dl>
 <dt id="misty2py.information.Info.get_info"><code class="name flex">
-<span>def <span class="ident">get_info</span></span>(<span>self, info_name: str, params: Dict = {}) ‑> Dict</span>
+<span>def <span class="ident">get_info</span></span>(<span>self, info_name: str, params: Dict = {}) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sends an information request to Misty.</p>
@@ -321,14 +338,14 @@ A subclass of Get().</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The response from Misty's REST API.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_info(self, info_name: str, params: Dict = {}) -&gt; Dict:
+<pre><code class="python">def get_info(self, info_name: str, params: Dict = {}) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Sends an information request to Misty.
 
     Args:
@@ -336,33 +353,23 @@ A subclass of Get().</p>
         params (Dict): dict of parameter name and parameter value. Defaults to `{}`.
 
     Returns:
-        Dict: The response from Misty&#39;s REST API.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
     &#34;&#34;&#34;
 
     if info_name not in self.allowed_infos.keys():
-        response = {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Command `%s` not supported.&#34; % info_name,
-        }
+        return Misty2pyResponse(
+            False,
+            error_msg=&#34;Command `%s` not supported.&#34; % info_name,
+            error_type=Misty2pyErrorType.COMMAND,
+        )
 
-    else:
-        endpoint = self.allowed_infos[info_name]
+    endpoint = self.allowed_infos[info_name]
 
-        if len(params) &gt; 0:
-            endpoint += &#34;?&#34;
-            query_string = urlencode(params)
-            endpoint += query_string
+    try:
+        return super().get_info(endpoint, params)
 
-        try:
-            response = super().get_info(endpoint)
-
-        except Exception as e:
-            response = {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Error occured. Error message: `%s`&#34; % e,
-            }
-
-    return response</code></pre>
+    except Exception as e:
+        return unknown_error(e)</code></pre>
 </details>
 </dd>
 </dl>

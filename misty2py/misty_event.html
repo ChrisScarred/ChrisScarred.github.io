@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>misty2py.misty_event API documentation</title>
-<meta name="description" content="This module handles the communication of misty2py with Misty&#39;s WebSockets API and the communication between different threads created within misty2py …" />
+<meta name="description" content="This module handles the communication of Misty2py with Misty&#39;s WebSocket API and the communication between different threads created within Misty2py …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,12 +22,12 @@
 <h1 class="title">Module <code>misty2py.misty_event</code></h1>
 </header>
 <section id="section-intro">
-<p>This module handles the communication of misty2py with Misty's WebSockets API and the communication between different threads created within misty2py for the WebSocket-related actions.</p>
+<p>This module handles the communication of Misty2py with Misty's WebSocket API and the communication between different threads created within Misty2py for the WebSocket-related actions.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;This module handles the communication of misty2py with Misty&#39;s WebSockets API and the communication between different threads created within misty2py for the WebSocket-related actions.
+<pre><code class="python">&#34;&#34;&#34;This module handles the communication of Misty2py with Misty&#39;s WebSocket API and the communication between different threads created within Misty2py for the WebSocket-related actions.
 &#34;&#34;&#34;
 import json
 import threading
@@ -36,13 +36,17 @@ from typing import Callable, Dict, Union
 import websocket
 
 from misty2py.utils.generators import get_random_string
+from misty2py.response import *
+
+
+DEFAULT_DEBOUNCE = 250
+DEFAULT_LEN_ENTRIES = 10
 
 
 class MistyEvent:
     &#34;&#34;&#34;A class that represents an event type subscribed to.
-
     Attributes:
-        server (str): Misty&#39;s WebSockets API address.
+        url (str): The URL of Misty&#39;s WebSocket API.
         data (list): The data entries obtained.
         type_str (str): The event type string as required by Misty&#39;s WebSockets API.
         event_name (str): A custom, unique event name.
@@ -52,9 +56,10 @@ class MistyEvent:
         len_data_entries (int): The maximum number of data entries to keep.
         ee (Union[bool, Callable]): The event emitter function if one is desired, False otherwise.
     &#34;&#34;&#34;
+
     def __init__(
         self,
-        ip: str,
+        url: str,
         type_str: str,
         event_name: str,
         return_property: str,
@@ -63,9 +68,8 @@ class MistyEvent:
         event_emitter: Union[Callable, None],
     ):
         &#34;&#34;&#34;Initialises an event object.
-
         Args:
-            ip (str): Misty&#39;s IP address.
+            url (str): The URL of Misty&#39;s WebSocket API.
             type_str (str): The event type string as required by Misty&#39;s WebSockets API.
             event_name (str): A custom, unique event name.
             return_property (str): The property to return as required by Misty&#39;s WebSockets API.
@@ -73,7 +77,7 @@ class MistyEvent:
             len_data_entries (int): The maximum number of data entries to keep.
             event_emitter (Union[Callable, None]): The event emitter function if one is desired, False otherwise.
         &#34;&#34;&#34;
-        self.server = &#34;ws://%s/pubsub&#34; % ip
+        self.url = url
         self.data = []
         self.type_str = type_str
         self.event_name = event_name
@@ -88,12 +92,10 @@ class MistyEvent:
         else:
             self.ee = False
 
-
     def run(self):
         &#34;&#34;&#34;Initialises the subscription and data collection.&#34;&#34;&#34;
-
         self.ws = websocket.WebSocketApp(
-            self.server,
+            self.url,
             on_open=self.on_open,
             on_message=self.on_message,
             on_error=self.on_error,
@@ -101,14 +103,8 @@ class MistyEvent:
         )
         self.ws.run_forever()
 
-
     def on_message(self, ws, message):
-        &#34;&#34;&#34;Saves received data and if ee is set, emits an event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event&#39;s websocket.
-            message (str): The data received.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Saves received data and if ee is set, emits an event.&#34;&#34;&#34;
 
         message = json.loads(message)
         mes = message[&#34;message&#34;]
@@ -119,14 +115,8 @@ class MistyEvent:
         if self.ee:
             self.ee.emit(self.event_name, mes)
 
-
     def on_error(self, ws, error):
-        &#34;&#34;&#34;Logs an error and if ee is set, emits an &#39;error&#39; event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event type&#39;s websocket.
-            error (str): The error message received.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Logs an error and if ee is set, emits an &#39;error&#39; event.&#34;&#34;&#34;
 
         if len(self.log) &gt; self.len_data_entries:
             self.log = self.log[1:-1]
@@ -135,13 +125,8 @@ class MistyEvent:
         if self.ee:
             self.ee.emit(&#34;error_%s&#34; % self.event_name, error)
 
-
     def on_close(self, ws):
-        &#34;&#34;&#34;Appends the closing message to the log and if ee is set, emits a &#39;close&#39; event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event type&#39;s websocket.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Appends the closing message to the log and if ee is set, emits a &#39;close&#39; event.&#34;&#34;&#34;
 
         mes = &#34;Closed&#34;
         if len(self.log) &gt; self.len_data_entries:
@@ -151,13 +136,8 @@ class MistyEvent:
         if self.ee:
             self.ee.emit(&#34;close_%s&#34; % self.event_name, mes)
 
-
     def on_open(self, ws):
-        &#34;&#34;&#34;Appends the opening message to the log and starts the subscription and if ee is set, emits an &#39;open&#39; event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event type&#39;s websocket.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Appends the opening message to the log and starts the subscription and if ee is set, emits an &#39;open&#39; event.&#34;&#34;&#34;
 
         self.log.append(&#34;Opened&#34;)
         self.subscribe()
@@ -165,7 +145,6 @@ class MistyEvent:
 
         if self.ee:
             self.ee.emit(&#34;open_%s&#34; % self.event_name)
-
 
     def subscribe(self):
         &#34;&#34;&#34;Constructs the subscription message.&#34;&#34;&#34;
@@ -180,15 +159,10 @@ class MistyEvent:
         msg_str = json.dumps(msg, separators=(&#34;,&#34;, &#34;:&#34;))
         self.ws.send(msg_str)
 
-
     def unsubscribe(self):
         &#34;&#34;&#34;Constructs the unsubscription message.&#34;&#34;&#34;
 
-        msg = {
-            &#34;Operation&#34;: &#34;unsubscribe&#34;,
-            &#34;EventName&#34;: self.event_name,
-            &#34;Message&#34;: &#34;&#34;
-        }
+        msg = {&#34;Operation&#34;: &#34;unsubscribe&#34;, &#34;EventName&#34;: self.event_name, &#34;Message&#34;: &#34;&#34;}
         msg_str = json.dumps(msg, separators=(&#34;,&#34;, &#34;:&#34;))
         self.ws.send(msg_str)
         self.ws.close()
@@ -199,25 +173,26 @@ class MistyEventHandler:
 
     Attributes:
         events (Dict): The dictionary of all Event objects their related Misty object subscribed to during the current runtime.
-        ip (str): The IP address of the Misty belonging to this object&#39;s related Misty object.
+        url (str): The URL for Misty&#39;s WebSocket API.
     &#34;&#34;&#34;
 
-    def __init__(self, ip: str):
+    def __init__(self, ip: str, protocol: str, endpoint: str) -&gt; None:
         &#34;&#34;&#34;Initialises an object of class MistyEventHandler.
 
         Args:
-            ip (str): The IP address of the Misty belonging to this object&#39;s related Misty object.
+            ip (str): The IP address for the URL where the requests are sent.
+            protocol (str): The protocol for the URL where the requests are sent.
+            endpoint (str): The endpoint for the URL where the requests are sent.
         &#34;&#34;&#34;
 
         self.events = {}
-        self.ip = ip
+        self.url = &#34;%s://%s/%s&#34; % (protocol, ip, endpoint)
 
-
-    def subscribe_event(self, kwargs: Dict) -&gt; Dict:
+    def subscribe_event(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Subscribes to an event type.
 
         Args:
-            kwargs (Dict):  requires a key &#34;type&#34; (a string representing the event type to subscribe to). Optional keys are:
+            kwargs (Dict):  requires a key `&#34;type&#34;` (a string representing the event type to subscribe to). Optional keys are:
             - `name` (str) for a custom event name; must be unique.
             - `return_property` (str) for the property to return from Misty&#39;s websockets; all properties are returned if return_property is not supplied.
             - `debounce` (int) for the interval at which new information is sent in ms; defaults to `250`.
@@ -225,12 +200,23 @@ class MistyEventHandler:
             - `event_emitter` (Callable) for an event emitter function which emits an event upon message recieval.
 
         Returns:
-            Dict: Success/fail message in the form of a JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
         event_type = kwargs.get(&#34;type&#34;)
+
         if not event_type:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event type specified.&#34;}
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;No event type specified.&#34;,
+                error_type=Misty2pyErrorType.MISSING,
+            )
+        if not isinstance(event_type, str):
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Not a valid event type: `%s`.&#34; % str(event_type),
+                error_type=Misty2pyErrorType.DATA_FORMAT,
+            )
 
         event_name = kwargs.get(&#34;name&#34;)
         if not event_name:
@@ -240,17 +226,17 @@ class MistyEventHandler:
 
         debounce = kwargs.get(&#34;debounce&#34;)
         if not debounce:
-            debounce = 250
+            debounce = DEFAULT_DEBOUNCE
 
         len_data_entries = kwargs.get(&#34;len_data_entries&#34;)
         if not len_data_entries:
-            len_data_entries = 10
+            len_data_entries = DEFAULT_LEN_ENTRIES
 
         event_emitter = kwargs.get(&#34;event_emitter&#34;)
 
         try:
             new_event = MistyEvent(
-                self.ip,
+                self.url,
                 event_type,
                 event_name,
                 return_property,
@@ -260,142 +246,151 @@ class MistyEventHandler:
             )
 
         except Exception as e:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Error occurred while attempting \
-                    to subscribe to an event of type `%s`. \
-                        Error message: `%s`&#34;
-                % (
-                    event_type,
-                    e
-                ),
-            }
+            return unknown_error(e)
 
         self.events[event_name] = new_event
 
-        return {
-            &#34;status&#34;: &#34;Success&#34;,
-            &#34;message&#34;: &#34;Subscribed to event type `%s` with name `%s`&#34;
-            % (event_type, event_name),
-            &#34;event_name&#34;: event_name,
-        }
+        return Misty2pyResponse(
+            True,
+            ws_response={
+                &#34;success&#34;: True,
+                &#34;event_name&#34;: event_name,
+                &#34;message&#34;: &#34;Subscribed to event type `%s` with name `%s`&#34;
+                % (event_type, event_name),
+            },
+        )
 
+    def _obtain_event_data_or_log(
+        self, event_name: Optional[str], is_log: bool = False
+    ) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Obtains event data or event log.
 
-    def get_event_data(self, kwargs: Dict) -&gt; Dict:
+        Args:
+            event_name (Optional[str]): The name of the event whose data or log to obtain.
+            is_log (bool, optional): `False` to obtain data, `True` to obtain log. Defaults to `False`.
+
+        Returns:
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
+        &#34;&#34;&#34;
+        if not event_name:
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;No event name specified.&#34;,
+                error_type=Misty2pyErrorType.MISSING,
+            )
+
+        if event_name in self.events.keys():
+            try:
+                if is_log:
+                    return Misty2pyResponse(
+                        True,
+                        ws_response={
+                            &#34;success&#34;: True,
+                            &#34;message&#34;: self.events[event_name].log,
+                        },
+                    )
+
+                return Misty2pyResponse(
+                    True,
+                    ws_response={
+                        &#34;success&#34;: True,
+                        &#34;message&#34;: self.events[event_name].data,
+                    },
+                )
+
+            except Exception as e:
+                return Misty2pyResponse(
+                    True,
+                    ws_response={
+                        &#34;success&#34;: False,
+                        &#34;message&#34;: &#34;Error occurred while attempting to unsubscribe from event `%s`. Error message: `%s`.&#34;
+                        % (event_name, e),
+                    },
+                )
+
+        return Misty2pyResponse(
+            True,
+            ws_response={
+                &#34;success&#34;: False,
+                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34; % event_name,
+            },
+        )
+
+    def get_event_data(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Obtains data from a subscribed event type.
 
         Args:
             kwargs (Dict): Requires a key &#34;name&#34; (the event name).
 
         Returns:
-            Dict: The data or the fail message in the form of a JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
-        event_name = kwargs.get(&#34;name&#34;)
-        if not event_name:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
+        return self._obtain_event_data_or_log(kwargs.get(&#34;name&#34;))
 
-        if event_name in self.events.keys():
-            try:
-                return {
-                    &#34;status&#34;: &#34;Success&#34;,
-                    &#34;message&#34;: self.events[event_name].data
-                }
-            except Exception as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occurred. Error message: `%s`&#34; % e
-                }
-
-        else:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34;
-                % event_name,
-            }
-
-
-    def get_event_log(self, kwargs: Dict) -&gt; Dict:
+    def get_event_log(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Obtains the log from a subscribed event type.
 
         Args:
             kwargs (Dict): Requires a key `name` (the event name).
 
         Returns:
-            Dict: The log or the fail message in the form of a JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
-        event_name = kwargs.get(&#34;name&#34;)
-        if not event_name:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
+        return self._obtain_event_data_or_log(kwargs.get(&#34;name&#34;), is_log=True)
 
-        if event_name in self.events.keys():
-            try:
-                return {
-                    &#34;status&#34;: &#34;Success&#34;,
-                    &#34;message&#34;: self.events[event_name].log
-                }
-            except Exception as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occurred while attempting \
-                        to access the log of event `%s`. \
-                            Error message: `%s`&#34;
-                    % (
-                        event_name,
-                        e
-                    ),
-                }
-
-        else:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Event `%s` is not subscribed to.&#34; % event_name,
-            }
-
-
-    def unsubscribe_event(self, kwargs: Dict) -&gt; Dict:
+    def unsubscribe_event(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Unsubscribes from an event type.
 
         Args:
             kwargs (Dict): Requires a key `name` (the event name).
 
         Returns:
-            Dict: Success/fail message in the form of JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
         event_name = kwargs.get(&#34;name&#34;)
         if not event_name:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;No event name specified.&#34;,
+                error_type=Misty2pyErrorType.MISSING,
+            )
 
         if event_name in self.events.keys():
             try:
                 self.events[event_name].unsubscribe()
-                mes = {
-                    &#34;status&#34;: &#34;Success&#34;,
+
+            except Exception as e:
+                return Misty2pyResponse(
+                    True,
+                    ws_response={
+                        &#34;success&#34;: False,
+                        &#34;message&#34;: &#34;Error occurred while attempting to unsubscribe from event `%s`. Error message: `%s`.&#34;
+                        % (event_name, e),
+                    },
+                )
+
+            resp = Misty2pyResponse(
+                True,
+                ws_response={
+                    &#34;success&#34;: True,
                     &#34;message&#34;: &#34;Event `%s` of type `%s` unsubscribed&#34;
                     % (event_name, self.events[event_name].type_str),
                     &#34;log&#34;: self.events[event_name].log,
-                }
-            except Exception as e:
-                mes = {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occurred while attempting \
-                        to unsubscribe from event `%s`. \
-                            Error message: `%s`&#34;
-                    % (
-                        event_name,
-                        e
-                    ),
-                }
+                },
+            )
             self.events.pop(event_name)
-            return mes
-        else:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34;
-                % event_name,
-            }</code></pre>
+            return resp
+
+        return Misty2pyResponse(
+            True,
+            ws_response={
+                &#34;success&#34;: False,
+                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34; % event_name,
+            },
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -409,14 +404,14 @@ class MistyEventHandler:
 <dl>
 <dt id="misty2py.misty_event.MistyEvent"><code class="flex name class">
 <span>class <span class="ident">MistyEvent</span></span>
-<span>(</span><span>ip: str, type_str: str, event_name: str, return_property: str, debounce: int, len_data_entries: int, event_emitter: Optional[Callable])</span>
+<span>(</span><span>url: str, type_str: str, event_name: str, return_property: str, debounce: int, len_data_entries: int, event_emitter: Optional[Callable])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class that represents an event type subscribed to.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>server</code></strong> :&ensp;<code>str</code></dt>
-<dd>Misty's WebSockets API address.</dd>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
+<dd>The URL of Misty's WebSocket API.</dd>
 <dt><strong><code>data</code></strong> :&ensp;<code>list</code></dt>
 <dd>The data entries obtained.</dd>
 <dt><strong><code>type_str</code></strong> :&ensp;<code>str</code></dt>
@@ -437,8 +432,8 @@ class MistyEventHandler:
 <p>Initialises an event object.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>Misty's IP address.</dd>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
+<dd>The URL of Misty's WebSocket API.</dd>
 <dt><strong><code>type_str</code></strong> :&ensp;<code>str</code></dt>
 <dd>The event type string as required by Misty's WebSockets API.</dd>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
@@ -458,9 +453,8 @@ class MistyEventHandler:
 </summary>
 <pre><code class="python">class MistyEvent:
     &#34;&#34;&#34;A class that represents an event type subscribed to.
-
     Attributes:
-        server (str): Misty&#39;s WebSockets API address.
+        url (str): The URL of Misty&#39;s WebSocket API.
         data (list): The data entries obtained.
         type_str (str): The event type string as required by Misty&#39;s WebSockets API.
         event_name (str): A custom, unique event name.
@@ -470,9 +464,10 @@ class MistyEventHandler:
         len_data_entries (int): The maximum number of data entries to keep.
         ee (Union[bool, Callable]): The event emitter function if one is desired, False otherwise.
     &#34;&#34;&#34;
+
     def __init__(
         self,
-        ip: str,
+        url: str,
         type_str: str,
         event_name: str,
         return_property: str,
@@ -481,9 +476,8 @@ class MistyEventHandler:
         event_emitter: Union[Callable, None],
     ):
         &#34;&#34;&#34;Initialises an event object.
-
         Args:
-            ip (str): Misty&#39;s IP address.
+            url (str): The URL of Misty&#39;s WebSocket API.
             type_str (str): The event type string as required by Misty&#39;s WebSockets API.
             event_name (str): A custom, unique event name.
             return_property (str): The property to return as required by Misty&#39;s WebSockets API.
@@ -491,7 +485,7 @@ class MistyEventHandler:
             len_data_entries (int): The maximum number of data entries to keep.
             event_emitter (Union[Callable, None]): The event emitter function if one is desired, False otherwise.
         &#34;&#34;&#34;
-        self.server = &#34;ws://%s/pubsub&#34; % ip
+        self.url = url
         self.data = []
         self.type_str = type_str
         self.event_name = event_name
@@ -506,12 +500,10 @@ class MistyEventHandler:
         else:
             self.ee = False
 
-
     def run(self):
         &#34;&#34;&#34;Initialises the subscription and data collection.&#34;&#34;&#34;
-
         self.ws = websocket.WebSocketApp(
-            self.server,
+            self.url,
             on_open=self.on_open,
             on_message=self.on_message,
             on_error=self.on_error,
@@ -519,14 +511,8 @@ class MistyEventHandler:
         )
         self.ws.run_forever()
 
-
     def on_message(self, ws, message):
-        &#34;&#34;&#34;Saves received data and if ee is set, emits an event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event&#39;s websocket.
-            message (str): The data received.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Saves received data and if ee is set, emits an event.&#34;&#34;&#34;
 
         message = json.loads(message)
         mes = message[&#34;message&#34;]
@@ -537,14 +523,8 @@ class MistyEventHandler:
         if self.ee:
             self.ee.emit(self.event_name, mes)
 
-
     def on_error(self, ws, error):
-        &#34;&#34;&#34;Logs an error and if ee is set, emits an &#39;error&#39; event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event type&#39;s websocket.
-            error (str): The error message received.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Logs an error and if ee is set, emits an &#39;error&#39; event.&#34;&#34;&#34;
 
         if len(self.log) &gt; self.len_data_entries:
             self.log = self.log[1:-1]
@@ -553,13 +533,8 @@ class MistyEventHandler:
         if self.ee:
             self.ee.emit(&#34;error_%s&#34; % self.event_name, error)
 
-
     def on_close(self, ws):
-        &#34;&#34;&#34;Appends the closing message to the log and if ee is set, emits a &#39;close&#39; event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event type&#39;s websocket.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Appends the closing message to the log and if ee is set, emits a &#39;close&#39; event.&#34;&#34;&#34;
 
         mes = &#34;Closed&#34;
         if len(self.log) &gt; self.len_data_entries:
@@ -569,13 +544,8 @@ class MistyEventHandler:
         if self.ee:
             self.ee.emit(&#34;close_%s&#34; % self.event_name, mes)
 
-
     def on_open(self, ws):
-        &#34;&#34;&#34;Appends the opening message to the log and starts the subscription and if ee is set, emits an &#39;open&#39; event.
-
-        Args:
-            ws (websocket.WebSocketApp): The event type&#39;s websocket.
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Appends the opening message to the log and starts the subscription and if ee is set, emits an &#39;open&#39; event.&#34;&#34;&#34;
 
         self.log.append(&#34;Opened&#34;)
         self.subscribe()
@@ -583,7 +553,6 @@ class MistyEventHandler:
 
         if self.ee:
             self.ee.emit(&#34;open_%s&#34; % self.event_name)
-
 
     def subscribe(self):
         &#34;&#34;&#34;Constructs the subscription message.&#34;&#34;&#34;
@@ -598,15 +567,10 @@ class MistyEventHandler:
         msg_str = json.dumps(msg, separators=(&#34;,&#34;, &#34;:&#34;))
         self.ws.send(msg_str)
 
-
     def unsubscribe(self):
         &#34;&#34;&#34;Constructs the unsubscription message.&#34;&#34;&#34;
 
-        msg = {
-            &#34;Operation&#34;: &#34;unsubscribe&#34;,
-            &#34;EventName&#34;: self.event_name,
-            &#34;Message&#34;: &#34;&#34;
-        }
+        msg = {&#34;Operation&#34;: &#34;unsubscribe&#34;, &#34;EventName&#34;: self.event_name, &#34;Message&#34;: &#34;&#34;}
         msg_str = json.dumps(msg, separators=(&#34;,&#34;, &#34;:&#34;))
         self.ws.send(msg_str)
         self.ws.close()</code></pre>
@@ -617,22 +581,13 @@ class MistyEventHandler:
 <span>def <span class="ident">on_close</span></span>(<span>self, ws)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Appends the closing message to the log and if ee is set, emits a 'close' event.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>ws</code></strong> :&ensp;<code>websocket.WebSocketApp</code></dt>
-<dd>The event type's websocket.</dd>
-</dl></div>
+<div class="desc"><p>Appends the closing message to the log and if ee is set, emits a 'close' event.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def on_close(self, ws):
-    &#34;&#34;&#34;Appends the closing message to the log and if ee is set, emits a &#39;close&#39; event.
-
-    Args:
-        ws (websocket.WebSocketApp): The event type&#39;s websocket.
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Appends the closing message to the log and if ee is set, emits a &#39;close&#39; event.&#34;&#34;&#34;
 
     mes = &#34;Closed&#34;
     if len(self.log) &gt; self.len_data_entries:
@@ -647,25 +602,13 @@ class MistyEventHandler:
 <span>def <span class="ident">on_error</span></span>(<span>self, ws, error)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Logs an error and if ee is set, emits an 'error' event.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>ws</code></strong> :&ensp;<code>websocket.WebSocketApp</code></dt>
-<dd>The event type's websocket.</dd>
-<dt><strong><code>error</code></strong> :&ensp;<code>str</code></dt>
-<dd>The error message received.</dd>
-</dl></div>
+<div class="desc"><p>Logs an error and if ee is set, emits an 'error' event.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def on_error(self, ws, error):
-    &#34;&#34;&#34;Logs an error and if ee is set, emits an &#39;error&#39; event.
-
-    Args:
-        ws (websocket.WebSocketApp): The event type&#39;s websocket.
-        error (str): The error message received.
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Logs an error and if ee is set, emits an &#39;error&#39; event.&#34;&#34;&#34;
 
     if len(self.log) &gt; self.len_data_entries:
         self.log = self.log[1:-1]
@@ -679,25 +622,13 @@ class MistyEventHandler:
 <span>def <span class="ident">on_message</span></span>(<span>self, ws, message)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Saves received data and if ee is set, emits an event.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>ws</code></strong> :&ensp;<code>websocket.WebSocketApp</code></dt>
-<dd>The event's websocket.</dd>
-<dt><strong><code>message</code></strong> :&ensp;<code>str</code></dt>
-<dd>The data received.</dd>
-</dl></div>
+<div class="desc"><p>Saves received data and if ee is set, emits an event.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def on_message(self, ws, message):
-    &#34;&#34;&#34;Saves received data and if ee is set, emits an event.
-
-    Args:
-        ws (websocket.WebSocketApp): The event&#39;s websocket.
-        message (str): The data received.
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Saves received data and if ee is set, emits an event.&#34;&#34;&#34;
 
     message = json.loads(message)
     mes = message[&#34;message&#34;]
@@ -713,22 +644,13 @@ class MistyEventHandler:
 <span>def <span class="ident">on_open</span></span>(<span>self, ws)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Appends the opening message to the log and starts the subscription and if ee is set, emits an 'open' event.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>ws</code></strong> :&ensp;<code>websocket.WebSocketApp</code></dt>
-<dd>The event type's websocket.</dd>
-</dl></div>
+<div class="desc"><p>Appends the opening message to the log and starts the subscription and if ee is set, emits an 'open' event.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def on_open(self, ws):
-    &#34;&#34;&#34;Appends the opening message to the log and starts the subscription and if ee is set, emits an &#39;open&#39; event.
-
-    Args:
-        ws (websocket.WebSocketApp): The event type&#39;s websocket.
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Appends the opening message to the log and starts the subscription and if ee is set, emits an &#39;open&#39; event.&#34;&#34;&#34;
 
     self.log.append(&#34;Opened&#34;)
     self.subscribe()
@@ -749,9 +671,8 @@ class MistyEventHandler:
 </summary>
 <pre><code class="python">def run(self):
     &#34;&#34;&#34;Initialises the subscription and data collection.&#34;&#34;&#34;
-
     self.ws = websocket.WebSocketApp(
-        self.server,
+        self.url,
         on_open=self.on_open,
         on_message=self.on_message,
         on_error=self.on_error,
@@ -795,11 +716,7 @@ class MistyEventHandler:
 <pre><code class="python">def unsubscribe(self):
     &#34;&#34;&#34;Constructs the unsubscription message.&#34;&#34;&#34;
 
-    msg = {
-        &#34;Operation&#34;: &#34;unsubscribe&#34;,
-        &#34;EventName&#34;: self.event_name,
-        &#34;Message&#34;: &#34;&#34;
-    }
+    msg = {&#34;Operation&#34;: &#34;unsubscribe&#34;, &#34;EventName&#34;: self.event_name, &#34;Message&#34;: &#34;&#34;}
     msg_str = json.dumps(msg, separators=(&#34;,&#34;, &#34;:&#34;))
     self.ws.send(msg_str)
     self.ws.close()</code></pre>
@@ -809,7 +726,7 @@ class MistyEventHandler:
 </dd>
 <dt id="misty2py.misty_event.MistyEventHandler"><code class="flex name class">
 <span>class <span class="ident">MistyEventHandler</span></span>
-<span>(</span><span>ip: str)</span>
+<span>(</span><span>ip: str, protocol: str, endpoint: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class that handles all events its related Misty object subscribed to during this runtime.</p>
@@ -817,14 +734,18 @@ class MistyEventHandler:
 <dl>
 <dt><strong><code>events</code></strong> :&ensp;<code>Dict</code></dt>
 <dd>The dictionary of all Event objects their related Misty object subscribed to during the current runtime.</dd>
-<dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>The IP address of the Misty belonging to this object's related Misty object.</dd>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
+<dd>The URL for Misty's WebSocket API.</dd>
 </dl>
 <p>Initialises an object of class MistyEventHandler.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>The IP address of the Misty belonging to this object's related Misty object.</dd>
+<dd>The IP address for the URL where the requests are sent.</dd>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>The protocol for the URL where the requests are sent.</dd>
+<dt><strong><code>endpoint</code></strong> :&ensp;<code>str</code></dt>
+<dd>The endpoint for the URL where the requests are sent.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -835,25 +756,26 @@ class MistyEventHandler:
 
     Attributes:
         events (Dict): The dictionary of all Event objects their related Misty object subscribed to during the current runtime.
-        ip (str): The IP address of the Misty belonging to this object&#39;s related Misty object.
+        url (str): The URL for Misty&#39;s WebSocket API.
     &#34;&#34;&#34;
 
-    def __init__(self, ip: str):
+    def __init__(self, ip: str, protocol: str, endpoint: str) -&gt; None:
         &#34;&#34;&#34;Initialises an object of class MistyEventHandler.
 
         Args:
-            ip (str): The IP address of the Misty belonging to this object&#39;s related Misty object.
+            ip (str): The IP address for the URL where the requests are sent.
+            protocol (str): The protocol for the URL where the requests are sent.
+            endpoint (str): The endpoint for the URL where the requests are sent.
         &#34;&#34;&#34;
 
         self.events = {}
-        self.ip = ip
+        self.url = &#34;%s://%s/%s&#34; % (protocol, ip, endpoint)
 
-
-    def subscribe_event(self, kwargs: Dict) -&gt; Dict:
+    def subscribe_event(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Subscribes to an event type.
 
         Args:
-            kwargs (Dict):  requires a key &#34;type&#34; (a string representing the event type to subscribe to). Optional keys are:
+            kwargs (Dict):  requires a key `&#34;type&#34;` (a string representing the event type to subscribe to). Optional keys are:
             - `name` (str) for a custom event name; must be unique.
             - `return_property` (str) for the property to return from Misty&#39;s websockets; all properties are returned if return_property is not supplied.
             - `debounce` (int) for the interval at which new information is sent in ms; defaults to `250`.
@@ -861,12 +783,23 @@ class MistyEventHandler:
             - `event_emitter` (Callable) for an event emitter function which emits an event upon message recieval.
 
         Returns:
-            Dict: Success/fail message in the form of a JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
         event_type = kwargs.get(&#34;type&#34;)
+
         if not event_type:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event type specified.&#34;}
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;No event type specified.&#34;,
+                error_type=Misty2pyErrorType.MISSING,
+            )
+        if not isinstance(event_type, str):
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Not a valid event type: `%s`.&#34; % str(event_type),
+                error_type=Misty2pyErrorType.DATA_FORMAT,
+            )
 
         event_name = kwargs.get(&#34;name&#34;)
         if not event_name:
@@ -876,17 +809,17 @@ class MistyEventHandler:
 
         debounce = kwargs.get(&#34;debounce&#34;)
         if not debounce:
-            debounce = 250
+            debounce = DEFAULT_DEBOUNCE
 
         len_data_entries = kwargs.get(&#34;len_data_entries&#34;)
         if not len_data_entries:
-            len_data_entries = 10
+            len_data_entries = DEFAULT_LEN_ENTRIES
 
         event_emitter = kwargs.get(&#34;event_emitter&#34;)
 
         try:
             new_event = MistyEvent(
-                self.ip,
+                self.url,
                 event_type,
                 event_name,
                 return_property,
@@ -896,147 +829,156 @@ class MistyEventHandler:
             )
 
         except Exception as e:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Error occurred while attempting \
-                    to subscribe to an event of type `%s`. \
-                        Error message: `%s`&#34;
-                % (
-                    event_type,
-                    e
-                ),
-            }
+            return unknown_error(e)
 
         self.events[event_name] = new_event
 
-        return {
-            &#34;status&#34;: &#34;Success&#34;,
-            &#34;message&#34;: &#34;Subscribed to event type `%s` with name `%s`&#34;
-            % (event_type, event_name),
-            &#34;event_name&#34;: event_name,
-        }
+        return Misty2pyResponse(
+            True,
+            ws_response={
+                &#34;success&#34;: True,
+                &#34;event_name&#34;: event_name,
+                &#34;message&#34;: &#34;Subscribed to event type `%s` with name `%s`&#34;
+                % (event_type, event_name),
+            },
+        )
 
+    def _obtain_event_data_or_log(
+        self, event_name: Optional[str], is_log: bool = False
+    ) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Obtains event data or event log.
 
-    def get_event_data(self, kwargs: Dict) -&gt; Dict:
+        Args:
+            event_name (Optional[str]): The name of the event whose data or log to obtain.
+            is_log (bool, optional): `False` to obtain data, `True` to obtain log. Defaults to `False`.
+
+        Returns:
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
+        &#34;&#34;&#34;
+        if not event_name:
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;No event name specified.&#34;,
+                error_type=Misty2pyErrorType.MISSING,
+            )
+
+        if event_name in self.events.keys():
+            try:
+                if is_log:
+                    return Misty2pyResponse(
+                        True,
+                        ws_response={
+                            &#34;success&#34;: True,
+                            &#34;message&#34;: self.events[event_name].log,
+                        },
+                    )
+
+                return Misty2pyResponse(
+                    True,
+                    ws_response={
+                        &#34;success&#34;: True,
+                        &#34;message&#34;: self.events[event_name].data,
+                    },
+                )
+
+            except Exception as e:
+                return Misty2pyResponse(
+                    True,
+                    ws_response={
+                        &#34;success&#34;: False,
+                        &#34;message&#34;: &#34;Error occurred while attempting to unsubscribe from event `%s`. Error message: `%s`.&#34;
+                        % (event_name, e),
+                    },
+                )
+
+        return Misty2pyResponse(
+            True,
+            ws_response={
+                &#34;success&#34;: False,
+                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34; % event_name,
+            },
+        )
+
+    def get_event_data(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Obtains data from a subscribed event type.
 
         Args:
             kwargs (Dict): Requires a key &#34;name&#34; (the event name).
 
         Returns:
-            Dict: The data or the fail message in the form of a JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
-        event_name = kwargs.get(&#34;name&#34;)
-        if not event_name:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
+        return self._obtain_event_data_or_log(kwargs.get(&#34;name&#34;))
 
-        if event_name in self.events.keys():
-            try:
-                return {
-                    &#34;status&#34;: &#34;Success&#34;,
-                    &#34;message&#34;: self.events[event_name].data
-                }
-            except Exception as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occurred. Error message: `%s`&#34; % e
-                }
-
-        else:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34;
-                % event_name,
-            }
-
-
-    def get_event_log(self, kwargs: Dict) -&gt; Dict:
+    def get_event_log(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Obtains the log from a subscribed event type.
 
         Args:
             kwargs (Dict): Requires a key `name` (the event name).
 
         Returns:
-            Dict: The log or the fail message in the form of a JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
-        event_name = kwargs.get(&#34;name&#34;)
-        if not event_name:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
+        return self._obtain_event_data_or_log(kwargs.get(&#34;name&#34;), is_log=True)
 
-        if event_name in self.events.keys():
-            try:
-                return {
-                    &#34;status&#34;: &#34;Success&#34;,
-                    &#34;message&#34;: self.events[event_name].log
-                }
-            except Exception as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occurred while attempting \
-                        to access the log of event `%s`. \
-                            Error message: `%s`&#34;
-                    % (
-                        event_name,
-                        e
-                    ),
-                }
-
-        else:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Event `%s` is not subscribed to.&#34; % event_name,
-            }
-
-
-    def unsubscribe_event(self, kwargs: Dict) -&gt; Dict:
+    def unsubscribe_event(self, kwargs: Dict) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Unsubscribes from an event type.
 
         Args:
             kwargs (Dict): Requires a key `name` (the event name).
 
         Returns:
-            Dict: Success/fail message in the form of JSON dict.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
         event_name = kwargs.get(&#34;name&#34;)
         if not event_name:
-            return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;No event name specified.&#34;,
+                error_type=Misty2pyErrorType.MISSING,
+            )
 
         if event_name in self.events.keys():
             try:
                 self.events[event_name].unsubscribe()
-                mes = {
-                    &#34;status&#34;: &#34;Success&#34;,
+
+            except Exception as e:
+                return Misty2pyResponse(
+                    True,
+                    ws_response={
+                        &#34;success&#34;: False,
+                        &#34;message&#34;: &#34;Error occurred while attempting to unsubscribe from event `%s`. Error message: `%s`.&#34;
+                        % (event_name, e),
+                    },
+                )
+
+            resp = Misty2pyResponse(
+                True,
+                ws_response={
+                    &#34;success&#34;: True,
                     &#34;message&#34;: &#34;Event `%s` of type `%s` unsubscribed&#34;
                     % (event_name, self.events[event_name].type_str),
                     &#34;log&#34;: self.events[event_name].log,
-                }
-            except Exception as e:
-                mes = {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occurred while attempting \
-                        to unsubscribe from event `%s`. \
-                            Error message: `%s`&#34;
-                    % (
-                        event_name,
-                        e
-                    ),
-                }
+                },
+            )
             self.events.pop(event_name)
-            return mes
-        else:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34;
-                % event_name,
-            }</code></pre>
+            return resp
+
+        return Misty2pyResponse(
+            True,
+            ws_response={
+                &#34;success&#34;: False,
+                &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34; % event_name,
+            },
+        )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="misty2py.misty_event.MistyEventHandler.get_event_data"><code class="name flex">
-<span>def <span class="ident">get_event_data</span></span>(<span>self, kwargs: Dict) ‑> Dict</span>
+<span>def <span class="ident">get_event_data</span></span>(<span>self, kwargs: Dict) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Obtains data from a subscribed event type.</p>
@@ -1047,49 +989,28 @@ class MistyEventHandler:
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The data or the fail message in the form of a JSON dict.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_event_data(self, kwargs: Dict) -&gt; Dict:
+<pre><code class="python">def get_event_data(self, kwargs: Dict) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Obtains data from a subscribed event type.
 
     Args:
         kwargs (Dict): Requires a key &#34;name&#34; (the event name).
 
     Returns:
-        Dict: The data or the fail message in the form of a JSON dict.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
     &#34;&#34;&#34;
 
-    event_name = kwargs.get(&#34;name&#34;)
-    if not event_name:
-        return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
-
-    if event_name in self.events.keys():
-        try:
-            return {
-                &#34;status&#34;: &#34;Success&#34;,
-                &#34;message&#34;: self.events[event_name].data
-            }
-        except Exception as e:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Error occurred. Error message: `%s`&#34; % e
-            }
-
-    else:
-        return {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34;
-            % event_name,
-        }</code></pre>
+    return self._obtain_event_data_or_log(kwargs.get(&#34;name&#34;))</code></pre>
 </details>
 </dd>
 <dt id="misty2py.misty_event.MistyEventHandler.get_event_log"><code class="name flex">
-<span>def <span class="ident">get_event_log</span></span>(<span>self, kwargs: Dict) ‑> Dict</span>
+<span>def <span class="ident">get_event_log</span></span>(<span>self, kwargs: Dict) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Obtains the log from a subscribed event type.</p>
@@ -1100,61 +1021,35 @@ class MistyEventHandler:
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The log or the fail message in the form of a JSON dict.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_event_log(self, kwargs: Dict) -&gt; Dict:
+<pre><code class="python">def get_event_log(self, kwargs: Dict) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Obtains the log from a subscribed event type.
 
     Args:
         kwargs (Dict): Requires a key `name` (the event name).
 
     Returns:
-        Dict: The log or the fail message in the form of a JSON dict.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
     &#34;&#34;&#34;
 
-    event_name = kwargs.get(&#34;name&#34;)
-    if not event_name:
-        return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
-
-    if event_name in self.events.keys():
-        try:
-            return {
-                &#34;status&#34;: &#34;Success&#34;,
-                &#34;message&#34;: self.events[event_name].log
-            }
-        except Exception as e:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Error occurred while attempting \
-                    to access the log of event `%s`. \
-                        Error message: `%s`&#34;
-                % (
-                    event_name,
-                    e
-                ),
-            }
-
-    else:
-        return {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Event `%s` is not subscribed to.&#34; % event_name,
-        }</code></pre>
+    return self._obtain_event_data_or_log(kwargs.get(&#34;name&#34;), is_log=True)</code></pre>
 </details>
 </dd>
 <dt id="misty2py.misty_event.MistyEventHandler.subscribe_event"><code class="name flex">
-<span>def <span class="ident">subscribe_event</span></span>(<span>self, kwargs: Dict) ‑> Dict</span>
+<span>def <span class="ident">subscribe_event</span></span>(<span>self, kwargs: Dict) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Subscribes to an event type.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>kwargs</code></strong> :&ensp;<code>Dict</code></dt>
-<dd>requires a key "type" (a string representing the event type to subscribe to). Optional keys are:</dd>
+<dd>requires a key <code>"type"</code> (a string representing the event type to subscribe to). Optional keys are:</dd>
 </dl>
 <ul>
 <li><code>name</code> (str) for a custom event name; must be unique.</li>
@@ -1165,18 +1060,18 @@ class MistyEventHandler:
 </ul>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>Success/fail message in the form of a JSON dict.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def subscribe_event(self, kwargs: Dict) -&gt; Dict:
+<pre><code class="python">def subscribe_event(self, kwargs: Dict) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Subscribes to an event type.
 
     Args:
-        kwargs (Dict):  requires a key &#34;type&#34; (a string representing the event type to subscribe to). Optional keys are:
+        kwargs (Dict):  requires a key `&#34;type&#34;` (a string representing the event type to subscribe to). Optional keys are:
         - `name` (str) for a custom event name; must be unique.
         - `return_property` (str) for the property to return from Misty&#39;s websockets; all properties are returned if return_property is not supplied.
         - `debounce` (int) for the interval at which new information is sent in ms; defaults to `250`.
@@ -1184,12 +1079,23 @@ class MistyEventHandler:
         - `event_emitter` (Callable) for an event emitter function which emits an event upon message recieval.
 
     Returns:
-        Dict: Success/fail message in the form of a JSON dict.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
     &#34;&#34;&#34;
 
     event_type = kwargs.get(&#34;type&#34;)
+
     if not event_type:
-        return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event type specified.&#34;}
+        return Misty2pyResponse(
+            False,
+            error_msg=&#34;No event type specified.&#34;,
+            error_type=Misty2pyErrorType.MISSING,
+        )
+    if not isinstance(event_type, str):
+        return Misty2pyResponse(
+            False,
+            error_msg=&#34;Not a valid event type: `%s`.&#34; % str(event_type),
+            error_type=Misty2pyErrorType.DATA_FORMAT,
+        )
 
     event_name = kwargs.get(&#34;name&#34;)
     if not event_name:
@@ -1199,17 +1105,17 @@ class MistyEventHandler:
 
     debounce = kwargs.get(&#34;debounce&#34;)
     if not debounce:
-        debounce = 250
+        debounce = DEFAULT_DEBOUNCE
 
     len_data_entries = kwargs.get(&#34;len_data_entries&#34;)
     if not len_data_entries:
-        len_data_entries = 10
+        len_data_entries = DEFAULT_LEN_ENTRIES
 
     event_emitter = kwargs.get(&#34;event_emitter&#34;)
 
     try:
         new_event = MistyEvent(
-            self.ip,
+            self.url,
             event_type,
             event_name,
             return_property,
@@ -1219,29 +1125,23 @@ class MistyEventHandler:
         )
 
     except Exception as e:
-        return {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Error occurred while attempting \
-                to subscribe to an event of type `%s`. \
-                    Error message: `%s`&#34;
-            % (
-                event_type,
-                e
-            ),
-        }
+        return unknown_error(e)
 
     self.events[event_name] = new_event
 
-    return {
-        &#34;status&#34;: &#34;Success&#34;,
-        &#34;message&#34;: &#34;Subscribed to event type `%s` with name `%s`&#34;
-        % (event_type, event_name),
-        &#34;event_name&#34;: event_name,
-    }</code></pre>
+    return Misty2pyResponse(
+        True,
+        ws_response={
+            &#34;success&#34;: True,
+            &#34;event_name&#34;: event_name,
+            &#34;message&#34;: &#34;Subscribed to event type `%s` with name `%s`&#34;
+            % (event_type, event_name),
+        },
+    )</code></pre>
 </details>
 </dd>
 <dt id="misty2py.misty_event.MistyEventHandler.unsubscribe_event"><code class="name flex">
-<span>def <span class="ident">unsubscribe_event</span></span>(<span>self, kwargs: Dict) ‑> Dict</span>
+<span>def <span class="ident">unsubscribe_event</span></span>(<span>self, kwargs: Dict) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Unsubscribes from an event type.</p>
@@ -1252,55 +1152,64 @@ class MistyEventHandler:
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>Success/fail message in the form of JSON dict.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def unsubscribe_event(self, kwargs: Dict) -&gt; Dict:
+<pre><code class="python">def unsubscribe_event(self, kwargs: Dict) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Unsubscribes from an event type.
 
     Args:
         kwargs (Dict): Requires a key `name` (the event name).
 
     Returns:
-        Dict: Success/fail message in the form of JSON dict.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
     &#34;&#34;&#34;
 
     event_name = kwargs.get(&#34;name&#34;)
     if not event_name:
-        return {&#34;status&#34;: &#34;Failed&#34;, &#34;message&#34;: &#34;No event name specified.&#34;}
+        return Misty2pyResponse(
+            False,
+            error_msg=&#34;No event name specified.&#34;,
+            error_type=Misty2pyErrorType.MISSING,
+        )
 
     if event_name in self.events.keys():
         try:
             self.events[event_name].unsubscribe()
-            mes = {
-                &#34;status&#34;: &#34;Success&#34;,
+
+        except Exception as e:
+            return Misty2pyResponse(
+                True,
+                ws_response={
+                    &#34;success&#34;: False,
+                    &#34;message&#34;: &#34;Error occurred while attempting to unsubscribe from event `%s`. Error message: `%s`.&#34;
+                    % (event_name, e),
+                },
+            )
+
+        resp = Misty2pyResponse(
+            True,
+            ws_response={
+                &#34;success&#34;: True,
                 &#34;message&#34;: &#34;Event `%s` of type `%s` unsubscribed&#34;
                 % (event_name, self.events[event_name].type_str),
                 &#34;log&#34;: self.events[event_name].log,
-            }
-        except Exception as e:
-            mes = {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Error occurred while attempting \
-                    to unsubscribe from event `%s`. \
-                        Error message: `%s`&#34;
-                % (
-                    event_name,
-                    e
-                ),
-            }
+            },
+        )
         self.events.pop(event_name)
-        return mes
-    else:
-        return {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34;
-            % event_name,
-        }</code></pre>
+        return resp
+
+    return Misty2pyResponse(
+        True,
+        ws_response={
+            &#34;success&#34;: False,
+            &#34;message&#34;: &#34;Event type `%s` is not subscribed to.&#34; % event_name,
+        },
+    )</code></pre>
 </details>
 </dd>
 </dl>

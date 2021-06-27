@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>misty2py.response API documentation</title>
+<meta name="description" content="This module defines Misty2pyResponse class to handle responses from Misty2py when it communicates with Misty&#39;s REST API or Misty&#39;s WebSocket API." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>misty2py.response</code></h1>
+</header>
+<section id="section-intro">
+<p>This module defines Misty2pyResponse class to handle responses from Misty2py when it communicates with Misty's REST API or Misty's WebSocket API.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;This module defines Misty2pyResponse class to handle responses from Misty2py when it communicates with Misty&#39;s REST API or Misty&#39;s WebSocket API.
+&#34;&#34;&#34;
+
+from typing import Any, Dict, List, Optional
+from enum import Enum
+
+
+class Misty2pyErrorType(Enum):
+    &#34;&#34;&#34;This class represents the types of errors originating in the Misty2py.
+    &#34;&#34;&#34;
+    DATA_FORMAT = &#34;incorrect data format&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying incorrect data format to any method, class or function.&#34;&#34;&#34;
+    DATA_SHORTCUT = &#34;unsupported data shortcut&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying an unsupported data shortcut to any method, class or function.&#34;&#34;&#34;
+    UNKNOWN = &#34;unknown&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying an unsupported command string to methods or functions that take commands as strings.&#34;&#34;&#34;
+    COMMAND = &#34;unsupported command&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying unsupported HTTP request method or an unsupported command type to methods, classes or functions handling HTTP requests to Misty&#39;s REST API.&#34;&#34;&#34;
+    REQUEST_METHOD = &#34;unsupported request method&#34;
+    &#34;&#34;&#34;Represents an error whose origin is not known to the application.&#34;&#34;&#34;
+    MISSING = &#34;missing argument or parameter&#34;
+    &#34;&#34;&#34;Represents an error originating from missing arguments or parameters.&#34;&#34;&#34;
+    NONE = None
+    &#34;&#34;&#34;Represents that no error is present.&#34;&#34;&#34;
+
+    def __str__(self) -&gt; str:
+        &#34;&#34;&#34;Parses an error type into a string.&#34;&#34;&#34;
+        return str(self.value)
+
+
+class Misty2pyResponse:
+    &#34;&#34;&#34;A class representing a response from any function or method of Misty2py that communicates with Misty&#39;s REST API or Misty&#39;s WebSocket API.
+
+    Attributes:
+        misty2py_status (bool): Indicates whether any error originating in Misty2py was encountered.
+        rest_response (Any): The response from Misty&#39;s REST API. `None` if this response does not contain a sub-response from Misty&#39;s REST API.
+        ws_response (Optional[Dict]): The response from Misty&#39;s WebSocket API. `None` if this response does not contain a sub-response from Misty&#39;s WebSocket API.
+        error_type (Misty2pyErrorType): The type of Misty2py error encountered. `Misty2pyErrorType.NONE` if no error in Misty2py was encountered.
+        error_msg (Optional[str]): The error message for a Misty2py error. `None` if no error in Misty2py was encountered.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        misty2py_status: bool,
+        rest_response: Any = None,
+        ws_response: Optional[Dict] = None,
+        error_type: Misty2pyErrorType = Misty2pyErrorType.NONE,
+        error_msg: Optional[str] = None,
+    ) -&gt; None:
+        &#34;&#34;&#34;Creates a Misty2pyResponse object for a specific action.
+
+        Args:
+            misty2py_status (bool): Indicates whether any error originating in Misty2py was encountered.
+            rest_response (Any, optional): The response from Misty&#39;s REST API. `None` if this response does not contain a sub-response from Misty&#39;s REST API. Defaults to `None`.
+            ws_response (Optional[Dict], optional): The response from Misty&#39;s WebSocket API. `None` if this response does not contain a sub-response from Misty&#39;s WebSocket API. Defaults to `None`.
+            error_type (Misty2pyErrorType, optional): The type of Misty2py error encountered. `Misty2pyErrorType.NONE` if no error in Misty2py was encountered. Defaults to `Misty2pyErrorType.NONE`.
+            error_msg (Optional[str], optional): The error message for a Misty2py error. `None` if no error in Misty2py was encountered. Defaults to `None`.
+        &#34;&#34;&#34;
+        self.misty2py_status = misty2py_status
+        self.rest_response = rest_response
+        self.error_type = error_type
+        self.error_msg = error_msg
+        self.ws_response = ws_response
+
+    def parse_to_dict(self) -&gt; Dict:
+        &#34;&#34;&#34;Parses this Misty2py object into a dictionary.
+
+        Returns:
+            Dict: A dictionary with keys `&#34;misty2py_response&#34;` (Dict) for the response of the Misty2py package, `&#34;overall_success&#34;` (bool) and optional keys `&#34;rest_response&#34;` (Dict) and `&#34;ws_response&#34;` (Dict).
+        &#34;&#34;&#34;
+        dct = {
+            &#34;misty2py_response&#34;: self.get_misty2py_response(),
+            &#34;overall_success&#34;: self._is_successful(),
+        }
+
+        if self.rest_response is not None:
+            dct[&#34;rest_response&#34;] = self.get_rest_response()
+
+        if self.ws_response is not None:
+            dct[&#34;ws_response&#34;] = self.ws_response
+
+        return dct
+
+    def get_rest_response(self) -&gt; Dict:
+        &#34;&#34;&#34;Returns the REST API sub-response of this Misty2pyResponse with keys `&#34;success&#34;` and optional keys `&#34;message&#34;` or `&#34;content&#34;`.&#34;&#34;&#34;
+        if isinstance(self.rest_response, Dict):
+            dct = self.rest_response.copy()
+            st = dct.pop(&#34;status&#34;, None)
+            if st == &#34;Success&#34;:
+                dct[&#34;success&#34;] = True
+            else:
+                dct[&#34;success&#34;] = False
+            return dct
+
+        return self.rest_response
+
+    def get_ws_response(self) -&gt; Dict:
+        &#34;&#34;&#34;Returns the WebSocket API sub-response of this Misty2pyResponse.&#34;&#34;&#34;
+        return self.ws_response
+
+    def get_misty2py_response(self) -&gt; Dict:
+        &#34;&#34;&#34;Parses the Misty2py part of this Misty2pyResponse to a dictionary containing keys `&#34;success&#34;` and, if the value of `&#34;success&#34;` is `False`, the `&#34;error_msg&#34;` (str) and `&#34;error_type&#34;` (str).&#34;&#34;&#34;
+        success = self.misty2py_status
+        dct = {&#34;success&#34;: success}
+
+        if not success:
+            dct[&#34;error_msg&#34;] = self.error_msg
+            dct[&#34;error_type&#34;] = str(self.error_type)
+
+        return dct
+
+    def _is_successful(self) -&gt; bool:
+        &#34;&#34;&#34;Returns `True` if every sub-response present in this Misty2pyResponse is successful. Returns `False` otherwise.&#34;&#34;&#34;
+        success = self.misty2py_status
+        if self.ws_response is not None:
+            success = success and self.ws_response.get(&#34;success&#34;)
+        if self.rest_response is not None:
+            success = success and self.rest_response.get(&#34;status&#34;) == &#34;Success&#34;
+        return success
+
+
+def unknown_error(e: Exception) -&gt; Misty2pyResponse:
+    &#34;&#34;&#34;Generates a Misty2pyResponse for an error `e` originating in unknown circumstances.&#34;&#34;&#34;
+    return Misty2pyResponse(False, error_msg=e, error_type=Misty2pyErrorType.UNKNOWN)
+
+
+def success_of_action_list(msg_list: List[Dict[str, Dict]]) -&gt; Dict:
+    &#34;&#34;&#34;Parses the overall success of a list of dictionaries where the keyw is an action name and the value is a dictionarised Misty2pyResponse. `overall_success` is only true if all actions were successful.
+
+    Args:
+        msg_list (List[Dict[str, Dict]]): The list of dictionaries where the keyword is an action name and the value is a Misty2pyResponse.
+
+    Returns:
+        Dict: The dictionary of the keys `&#34;overall_success&#34;` (bool) and `&#34;actions&#34;` whose value is a list of dictionaries with keys being action names and values being Misty2pyResponses.
+
+    &#34;&#34;&#34;
+    dct = {&#34;actions&#34;: []}
+    success = True
+    for event in msg_list:
+        for name, message in event.items():
+            if not message.get(&#34;overall_success&#34;):
+                success = False
+        dct[&#34;actions&#34;].append((name, message))
+    dct[&#34;overall_success&#34;] = success
+    return dct
+
+
+def success_of_action_dict(**messages) -&gt; Dict:
+    &#34;&#34;&#34;Parses the overall success of a dictionary of actions, where the key is an action name and the value is a dictionarised Misty2pyResponse. `overall_success` is only true if all actions were successful.
+
+    Returns:
+        Dict: The dictionary of the keys `&#34;overall_success&#34;` (bool) and action names that contain the dictionarised Misty2pyResponses.
+    &#34;&#34;&#34;
+    status_dict = {}
+    overall_success = True
+    for name, message in messages.items():
+        status_dict[name] = message
+        if not message.get(&#34;overall_success&#34;):
+            overall_success = False
+    status_dict[&#34;overall_success&#34;] = overall_success
+    return status_dict
+
+
+def compose_custom_response(
+    resp: Dict,
+    success_message: str = &#34;Operation successful.&#34;,
+    fail_message: str = &#34;Operation failed.&#34;,
+) -&gt; Dict:
+    &#34;&#34;&#34;Enhances a dictionarised Misty2pyResponse with `success_message` in case of success and with `fail_message` otherwise.
+
+    Args:
+        resp (Dict): The dictionarised Misty2pyResponse.
+        success_message (str, optional): A message/keyword to append in case of success. Defaults to `&#34;Operation successful.&#34;`.
+        fail_message (str, optional): A message/keyword to append in case of failure. Defaults to `&#34;Operation failed.&#34;`.
+
+    Returns:
+        Dict: The enhanced version.
+    &#34;&#34;&#34;
+
+    def compose_str(
+        main_str: str, potential_str: Optional[str], fallback: Optional[str] = None
+    ) -&gt; str:
+        &#34;&#34;&#34;Composes a single string from main_str, potential_str and fallback.
+        - If `potential_str` and `fallback` are both `None`, the final string is `main_str`.
+        - If `potential_str` is a string, the final string is `main_str` followed by a space and `potential_str`.
+        - If `potential_str` is `None` and `fallback` is a string, the final string is `main_str` followed by a space and `fallback`.
+        &#34;&#34;&#34;
+        if isinstance(potential_str, str):
+            return &#34;%s %s&#34; % (main_str, potential_str)
+        if isinstance(fallback, str):
+            return &#34;%s %s&#34; % (main_str, fallback)
+        return main_str
+
+    success = resp.get(&#34;overall_success&#34;)
+    dct = {&#34;overall_success&#34;: success}
+    potential_resp = resp.get(&#34;rest_response&#34;)
+
+    if potential_resp:
+        potential_message = potential_resp.get(&#34;message&#34;)
+
+        if success:
+            message = compose_str(success_message, potential_message)
+        else:
+            message = compose_str(
+                fail_message, potential_message, fallback=&#34;No further details provided.&#34;
+            )
+        dct[&#34;rest_response&#34;] = {
+            &#34;success&#34;: potential_resp.get(&#34;success&#34;),
+            &#34;message&#34;: message,
+        }
+
+    return dct</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="misty2py.response.compose_custom_response"><code class="name flex">
+<span>def <span class="ident">compose_custom_response</span></span>(<span>resp: Dict, success_message: str = 'Operation successful.', fail_message: str = 'Operation failed.') ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enhances a dictionarised Misty2pyResponse with <code>success_message</code> in case of success and with <code>fail_message</code> otherwise.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>resp</code></strong> :&ensp;<code>Dict</code></dt>
+<dd>The dictionarised Misty2pyResponse.</dd>
+<dt><strong><code>success_message</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>A message/keyword to append in case of success. Defaults to <code>"Operation successful."</code>.</dd>
+<dt><strong><code>fail_message</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>A message/keyword to append in case of failure. Defaults to <code>"Operation failed."</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>The enhanced version.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compose_custom_response(
+    resp: Dict,
+    success_message: str = &#34;Operation successful.&#34;,
+    fail_message: str = &#34;Operation failed.&#34;,
+) -&gt; Dict:
+    &#34;&#34;&#34;Enhances a dictionarised Misty2pyResponse with `success_message` in case of success and with `fail_message` otherwise.
+
+    Args:
+        resp (Dict): The dictionarised Misty2pyResponse.
+        success_message (str, optional): A message/keyword to append in case of success. Defaults to `&#34;Operation successful.&#34;`.
+        fail_message (str, optional): A message/keyword to append in case of failure. Defaults to `&#34;Operation failed.&#34;`.
+
+    Returns:
+        Dict: The enhanced version.
+    &#34;&#34;&#34;
+
+    def compose_str(
+        main_str: str, potential_str: Optional[str], fallback: Optional[str] = None
+    ) -&gt; str:
+        &#34;&#34;&#34;Composes a single string from main_str, potential_str and fallback.
+        - If `potential_str` and `fallback` are both `None`, the final string is `main_str`.
+        - If `potential_str` is a string, the final string is `main_str` followed by a space and `potential_str`.
+        - If `potential_str` is `None` and `fallback` is a string, the final string is `main_str` followed by a space and `fallback`.
+        &#34;&#34;&#34;
+        if isinstance(potential_str, str):
+            return &#34;%s %s&#34; % (main_str, potential_str)
+        if isinstance(fallback, str):
+            return &#34;%s %s&#34; % (main_str, fallback)
+        return main_str
+
+    success = resp.get(&#34;overall_success&#34;)
+    dct = {&#34;overall_success&#34;: success}
+    potential_resp = resp.get(&#34;rest_response&#34;)
+
+    if potential_resp:
+        potential_message = potential_resp.get(&#34;message&#34;)
+
+        if success:
+            message = compose_str(success_message, potential_message)
+        else:
+            message = compose_str(
+                fail_message, potential_message, fallback=&#34;No further details provided.&#34;
+            )
+        dct[&#34;rest_response&#34;] = {
+            &#34;success&#34;: potential_resp.get(&#34;success&#34;),
+            &#34;message&#34;: message,
+        }
+
+    return dct</code></pre>
+</details>
+</dd>
+<dt id="misty2py.response.success_of_action_dict"><code class="name flex">
+<span>def <span class="ident">success_of_action_dict</span></span>(<span>**messages) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses the overall success of a dictionary of actions, where the key is an action name and the value is a dictionarised Misty2pyResponse. <code>overall_success</code> is only true if all actions were successful.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>The dictionary of the keys <code>"overall_success"</code> (bool) and action names that contain the dictionarised Misty2pyResponses.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def success_of_action_dict(**messages) -&gt; Dict:
+    &#34;&#34;&#34;Parses the overall success of a dictionary of actions, where the key is an action name and the value is a dictionarised Misty2pyResponse. `overall_success` is only true if all actions were successful.
+
+    Returns:
+        Dict: The dictionary of the keys `&#34;overall_success&#34;` (bool) and action names that contain the dictionarised Misty2pyResponses.
+    &#34;&#34;&#34;
+    status_dict = {}
+    overall_success = True
+    for name, message in messages.items():
+        status_dict[name] = message
+        if not message.get(&#34;overall_success&#34;):
+            overall_success = False
+    status_dict[&#34;overall_success&#34;] = overall_success
+    return status_dict</code></pre>
+</details>
+</dd>
+<dt id="misty2py.response.success_of_action_list"><code class="name flex">
+<span>def <span class="ident">success_of_action_list</span></span>(<span>msg_list: List[Dict[str, Dict]]) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses the overall success of a list of dictionaries where the keyw is an action name and the value is a dictionarised Misty2pyResponse. <code>overall_success</code> is only true if all actions were successful.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>msg_list</code></strong> :&ensp;<code>List[Dict[str, Dict]]</code></dt>
+<dd>The list of dictionaries where the keyword is an action name and the value is a Misty2pyResponse.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>The dictionary of the keys <code>"overall_success"</code> (bool) and <code>"actions"</code> whose value is a list of dictionaries with keys being action names and values being Misty2pyResponses.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def success_of_action_list(msg_list: List[Dict[str, Dict]]) -&gt; Dict:
+    &#34;&#34;&#34;Parses the overall success of a list of dictionaries where the keyw is an action name and the value is a dictionarised Misty2pyResponse. `overall_success` is only true if all actions were successful.
+
+    Args:
+        msg_list (List[Dict[str, Dict]]): The list of dictionaries where the keyword is an action name and the value is a Misty2pyResponse.
+
+    Returns:
+        Dict: The dictionary of the keys `&#34;overall_success&#34;` (bool) and `&#34;actions&#34;` whose value is a list of dictionaries with keys being action names and values being Misty2pyResponses.
+
+    &#34;&#34;&#34;
+    dct = {&#34;actions&#34;: []}
+    success = True
+    for event in msg_list:
+        for name, message in event.items():
+            if not message.get(&#34;overall_success&#34;):
+                success = False
+        dct[&#34;actions&#34;].append((name, message))
+    dct[&#34;overall_success&#34;] = success
+    return dct</code></pre>
+</details>
+</dd>
+<dt id="misty2py.response.unknown_error"><code class="name flex">
+<span>def <span class="ident">unknown_error</span></span>(<span>e: Exception) ‑> <a title="misty2py.response.Misty2pyResponse" href="#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates a Misty2pyResponse for an error <code>e</code> originating in unknown circumstances.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unknown_error(e: Exception) -&gt; Misty2pyResponse:
+    &#34;&#34;&#34;Generates a Misty2pyResponse for an error `e` originating in unknown circumstances.&#34;&#34;&#34;
+    return Misty2pyResponse(False, error_msg=e, error_type=Misty2pyErrorType.UNKNOWN)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="misty2py.response.Misty2pyErrorType"><code class="flex name class">
+<span>class <span class="ident">Misty2pyErrorType</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class represents the types of errors originating in the Misty2py.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Misty2pyErrorType(Enum):
+    &#34;&#34;&#34;This class represents the types of errors originating in the Misty2py.
+    &#34;&#34;&#34;
+    DATA_FORMAT = &#34;incorrect data format&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying incorrect data format to any method, class or function.&#34;&#34;&#34;
+    DATA_SHORTCUT = &#34;unsupported data shortcut&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying an unsupported data shortcut to any method, class or function.&#34;&#34;&#34;
+    UNKNOWN = &#34;unknown&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying an unsupported command string to methods or functions that take commands as strings.&#34;&#34;&#34;
+    COMMAND = &#34;unsupported command&#34;
+    &#34;&#34;&#34;Represents an error originating from the user supplying unsupported HTTP request method or an unsupported command type to methods, classes or functions handling HTTP requests to Misty&#39;s REST API.&#34;&#34;&#34;
+    REQUEST_METHOD = &#34;unsupported request method&#34;
+    &#34;&#34;&#34;Represents an error whose origin is not known to the application.&#34;&#34;&#34;
+    MISSING = &#34;missing argument or parameter&#34;
+    &#34;&#34;&#34;Represents an error originating from missing arguments or parameters.&#34;&#34;&#34;
+    NONE = None
+    &#34;&#34;&#34;Represents that no error is present.&#34;&#34;&#34;
+
+    def __str__(self) -&gt; str:
+        &#34;&#34;&#34;Parses an error type into a string.&#34;&#34;&#34;
+        return str(self.value)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="misty2py.response.Misty2pyErrorType.COMMAND"><code class="name">var <span class="ident">COMMAND</span></code></dt>
+<dd>
+<div class="desc"><p>Represents an error originating from the user supplying unsupported HTTP request method or an unsupported command type to methods, classes or functions handling HTTP requests to Misty's REST API.</p></div>
+</dd>
+<dt id="misty2py.response.Misty2pyErrorType.DATA_FORMAT"><code class="name">var <span class="ident">DATA_FORMAT</span></code></dt>
+<dd>
+<div class="desc"><p>Represents an error originating from the user supplying incorrect data format to any method, class or function.</p></div>
+</dd>
+<dt id="misty2py.response.Misty2pyErrorType.DATA_SHORTCUT"><code class="name">var <span class="ident">DATA_SHORTCUT</span></code></dt>
+<dd>
+<div class="desc"><p>Represents an error originating from the user supplying an unsupported data shortcut to any method, class or function.</p></div>
+</dd>
+<dt id="misty2py.response.Misty2pyErrorType.MISSING"><code class="name">var <span class="ident">MISSING</span></code></dt>
+<dd>
+<div class="desc"><p>Represents an error originating from missing arguments or parameters.</p></div>
+</dd>
+<dt id="misty2py.response.Misty2pyErrorType.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"><p>Represents that no error is present.</p></div>
+</dd>
+<dt id="misty2py.response.Misty2pyErrorType.REQUEST_METHOD"><code class="name">var <span class="ident">REQUEST_METHOD</span></code></dt>
+<dd>
+<div class="desc"><p>Represents an error whose origin is not known to the application.</p></div>
+</dd>
+<dt id="misty2py.response.Misty2pyErrorType.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+<dd>
+<div class="desc"><p>Represents an error originating from the user supplying an unsupported command string to methods or functions that take commands as strings.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="misty2py.response.Misty2pyResponse"><code class="flex name class">
+<span>class <span class="ident">Misty2pyResponse</span></span>
+<span>(</span><span>misty2py_status: bool, rest_response: Any = None, ws_response: Optional[Dict] = None, error_type: <a title="misty2py.response.Misty2pyErrorType" href="#misty2py.response.Misty2pyErrorType">Misty2pyErrorType</a> = None, error_msg: Optional[str] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class representing a response from any function or method of Misty2py that communicates with Misty's REST API or Misty's WebSocket API.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>misty2py_status</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Indicates whether any error originating in Misty2py was encountered.</dd>
+<dt><strong><code>rest_response</code></strong> :&ensp;<code>Any</code></dt>
+<dd>The response from Misty's REST API. <code>None</code> if this response does not contain a sub-response from Misty's REST API.</dd>
+<dt><strong><code>ws_response</code></strong> :&ensp;<code>Optional[Dict]</code></dt>
+<dd>The response from Misty's WebSocket API. <code>None</code> if this response does not contain a sub-response from Misty's WebSocket API.</dd>
+<dt><strong><code>error_type</code></strong> :&ensp;<code><a title="misty2py.response.Misty2pyErrorType" href="#misty2py.response.Misty2pyErrorType">Misty2pyErrorType</a></code></dt>
+<dd>The type of Misty2py error encountered. <code><a title="misty2py.response.Misty2pyErrorType.NONE" href="#misty2py.response.Misty2pyErrorType.NONE">Misty2pyErrorType.NONE</a></code> if no error in Misty2py was encountered.</dd>
+<dt><strong><code>error_msg</code></strong> :&ensp;<code>Optional[str]</code></dt>
+<dd>The error message for a Misty2py error. <code>None</code> if no error in Misty2py was encountered.</dd>
+</dl>
+<p>Creates a Misty2pyResponse object for a specific action.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty2py_status</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Indicates whether any error originating in Misty2py was encountered.</dd>
+<dt><strong><code>rest_response</code></strong> :&ensp;<code>Any</code>, optional</dt>
+<dd>The response from Misty's REST API. <code>None</code> if this response does not contain a sub-response from Misty's REST API. Defaults to <code>None</code>.</dd>
+<dt><strong><code>ws_response</code></strong> :&ensp;<code>Optional[Dict]</code>, optional</dt>
+<dd>The response from Misty's WebSocket API. <code>None</code> if this response does not contain a sub-response from Misty's WebSocket API. Defaults to <code>None</code>.</dd>
+<dt><strong><code>error_type</code></strong> :&ensp;<code><a title="misty2py.response.Misty2pyErrorType" href="#misty2py.response.Misty2pyErrorType">Misty2pyErrorType</a></code>, optional</dt>
+<dd>The type of Misty2py error encountered. <code><a title="misty2py.response.Misty2pyErrorType.NONE" href="#misty2py.response.Misty2pyErrorType.NONE">Misty2pyErrorType.NONE</a></code> if no error in Misty2py was encountered. Defaults to <code><a title="misty2py.response.Misty2pyErrorType.NONE" href="#misty2py.response.Misty2pyErrorType.NONE">Misty2pyErrorType.NONE</a></code>.</dd>
+<dt><strong><code>error_msg</code></strong> :&ensp;<code>Optional[str]</code>, optional</dt>
+<dd>The error message for a Misty2py error. <code>None</code> if no error in Misty2py was encountered. Defaults to <code>None</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Misty2pyResponse:
+    &#34;&#34;&#34;A class representing a response from any function or method of Misty2py that communicates with Misty&#39;s REST API or Misty&#39;s WebSocket API.
+
+    Attributes:
+        misty2py_status (bool): Indicates whether any error originating in Misty2py was encountered.
+        rest_response (Any): The response from Misty&#39;s REST API. `None` if this response does not contain a sub-response from Misty&#39;s REST API.
+        ws_response (Optional[Dict]): The response from Misty&#39;s WebSocket API. `None` if this response does not contain a sub-response from Misty&#39;s WebSocket API.
+        error_type (Misty2pyErrorType): The type of Misty2py error encountered. `Misty2pyErrorType.NONE` if no error in Misty2py was encountered.
+        error_msg (Optional[str]): The error message for a Misty2py error. `None` if no error in Misty2py was encountered.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        misty2py_status: bool,
+        rest_response: Any = None,
+        ws_response: Optional[Dict] = None,
+        error_type: Misty2pyErrorType = Misty2pyErrorType.NONE,
+        error_msg: Optional[str] = None,
+    ) -&gt; None:
+        &#34;&#34;&#34;Creates a Misty2pyResponse object for a specific action.
+
+        Args:
+            misty2py_status (bool): Indicates whether any error originating in Misty2py was encountered.
+            rest_response (Any, optional): The response from Misty&#39;s REST API. `None` if this response does not contain a sub-response from Misty&#39;s REST API. Defaults to `None`.
+            ws_response (Optional[Dict], optional): The response from Misty&#39;s WebSocket API. `None` if this response does not contain a sub-response from Misty&#39;s WebSocket API. Defaults to `None`.
+            error_type (Misty2pyErrorType, optional): The type of Misty2py error encountered. `Misty2pyErrorType.NONE` if no error in Misty2py was encountered. Defaults to `Misty2pyErrorType.NONE`.
+            error_msg (Optional[str], optional): The error message for a Misty2py error. `None` if no error in Misty2py was encountered. Defaults to `None`.
+        &#34;&#34;&#34;
+        self.misty2py_status = misty2py_status
+        self.rest_response = rest_response
+        self.error_type = error_type
+        self.error_msg = error_msg
+        self.ws_response = ws_response
+
+    def parse_to_dict(self) -&gt; Dict:
+        &#34;&#34;&#34;Parses this Misty2py object into a dictionary.
+
+        Returns:
+            Dict: A dictionary with keys `&#34;misty2py_response&#34;` (Dict) for the response of the Misty2py package, `&#34;overall_success&#34;` (bool) and optional keys `&#34;rest_response&#34;` (Dict) and `&#34;ws_response&#34;` (Dict).
+        &#34;&#34;&#34;
+        dct = {
+            &#34;misty2py_response&#34;: self.get_misty2py_response(),
+            &#34;overall_success&#34;: self._is_successful(),
+        }
+
+        if self.rest_response is not None:
+            dct[&#34;rest_response&#34;] = self.get_rest_response()
+
+        if self.ws_response is not None:
+            dct[&#34;ws_response&#34;] = self.ws_response
+
+        return dct
+
+    def get_rest_response(self) -&gt; Dict:
+        &#34;&#34;&#34;Returns the REST API sub-response of this Misty2pyResponse with keys `&#34;success&#34;` and optional keys `&#34;message&#34;` or `&#34;content&#34;`.&#34;&#34;&#34;
+        if isinstance(self.rest_response, Dict):
+            dct = self.rest_response.copy()
+            st = dct.pop(&#34;status&#34;, None)
+            if st == &#34;Success&#34;:
+                dct[&#34;success&#34;] = True
+            else:
+                dct[&#34;success&#34;] = False
+            return dct
+
+        return self.rest_response
+
+    def get_ws_response(self) -&gt; Dict:
+        &#34;&#34;&#34;Returns the WebSocket API sub-response of this Misty2pyResponse.&#34;&#34;&#34;
+        return self.ws_response
+
+    def get_misty2py_response(self) -&gt; Dict:
+        &#34;&#34;&#34;Parses the Misty2py part of this Misty2pyResponse to a dictionary containing keys `&#34;success&#34;` and, if the value of `&#34;success&#34;` is `False`, the `&#34;error_msg&#34;` (str) and `&#34;error_type&#34;` (str).&#34;&#34;&#34;
+        success = self.misty2py_status
+        dct = {&#34;success&#34;: success}
+
+        if not success:
+            dct[&#34;error_msg&#34;] = self.error_msg
+            dct[&#34;error_type&#34;] = str(self.error_type)
+
+        return dct
+
+    def _is_successful(self) -&gt; bool:
+        &#34;&#34;&#34;Returns `True` if every sub-response present in this Misty2pyResponse is successful. Returns `False` otherwise.&#34;&#34;&#34;
+        success = self.misty2py_status
+        if self.ws_response is not None:
+            success = success and self.ws_response.get(&#34;success&#34;)
+        if self.rest_response is not None:
+            success = success and self.rest_response.get(&#34;status&#34;) == &#34;Success&#34;
+        return success</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="misty2py.response.Misty2pyResponse.get_misty2py_response"><code class="name flex">
+<span>def <span class="ident">get_misty2py_response</span></span>(<span>self) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses the Misty2py part of this Misty2pyResponse to a dictionary containing keys <code>"success"</code> and, if the value of <code>"success"</code> is <code>False</code>, the <code>"error_msg"</code> (str) and <code>"error_type"</code> (str).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_misty2py_response(self) -&gt; Dict:
+    &#34;&#34;&#34;Parses the Misty2py part of this Misty2pyResponse to a dictionary containing keys `&#34;success&#34;` and, if the value of `&#34;success&#34;` is `False`, the `&#34;error_msg&#34;` (str) and `&#34;error_type&#34;` (str).&#34;&#34;&#34;
+    success = self.misty2py_status
+    dct = {&#34;success&#34;: success}
+
+    if not success:
+        dct[&#34;error_msg&#34;] = self.error_msg
+        dct[&#34;error_type&#34;] = str(self.error_type)
+
+    return dct</code></pre>
+</details>
+</dd>
+<dt id="misty2py.response.Misty2pyResponse.get_rest_response"><code class="name flex">
+<span>def <span class="ident">get_rest_response</span></span>(<span>self) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the REST API sub-response of this Misty2pyResponse with keys <code>"success"</code> and optional keys <code>"message"</code> or <code>"content"</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_rest_response(self) -&gt; Dict:
+    &#34;&#34;&#34;Returns the REST API sub-response of this Misty2pyResponse with keys `&#34;success&#34;` and optional keys `&#34;message&#34;` or `&#34;content&#34;`.&#34;&#34;&#34;
+    if isinstance(self.rest_response, Dict):
+        dct = self.rest_response.copy()
+        st = dct.pop(&#34;status&#34;, None)
+        if st == &#34;Success&#34;:
+            dct[&#34;success&#34;] = True
+        else:
+            dct[&#34;success&#34;] = False
+        return dct
+
+    return self.rest_response</code></pre>
+</details>
+</dd>
+<dt id="misty2py.response.Misty2pyResponse.get_ws_response"><code class="name flex">
+<span>def <span class="ident">get_ws_response</span></span>(<span>self) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the WebSocket API sub-response of this Misty2pyResponse.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_ws_response(self) -&gt; Dict:
+    &#34;&#34;&#34;Returns the WebSocket API sub-response of this Misty2pyResponse.&#34;&#34;&#34;
+    return self.ws_response</code></pre>
+</details>
+</dd>
+<dt id="misty2py.response.Misty2pyResponse.parse_to_dict"><code class="name flex">
+<span>def <span class="ident">parse_to_dict</span></span>(<span>self) ‑> Dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses this Misty2py object into a dictionary.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>A dictionary with keys <code>"misty2py_response"</code> (Dict) for the response of the Misty2py package, <code>"overall_success"</code> (bool) and optional keys <code>"rest_response"</code> (Dict) and <code>"ws_response"</code> (Dict).</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_to_dict(self) -&gt; Dict:
+    &#34;&#34;&#34;Parses this Misty2py object into a dictionary.
+
+    Returns:
+        Dict: A dictionary with keys `&#34;misty2py_response&#34;` (Dict) for the response of the Misty2py package, `&#34;overall_success&#34;` (bool) and optional keys `&#34;rest_response&#34;` (Dict) and `&#34;ws_response&#34;` (Dict).
+    &#34;&#34;&#34;
+    dct = {
+        &#34;misty2py_response&#34;: self.get_misty2py_response(),
+        &#34;overall_success&#34;: self._is_successful(),
+    }
+
+    if self.rest_response is not None:
+        dct[&#34;rest_response&#34;] = self.get_rest_response()
+
+    if self.ws_response is not None:
+        dct[&#34;ws_response&#34;] = self.ws_response
+
+    return dct</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="misty2py" href="index.html">misty2py</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="misty2py.response.compose_custom_response" href="#misty2py.response.compose_custom_response">compose_custom_response</a></code></li>
+<li><code><a title="misty2py.response.success_of_action_dict" href="#misty2py.response.success_of_action_dict">success_of_action_dict</a></code></li>
+<li><code><a title="misty2py.response.success_of_action_list" href="#misty2py.response.success_of_action_list">success_of_action_list</a></code></li>
+<li><code><a title="misty2py.response.unknown_error" href="#misty2py.response.unknown_error">unknown_error</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="misty2py.response.Misty2pyErrorType" href="#misty2py.response.Misty2pyErrorType">Misty2pyErrorType</a></code></h4>
+<ul class="two-column">
+<li><code><a title="misty2py.response.Misty2pyErrorType.COMMAND" href="#misty2py.response.Misty2pyErrorType.COMMAND">COMMAND</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyErrorType.DATA_FORMAT" href="#misty2py.response.Misty2pyErrorType.DATA_FORMAT">DATA_FORMAT</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyErrorType.DATA_SHORTCUT" href="#misty2py.response.Misty2pyErrorType.DATA_SHORTCUT">DATA_SHORTCUT</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyErrorType.MISSING" href="#misty2py.response.Misty2pyErrorType.MISSING">MISSING</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyErrorType.NONE" href="#misty2py.response.Misty2pyErrorType.NONE">NONE</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyErrorType.REQUEST_METHOD" href="#misty2py.response.Misty2pyErrorType.REQUEST_METHOD">REQUEST_METHOD</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyErrorType.UNKNOWN" href="#misty2py.response.Misty2pyErrorType.UNKNOWN">UNKNOWN</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="misty2py.response.Misty2pyResponse" href="#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></code></h4>
+<ul class="">
+<li><code><a title="misty2py.response.Misty2pyResponse.get_misty2py_response" href="#misty2py.response.Misty2pyResponse.get_misty2py_response">get_misty2py_response</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyResponse.get_rest_response" href="#misty2py.response.Misty2pyResponse.get_rest_response">get_rest_response</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyResponse.get_ws_response" href="#misty2py.response.Misty2pyResponse.get_ws_response">get_ws_response</a></code></li>
+<li><code><a title="misty2py.response.Misty2pyResponse.parse_to_dict" href="#misty2py.response.Misty2pyResponse.parse_to_dict">parse_to_dict</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

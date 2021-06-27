@@ -32,7 +32,7 @@ import os
 from typing import Dict, List, Tuple
 
 from misty2py.robot import Misty
-from misty2py.utils.messages import success_parser_from_dicts
+from misty2py.response import success_of_action_dict
 from misty2py.utils.utils import get_abs_path
 
 
@@ -52,7 +52,8 @@ def get_non_system_assets(
     action = &#34;_list&#34;
     non_sys_assets = {}
     for asset in assets:
-        data = misty.get_info(asset + action)
+        data = misty.get_info(asset + action).parse_to_dict()
+        data = data.get(&#34;rest_response&#34;, {})
         result = data.get(&#34;result&#34;, [])
         for hit in result:
             name = hit.get(&#34;name&#34;)
@@ -65,8 +66,7 @@ def get_non_system_assets(
                     non_sys_assets[asset] = []
                 non_sys_assets[asset].append(name)
                 print(
-                    &#34;Found a non-system asset \
-                        of type `%s` named `%s`.&#34; % (asset, name)
+                    &#34;Found a non-system asset of type `%s` named `%s`.&#34; % (asset, name)
                 )
 
     return non_sys_assets
@@ -97,17 +97,13 @@ def get_asset_properties(asset_type: str, file: str) -&gt; Tuple[Dict, str, str]
     return params, name, ext
 
 
-def save_base64_str(
-    full_path: str,
-    content: str,
-    overwrite: bool = False
-) -&gt; bool:
+def save_base64_str(full_path: str, content: str, overwrite: bool) -&gt; bool:
     &#34;&#34;&#34;Saves an asset content to the file specified by `full_path`.
 
     Args:
         full_path (str): The absolute path to the save location.
         content (str): The base64 content to save.
-        overwrite (bool, optional): Whether the overwrite the file if it exists. Defaults to `False`.
+        overwrite (bool): Whether the overwrite the file if it exists.
 
     Returns:
         bool: The successfulness of the operation.
@@ -123,21 +119,22 @@ def save_base64_str(
         return True
 
     except Exception as e:
-        print(&#34;Failed to save the asset into `%s`. Error message: `%s`&#34; % (
-            full_path,
-            e
-            )
+        print(
+            &#34;Failed to save the asset into `%s`. Error message: `%s`&#34; % (full_path, e)
         )
         return False
 
 
-def save_assets(misty: Misty, assets: Dict, location: str) -&gt; List[str]:
+def save_assets(
+    misty: Misty, assets: Dict, location: str, overwrite: bool
+) -&gt; List[str]:
     &#34;&#34;&#34;Saves multiple assets.
 
     Args:
         misty (Misty): the Misty whose assets to save.
         assets (Dict): The dictionary of assets; a list of file names under their asset type as the keyword.
         location (str): The absolute path to the directory where the assets are saved.
+        overwrite (bool): Whether the overwrite the file if it exists.
 
     Returns:
         List[str]: A list of file names for the files that failed to be saved.
@@ -147,7 +144,10 @@ def save_assets(misty: Misty, assets: Dict, location: str) -&gt; List[str]:
     for asset_type, files in assets.items():
         for file in files:
             params, name, ext = get_asset_properties(asset_type, file)
-            response = misty.get_info(asset_type + action, params=params)
+            response = misty.get_info(
+                asset_type + action, params=params
+            ).parse_to_dict()
+            response = response.get(&#34;rest_response&#34;, {})
             result = response.get(&#34;result&#34;)
 
             if not result:
@@ -160,18 +160,14 @@ def save_assets(misty: Misty, assets: Dict, location: str) -&gt; List[str]:
                 if not file_content:
                     failed_list.append(file)
                 else:
-                    success = save_base64_str(full_path, file_content)
+                    success = save_base64_str(full_path, file_content, overwrite)
                     if not success:
                         failed_list.append(file)
 
     return failed_list
 
 
-def delete_assets(
-    misty: Misty,
-    assets: Dict,
-    ignore_list: List = []
-) -&gt; List[str]:
+def delete_assets(misty: Misty, assets: Dict, ignore_list: List = []) -&gt; List[str]:
     &#34;&#34;&#34;Deletes all non-system files except those that are in `ignore_list`.
 
     Args:
@@ -192,17 +188,19 @@ def delete_assets(
                     data = {&#34;Name&#34;: file}
                 else:
                     data = {&#34;FileName&#34;: file}
-                response = misty.perform_action(asset_type + action, data=data)
-                status = response.get(&#34;status&#34;)
+                response = misty.perform_action(
+                    asset_type + action, data=data
+                ).parse_to_dict()
+                response = response.get(&#34;rest_response&#34;, {})
+                status = response.get(&#34;success&#34;)
                 if status:
-                    if status == &#34;Success&#34;:
-                        print(&#34;Successfully deleted the asset `%s`.&#34; % file)
-                        delete_list.append(file)
-                    else:
-                        print(
-                            &#34;Failed to delete the asset `%s`. Message: `%s`&#34;
-                            % (file, response)
-                        )
+                    print(&#34;Successfully deleted the asset `%s`.&#34; % file)
+                    delete_list.append(file)
+                else:
+                    print(
+                        &#34;Failed to delete the asset `%s`. Message: `%s`&#34;
+                        % (file, response)
+                    )
 
     return delete_list
 
@@ -211,6 +209,7 @@ def free_memory(
     misty: Misty,
     assets: List = [&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;],
     save: bool = True,
+    overwrite: bool = False,
     save_dir: str = &#34;data&#34;,
 ) -&gt; Dict:
     &#34;&#34;&#34;Removes all non-system files in Misty&#39;s memory.
@@ -219,21 +218,22 @@ def free_memory(
         misty (Misty): the Misty whose memory to free.
         assets (List, optional): The list of asset types to delete. Defaults to `[&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;]`.
         save (bool, optional): Whether to save the files that are being deleted from Misty&#39;s memory. Defaults to `True`.
+        overwrite (bool): Whether the overwrite the file if it exists. Defaults to `False`.
         save_dir (str, optional): The path to the directory that will store saved assets. Defaults to `&#34;data&#34;`.
 
     Returns:
-        Dict: The dictionary with keys `overall_success` for the success of the entire operation and keys corresponding to the actions within the operation with successfulness of the action and messages about the action.
+        Dict: a dictionary with the key `overall_success` specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse to that action.
     &#34;&#34;&#34;
     save_dir = get_abs_path(save_dir)
-    enable_audio = misty.perform_action(&#34;audio_enable&#34;)
-    enable_av = misty.perform_action(&#34;streaming_av_enable&#34;)
-    enable_camera = misty.perform_action(&#34;camera_enable&#34;)
+    enable_audio = misty.perform_action(&#34;audio_enable&#34;).parse_to_dict()
+    enable_av = misty.perform_action(&#34;streaming_av_enable&#34;).parse_to_dict()
+    enable_camera = misty.perform_action(&#34;camera_enable&#34;).parse_to_dict()
 
     assets_to_delete = get_non_system_assets(misty, assets=assets)
     deletion = {}
 
     if len(assets_to_delete) == 0:
-        deletion[&#34;status&#34;] = &#34;Success&#34;
+        deletion[&#34;success&#34;] = True
         deletion[&#34;message&#34;] = &#34;No non-system files present.&#34;
 
     else:
@@ -241,31 +241,33 @@ def free_memory(
 
         if save:
             failed_to_save_list = save_assets(
-                misty,
-                assets_to_delete,
-                save_dir
+                misty, assets_to_delete, save_dir, overwrite
             )
 
         deleted = delete_assets(misty, assets_to_delete, failed_to_save_list)
 
         if len(deleted) &gt; 0:
-            deletion[&#34;status&#34;] = &#34;Success&#34;
-            deletion[&#34;message&#34;] = &#34;Successfully deleted \
-                following assets: %s&#34; % str(deleted)
+            deletion[&#34;success&#34;] = True
+            deletion[&#34;message&#34;] = &#34;Successfully deleted following assets: %s&#34; % str(
+                deleted
+            )
 
         else:
-            deletion[&#34;status&#34;] = &#34;Failed&#34;
+            deletion[&#34;success&#34;] = False
             deletion[&#34;message&#34;] = &#34;Failed to delete any assets.&#34;
 
-    disable_audio = misty.perform_action(&#34;audio_disable&#34;)
-    disable_av = misty.perform_action(&#34;streaming_av_disable&#34;)
-    disable_camera = misty.perform_action(&#34;camera_disable&#34;)
+    disable_audio = misty.perform_action(&#34;audio_disable&#34;).parse_to_dict()
+    disable_av = misty.perform_action(&#34;streaming_av_disable&#34;).parse_to_dict()
+    disable_camera = misty.perform_action(&#34;camera_disable&#34;).parse_to_dict()
 
-    return success_parser_from_dicts(
+    return success_of_action_dict(
         enable_audio=enable_audio,
         enable_av=enable_av,
         enable_camera=enable_camera,
-        deletion=deletion,
+        deletion={
+            &#34;overall_success&#34;: deletion[&#34;success&#34;],
+            &#34;misty2py_response&#34;: deletion,
+        },
         disable_audio=disable_audio,
         disable_av=disable_av,
         disable_camera=disable_camera,
@@ -308,11 +310,7 @@ if __name__ == &#34;__main__&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def delete_assets(
-    misty: Misty,
-    assets: Dict,
-    ignore_list: List = []
-) -&gt; List[str]:
+<pre><code class="python">def delete_assets(misty: Misty, assets: Dict, ignore_list: List = []) -&gt; List[str]:
     &#34;&#34;&#34;Deletes all non-system files except those that are in `ignore_list`.
 
     Args:
@@ -333,23 +331,25 @@ if __name__ == &#34;__main__&#34;:
                     data = {&#34;Name&#34;: file}
                 else:
                     data = {&#34;FileName&#34;: file}
-                response = misty.perform_action(asset_type + action, data=data)
-                status = response.get(&#34;status&#34;)
+                response = misty.perform_action(
+                    asset_type + action, data=data
+                ).parse_to_dict()
+                response = response.get(&#34;rest_response&#34;, {})
+                status = response.get(&#34;success&#34;)
                 if status:
-                    if status == &#34;Success&#34;:
-                        print(&#34;Successfully deleted the asset `%s`.&#34; % file)
-                        delete_list.append(file)
-                    else:
-                        print(
-                            &#34;Failed to delete the asset `%s`. Message: `%s`&#34;
-                            % (file, response)
-                        )
+                    print(&#34;Successfully deleted the asset `%s`.&#34; % file)
+                    delete_list.append(file)
+                else:
+                    print(
+                        &#34;Failed to delete the asset `%s`. Message: `%s`&#34;
+                        % (file, response)
+                    )
 
     return delete_list</code></pre>
 </details>
 </dd>
 <dt id="misty2py.basic_skills.free_memory.free_memory"><code class="name flex">
-<span>def <span class="ident">free_memory</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: List = ['audio', 'image', 'video', 'recording'], save: bool = True, save_dir: str = 'data') ‑> Dict</span>
+<span>def <span class="ident">free_memory</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: List = ['audio', 'image', 'video', 'recording'], save: bool = True, overwrite: bool = False, save_dir: str = 'data') ‑> Dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Removes all non-system files in Misty's memory.</p>
@@ -361,13 +361,15 @@ if __name__ == &#34;__main__&#34;:
 <dd>The list of asset types to delete. Defaults to <code>["audio", "image", "video", "recording"]</code>.</dd>
 <dt><strong><code>save</code></strong> :&ensp;<code>bool</code>, optional</dt>
 <dd>Whether to save the files that are being deleted from Misty's memory. Defaults to <code>True</code>.</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether the overwrite the file if it exists. Defaults to <code>False</code>.</dd>
 <dt><strong><code>save_dir</code></strong> :&ensp;<code>str</code>, optional</dt>
 <dd>The path to the directory that will store saved assets. Defaults to <code>"data"</code>.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>Dict</code></dt>
-<dd>The dictionary with keys <code>overall_success</code> for the success of the entire operation and keys corresponding to the actions within the operation with successfulness of the action and messages about the action.</dd>
+<dd>a dictionary with the key <code>overall_success</code> specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse to that action.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -377,6 +379,7 @@ if __name__ == &#34;__main__&#34;:
     misty: Misty,
     assets: List = [&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;],
     save: bool = True,
+    overwrite: bool = False,
     save_dir: str = &#34;data&#34;,
 ) -&gt; Dict:
     &#34;&#34;&#34;Removes all non-system files in Misty&#39;s memory.
@@ -385,21 +388,22 @@ if __name__ == &#34;__main__&#34;:
         misty (Misty): the Misty whose memory to free.
         assets (List, optional): The list of asset types to delete. Defaults to `[&#34;audio&#34;, &#34;image&#34;, &#34;video&#34;, &#34;recording&#34;]`.
         save (bool, optional): Whether to save the files that are being deleted from Misty&#39;s memory. Defaults to `True`.
+        overwrite (bool): Whether the overwrite the file if it exists. Defaults to `False`.
         save_dir (str, optional): The path to the directory that will store saved assets. Defaults to `&#34;data&#34;`.
 
     Returns:
-        Dict: The dictionary with keys `overall_success` for the success of the entire operation and keys corresponding to the actions within the operation with successfulness of the action and messages about the action.
+        Dict: a dictionary with the key `overall_success` specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse to that action.
     &#34;&#34;&#34;
     save_dir = get_abs_path(save_dir)
-    enable_audio = misty.perform_action(&#34;audio_enable&#34;)
-    enable_av = misty.perform_action(&#34;streaming_av_enable&#34;)
-    enable_camera = misty.perform_action(&#34;camera_enable&#34;)
+    enable_audio = misty.perform_action(&#34;audio_enable&#34;).parse_to_dict()
+    enable_av = misty.perform_action(&#34;streaming_av_enable&#34;).parse_to_dict()
+    enable_camera = misty.perform_action(&#34;camera_enable&#34;).parse_to_dict()
 
     assets_to_delete = get_non_system_assets(misty, assets=assets)
     deletion = {}
 
     if len(assets_to_delete) == 0:
-        deletion[&#34;status&#34;] = &#34;Success&#34;
+        deletion[&#34;success&#34;] = True
         deletion[&#34;message&#34;] = &#34;No non-system files present.&#34;
 
     else:
@@ -407,31 +411,33 @@ if __name__ == &#34;__main__&#34;:
 
         if save:
             failed_to_save_list = save_assets(
-                misty,
-                assets_to_delete,
-                save_dir
+                misty, assets_to_delete, save_dir, overwrite
             )
 
         deleted = delete_assets(misty, assets_to_delete, failed_to_save_list)
 
         if len(deleted) &gt; 0:
-            deletion[&#34;status&#34;] = &#34;Success&#34;
-            deletion[&#34;message&#34;] = &#34;Successfully deleted \
-                following assets: %s&#34; % str(deleted)
+            deletion[&#34;success&#34;] = True
+            deletion[&#34;message&#34;] = &#34;Successfully deleted following assets: %s&#34; % str(
+                deleted
+            )
 
         else:
-            deletion[&#34;status&#34;] = &#34;Failed&#34;
+            deletion[&#34;success&#34;] = False
             deletion[&#34;message&#34;] = &#34;Failed to delete any assets.&#34;
 
-    disable_audio = misty.perform_action(&#34;audio_disable&#34;)
-    disable_av = misty.perform_action(&#34;streaming_av_disable&#34;)
-    disable_camera = misty.perform_action(&#34;camera_disable&#34;)
+    disable_audio = misty.perform_action(&#34;audio_disable&#34;).parse_to_dict()
+    disable_av = misty.perform_action(&#34;streaming_av_disable&#34;).parse_to_dict()
+    disable_camera = misty.perform_action(&#34;camera_disable&#34;).parse_to_dict()
 
-    return success_parser_from_dicts(
+    return success_of_action_dict(
         enable_audio=enable_audio,
         enable_av=enable_av,
         enable_camera=enable_camera,
-        deletion=deletion,
+        deletion={
+            &#34;overall_success&#34;: deletion[&#34;success&#34;],
+            &#34;misty2py_response&#34;: deletion,
+        },
         disable_audio=disable_audio,
         disable_av=disable_av,
         disable_camera=disable_camera,
@@ -521,7 +527,8 @@ if __name__ == &#34;__main__&#34;:
     action = &#34;_list&#34;
     non_sys_assets = {}
     for asset in assets:
-        data = misty.get_info(asset + action)
+        data = misty.get_info(asset + action).parse_to_dict()
+        data = data.get(&#34;rest_response&#34;, {})
         result = data.get(&#34;result&#34;, [])
         for hit in result:
             name = hit.get(&#34;name&#34;)
@@ -534,15 +541,14 @@ if __name__ == &#34;__main__&#34;:
                     non_sys_assets[asset] = []
                 non_sys_assets[asset].append(name)
                 print(
-                    &#34;Found a non-system asset \
-                        of type `%s` named `%s`.&#34; % (asset, name)
+                    &#34;Found a non-system asset of type `%s` named `%s`.&#34; % (asset, name)
                 )
 
     return non_sys_assets</code></pre>
 </details>
 </dd>
 <dt id="misty2py.basic_skills.free_memory.save_assets"><code class="name flex">
-<span>def <span class="ident">save_assets</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: Dict, location: str) ‑> List[str]</span>
+<span>def <span class="ident">save_assets</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, assets: Dict, location: str, overwrite: bool) ‑> List[str]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Saves multiple assets.</p>
@@ -554,6 +560,8 @@ if __name__ == &#34;__main__&#34;:
 <dd>The dictionary of assets; a list of file names under their asset type as the keyword.</dd>
 <dt><strong><code>location</code></strong> :&ensp;<code>str</code></dt>
 <dd>The absolute path to the directory where the assets are saved.</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether the overwrite the file if it exists.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -564,13 +572,16 @@ if __name__ == &#34;__main__&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_assets(misty: Misty, assets: Dict, location: str) -&gt; List[str]:
+<pre><code class="python">def save_assets(
+    misty: Misty, assets: Dict, location: str, overwrite: bool
+) -&gt; List[str]:
     &#34;&#34;&#34;Saves multiple assets.
 
     Args:
         misty (Misty): the Misty whose assets to save.
         assets (Dict): The dictionary of assets; a list of file names under their asset type as the keyword.
         location (str): The absolute path to the directory where the assets are saved.
+        overwrite (bool): Whether the overwrite the file if it exists.
 
     Returns:
         List[str]: A list of file names for the files that failed to be saved.
@@ -580,7 +591,10 @@ if __name__ == &#34;__main__&#34;:
     for asset_type, files in assets.items():
         for file in files:
             params, name, ext = get_asset_properties(asset_type, file)
-            response = misty.get_info(asset_type + action, params=params)
+            response = misty.get_info(
+                asset_type + action, params=params
+            ).parse_to_dict()
+            response = response.get(&#34;rest_response&#34;, {})
             result = response.get(&#34;result&#34;)
 
             if not result:
@@ -593,7 +607,7 @@ if __name__ == &#34;__main__&#34;:
                 if not file_content:
                     failed_list.append(file)
                 else:
-                    success = save_base64_str(full_path, file_content)
+                    success = save_base64_str(full_path, file_content, overwrite)
                     if not success:
                         failed_list.append(file)
 
@@ -601,7 +615,7 @@ if __name__ == &#34;__main__&#34;:
 </details>
 </dd>
 <dt id="misty2py.basic_skills.free_memory.save_base64_str"><code class="name flex">
-<span>def <span class="ident">save_base64_str</span></span>(<span>full_path: str, content: str, overwrite: bool = False) ‑> bool</span>
+<span>def <span class="ident">save_base64_str</span></span>(<span>full_path: str, content: str, overwrite: bool) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Saves an asset content to the file specified by <code>full_path</code>.</p>
@@ -611,8 +625,8 @@ if __name__ == &#34;__main__&#34;:
 <dd>The absolute path to the save location.</dd>
 <dt><strong><code>content</code></strong> :&ensp;<code>str</code></dt>
 <dd>The base64 content to save.</dd>
-<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code>, optional</dt>
-<dd>Whether the overwrite the file if it exists. Defaults to <code>False</code>.</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether the overwrite the file if it exists.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -623,17 +637,13 @@ if __name__ == &#34;__main__&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_base64_str(
-    full_path: str,
-    content: str,
-    overwrite: bool = False
-) -&gt; bool:
+<pre><code class="python">def save_base64_str(full_path: str, content: str, overwrite: bool) -&gt; bool:
     &#34;&#34;&#34;Saves an asset content to the file specified by `full_path`.
 
     Args:
         full_path (str): The absolute path to the save location.
         content (str): The base64 content to save.
-        overwrite (bool, optional): Whether the overwrite the file if it exists. Defaults to `False`.
+        overwrite (bool): Whether the overwrite the file if it exists.
 
     Returns:
         bool: The successfulness of the operation.
@@ -649,10 +659,8 @@ if __name__ == &#34;__main__&#34;:
         return True
 
     except Exception as e:
-        print(&#34;Failed to save the asset into `%s`. Error message: `%s`&#34; % (
-            full_path,
-            e
-            )
+        print(
+            &#34;Failed to save the asset into `%s`. Error message: `%s`&#34; % (full_path, e)
         )
         return False</code></pre>
 </details>

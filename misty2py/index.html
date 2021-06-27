@@ -26,14 +26,14 @@
 <h2 id="features">Features</h2>
 <p>Misty2py can be used to:</p>
 <ul>
-<li><strong>perform actions</strong> via sending a <code>POST</code> or <code>DELETE</code> requests to Misty's API;</li>
-<li><strong>obtain information</strong> via sending a <code>GET</code> request to Misty's API;</li>
+<li><strong>perform actions</strong> via sending a <code>POST</code> or <code>DELETE</code> requests to Misty's REST API;</li>
+<li><strong>obtain information</strong> via sending a <code>GET</code> request to Misty's REST API;</li>
 <li><strong>receive streams of data</strong> via subscribing to event types on Misty's Websockets API.</li>
 </ul>
 <p>Misty2py uses following concepts:</p>
 <ul>
-<li><strong>action keywords</strong> - keywords for endpoints of Misty's API that correspond to performing actions;</li>
-<li><strong>information keywords</strong> - keywords for endpoints of Misty's API that correspond to retrieving information;</li>
+<li><strong>action keywords</strong> - keywords for endpoints of Misty's REST API that correspond to performing actions;</li>
+<li><strong>information keywords</strong> - keywords for endpoints of Misty's REST API that correspond to retrieving information;</li>
 <li><strong>data shortcuts</strong> - keywords for commonly used data that is supplied to Misty's API as the body of a <code>POST</code> request.</li>
 </ul>
 <h2 id="installation">Installation</h2>
@@ -65,50 +65,51 @@
 <p>This project is licensed under the MIT License.</p>
 <h2 id="usage">Usage</h2>
 <h3 id="getting-started">Getting started</h3>
-<ul>
-<li>Start by making <strong>a new instance</strong> of <code><a title="misty2py.robot" href="robot.html">misty2py.robot</a></code>'s <code>Misty</code> by <code>misty_robot = Misty("ip_address_here")</code></li>
-<li>Substitute <code>ip_address_here</code> with the IP address of your Misty.</li>
-<li><code><a title="misty2py.utils.env_loader" href="utils/env_loader.html">misty2py.utils.env_loader</a></code> module contains <code>EnvLoader</code> class that can be used to load Misty's IP from the .env file in your project's home directory:<ul>
-<li>Create the <code>.env</code> file and write <code>MISTY_IP_ADDRESS="[ip_address_here]"</code> in it.</li>
-<li>Initialise an <code>EnvLoader</code> object via <code>env_loader = EnvLoader()</code>; this loads the environment variables.</li>
-<li>Use <code>env_loader.get_ip()</code> to obtain the IP address.</li>
-</ul>
-</li>
-<li>Use the method <code>misty_robot.perform_action()</code> to tell Misty to <strong>perform an action</strong>.</li>
-<li>Use the method <code>misty_robot.get_info()</code> to tell Misty to <strong>return information</strong>.</li>
-<li>Use the method <code>misty_robot.event()</code> to initialise, obtain and stop <strong>continuous streams of data</strong> from Misty's event types.</li>
-</ul>
+<p>The main object of this package is <code>Misty</code>, which is an abstract representation of Misty the robot. To initialise this object, it is required to know the IP address of the Misty robot that should be used.</p>
+<p>The most direct way to initialise a <code>Misty</code> object is to use the IP address directly, which allows the user to get the object in one step via:</p>
+<pre><code class="language-python">from misty2py.robot import Misty
+
+my_misty = Misty(&quot;192.168.0.1&quot;)  #example IP address
+</code></pre>
+<p>This may be impractical and potentially even unsafe, so it is recommended to create a .env file in the project's directory, specify the IP address there via <code>MISTY_IP_ADDRESS="[ip_address_here]"</code> and use Misty2py's <code>EnvLoader</code> to load the IP address via:</p>
+<pre><code class="language-python">from misty2py.robot import Misty
+from misty2py.utils.env_loader import EnvLoader
+
+env_loader = EnvLoader()
+my_misty = Misty(env_loader.get_ip())
+</code></pre>
+<p>Assuming a <code>Misty</code> object called <code>my_misty</code> was obtained, all required actions can be performed via the following three methods:</p>
+<pre><code class="language-python"># Performing an action (a POST or DELETE request):
+my_misty.perform_action(&quot;&lt;action_keyword&gt;&quot;)
+
+# Obtaining information (a GET request):
+my_misty.get_info(&quot;&lt;information_keyword&gt;&quot;)
+
+# Event related methods 
+# (subscribing to an event, getting event data
+# or event log and unsubscribing from an event):
+my_misty.event(&quot;&lt;parameter&gt;&quot;)
+</code></pre>
+<h3 id="responses">Responses</h3>
+<p>Any action performed via Misty2py which contains communication with Misty's APIs returns the <code>Misty2pyResponse</code> object. <code>Misty2pyResponse</code> is a uniform representation of two sub-responses that are present in any HTTP or WebSocket communication with Misty's APIs using Misty2py. The first sub-response is always from Misty2py and is represented by the attributes <code>Misty2pyResponse.misty2py_status</code> (<code>True</code> if no Misty2py-related errors were encountered) and potentially empty <code>Misty2pyResponse.error_msg</code> and <code>Misty2pyResponse.error_type</code> that contain error information if a Misty2py-related error was encountered. The other sub-response is either from Misty's REST API or Misty's WebSocket API. In the first case, it is represented by the attribute <code>Misty2pyResponse.rest_response</code> (Dict), and in the second case, it is represented by the attribute <code>Misty2pyResponse.ws_response</code>. One of these is always empty, because no action in Misty2py includes simultaneous communication with both APIs. For convenience, a <code>Misty2pyResponse</code> object can be easily parsed to a dictionary via the method <code>Misty2pyResponse.parse_to_dict</code>.</p>
 <h3 id="obtaining-information">Obtaining information</h3>
-<p>Obtaining digital information is handled by <code>misty2py.robot::get_info</code> method.</p>
-<p><code>misty2py.robot::get_info</code> has following arguments:</p>
-<ul>
-<li><code>info_name</code> - <em>required;</em> the string information keyword corresponding to an endpoint in Misty's API;</li>
-<li><code>params</code> - <em>optional;</em> a dictionary of parameter name and parameter value pairs, defaults to <code>{}</code>.</li>
-</ul>
+<p>Obtaining digital information is handled by <code>misty2py.robot::get_info</code> method which has two arguments. The argument <code>info_name</code> is required and it specifies the string information keyword corresponding to an endpoint in Misty's REST API. The argument <code>params</code> is optional and it supplies a dictionary of parameter name and parameter value pairs. This argument defaults to <code>{}</code> (an empty dictionary).</p>
 <h3 id="performing-actions">Performing actions</h3>
-<p>Performing physical and digital actions including removal of non-system files is handled by <code>misty2py.robot::perform_action()</code> method.</p>
-<p><code>misty2py.robot::perform_action()</code> has following arguments:</p>
-<ul>
-<li><code>action_name</code> - <em>required;</em> the string action keyword corresponding to an endpoint in Misty's API;</li>
-<li><code>data</code> - <em>optional;</em> the data to pass to the request as a dictionary or a data shortcut (string), defaults to <code>{}</code>.</li>
-</ul>
+<p>Performing physical and digital actions including removal of non-system files is handled by <code>misty2py.robot::perform_action()</code> method which takes two arguments. The argument <code>action_name</code> is required and it specifies the string action keyword corresponding to an endpoint in Misty’s REST API. The second argument, <code>data</code>, is optional and it specifies the data to pass to the request as a dictionary or a data shortcut (string). The <code>data</code> argument defaults to <code>{}</code> (an empty dictionary).</p>
 <h3 id="event-types">Event types</h3>
-<p>To obtain event data in Misty's framework, it is required to <strong>subscribe</strong> to an event type on Misty's websocket server. Misty's websocket server then streams data to the websocket client, in this implementation via a separate thread. To <strong>access this data,</strong> <code>misty2py.robot::event</code> method must be called with <code>"get_data"</code> parameter from the main thread. When data are no longer required to be streamed to the client, an event type can be <strong>unsubscribed</strong> to kill the event thread.</p>
-<h4 id="subscription">Subscription</h4>
-<p>Subscribe to an event via <code>misty2py.robot::event</code> with the parameter <code>"subscribe"</code> and following keyword arguments:</p>
+<p>Misty's WebSocket API follows PUB-SUB architecture, which means that in order to obtain event data in Misty's framework, it is required to <strong>subscribe</strong> to an event type on Misty's WebSocket API. The WebSocket server then streams data to the WebSocket client, which receives it a separate thread. To <strong>access the data,</strong> <code>misty2py.robot::event</code> method must be called with <code>"get_data"</code> parameter from the main thread. When the data are no longer required to be streamed to the client, an event type can be <strong>unsubscribed</strong> which both kills the event thread and stops the API from sending more data.</p>
+<p><strong>Subscribing</strong> to an event is done via <code>misty2py.robot::event</code> with the parameter <code>"subscribe"</code> and following keyword arguments:</p>
 <ul>
 <li><code>type</code> - <em>required;</em> event type string as documented in <a href="https://docs.mistyrobotics.com/misty-ii/robot/sensor-data/" title="Misty Robotics Event Types">Event Types Docs</a>.</li>
 <li><code>name</code> - <em>optional;</em> a custom event name string; must be unique.</li>
 <li><code>return_property</code> - <em>optional;</em> the property to return from Misty's websockets; all properties are returned if return_property is not supplied.</li>
-<li><code>debounce</code> - <em>optional;</em> the interval in ms at which new information is sent; defaults to 250.</li>
-<li><code>len_data_entries</code> - <em>optional;</em> the maximum number of data entries to keep (discards in fifo style); defaults to 10.</li>
+<li><code>debounce</code> - <em>optional;</em> the interval in ms at which new information is sent; defaults to <code>250</code>.</li>
+<li><code>len_data_entries</code> - <em>optional;</em> the maximum number of data entries to keep (discards in fifo style); defaults to <code>10</code>.</li>
 <li><code>event_emitter</code> - <em>optional;</em> an event emitter function which emits an event upon message recieval. Supplies the message content as an argument.</li>
 </ul>
-<h4 id="accessing-the-data-and-the-log">Accessing the data and the log</h4>
-<p>Access the data of an event or its log via <code>misty2py.robot::event</code> with the parameter <code>"get_data"</code> or <code>"get_log"</code> and a keyword argument <code>name</code> (the name of the event).</p>
-<h4 id="unsubscribing">Unsubscribing</h4>
-<p>Unsubscribe from an event via <code>misty2py.robot::event</code> with the parameter <code>"unsubscribe"</code> and a keyword argument <code>name</code> (the name of the event).</p>
-<h4 id="basic-events-usage-example">Basic events usage example</h4>
+<p><strong>Accessing the data</strong> of an event or its log is done via <code>misty2py.robot::event</code> with the parameter <code>"get_data"</code> or <code>"get_log"</code> and a keyword argument <code>name</code> (the name of the event).</p>
+<p><strong>Unsubscribing</strong> from an event is done via <code>misty2py.robot::event</code> with the parameter <code>"unsubscribe"</code> and a keyword argument <code>name</code> (the name of the event).</p>
+<p>A bare-bones implementation of event subscription can be seen below.</p>
 <pre><code class="language-python">import time
 
 from misty2py.robot import Misty
@@ -127,7 +128,7 @@ d = m.event(&quot;get_data&quot;, name = e_name)
 
 d = m.event(&quot;unsubscribe&quot;, name = e_name)
 </code></pre>
-<h4 id="event-emitter-usage-example">Event emitter usage example</h4>
+<p>The following example shows a more realistic scenario which includes an event emitter and an event listener.</p>
 <pre><code class="language-python">import time
 from pymitter import EventEmitter
 
@@ -152,13 +153,11 @@ time.sleep(2)
 d = m.event(&quot;unsubscribe&quot;, name = event_name)
 </code></pre>
 <h3 id="adding-custom-keywords-and-shortcuts">Adding custom keywords and shortcuts</h3>
-<p>Custom keywords and shortcuts can be passed to a Misty object while declaring a new instance by using the optional arguments:</p>
-<ul>
-<li><code>custom_info</code> for custom information keywords (a dictionary with keys being the information keywords and values being the endpoints),</li>
-<li><code>custom_actions</code> for custom action keywords (a dictionary with keys being the action keywords and values being a dictionary <code>{"endpoint" : "edpoint_value", "method" : "method_value"}</code> where <code>method_value</code> is either <code>post</code> or <code>delete</code>),</li>
-<li><code>custom_data</code> for custom data shortcuts (a dictionary with keys being the data shortcuts and values being the dictionary of data values).</li>
-</ul>
-<p>An example:</p>
+<p>Custom keywords and shortcuts can be passed to a Misty object while declaring a new instance by using the optional arguments <code>custom_info</code>, <code>custom_actions</code> and <code>custom_data</code>. </p>
+<p>The argument <code>custom_info</code> can be used to pass custom information keywords as a dictionary with keys being the information keywords and values being the endpoints. An information keyword can only be used for a <code>GET</code> method supporting endpoint.</p>
+<p>The argument <code>custom_actions</code> can be used to pass custom action keywords as a dictionary with keys being the action keywords and values being a dictionary of an <code>"endpoint"</code> key (str) and a <code>"method"</code> key (str). The <code>"method"</code> values must be one of <code>post</code>, <code>delete</code>, <code>put</code>, <code>head</code>, <code>options</code> and <code>patch</code>. However, it should be noted that Misty's REST API currently only has <code>GET</code>, <code>POST</code> and <code>DELETE</code> methods. The rest of the methods was implement in Misty2py for forwards-compatibility.</p>
+<p>The argument <code>custom_data</code> can be used to pass custom data shortcuts as a dictionary with keys being the data shortcuts and values being the dictionary of data values.</p>
+<p>For futher illustration, an example of passing custom keywords and shortcuts can be seen below.</p>
 <pre><code class="language-python">custom_allowed_infos = {
     &quot;hazards_settings&quot;: &quot;api/hazards/settings&quot;
 }
@@ -483,14 +482,14 @@ misty_robot = Misty(&quot;0.0.0.0&quot;,
 ## Features
 Misty2py can be used to:
 
-- **perform actions** via sending a `POST` or `DELETE` requests to Misty&#39;s API;
-- **obtain information** via sending a `GET` request to Misty&#39;s API;
+- **perform actions** via sending a `POST` or `DELETE` requests to Misty&#39;s REST API;
+- **obtain information** via sending a `GET` request to Misty&#39;s REST API;
 - **receive streams of data** via subscribing to event types on Misty&#39;s Websockets API.
 
 Misty2py uses following concepts:
 
-- **action keywords** - keywords for endpoints of Misty&#39;s API that correspond to performing actions;
-- **information keywords** - keywords for endpoints of Misty&#39;s API that correspond to retrieving information;
+- **action keywords** - keywords for endpoints of Misty&#39;s REST API that correspond to performing actions;
+- **information keywords** - keywords for endpoints of Misty&#39;s REST API that correspond to retrieving information;
 - **data shortcuts** - keywords for commonly used data that is supplied to Misty&#39;s API as the body of a `POST` request.
 
 ## Installation
@@ -525,58 +524,72 @@ This project is licensed under the MIT License.
 
 ### Getting started
 
-- Start by making **a new instance** of `misty2py.robot`&#39;s `Misty` by `misty_robot = Misty(&#34;ip_address_here&#34;)`
-  - Substitute `ip_address_here` with the IP address of your Misty.
-  - `misty2py.utils.env_loader` module contains `EnvLoader` class that can be used to load Misty&#39;s IP from the .env file in your project&#39;s home directory:
-    - Create the `.env` file and write `MISTY_IP_ADDRESS=&#34;[ip_address_here]&#34;` in it.
-    - Initialise an `EnvLoader` object via `env_loader = EnvLoader()`; this loads the environment variables.
-    - Use `env_loader.get_ip()` to obtain the IP address.
-- Use the method `misty_robot.perform_action()` to tell Misty to **perform an action**.
-- Use the method `misty_robot.get_info()` to tell Misty to **return information**.
-- Use the method `misty_robot.event()` to initialise, obtain and stop **continuous streams of data** from Misty&#39;s event types.
+The main object of this package is `Misty`, which is an abstract representation of Misty the robot. To initialise this object, it is required to know the IP address of the Misty robot that should be used.
+
+The most direct way to initialise a `Misty` object is to use the IP address directly, which allows the user to get the object in one step via:
+
+``` python
+from misty2py.robot import Misty
+
+my_misty = Misty(&#34;192.168.0.1&#34;)  #example IP address
+```
+
+This may be impractical and potentially even unsafe, so it is recommended to create a .env file in the project&#39;s directory, specify the IP address there via `MISTY_IP_ADDRESS=&#34;[ip_address_here]&#34;` and use Misty2py&#39;s `EnvLoader` to load the IP address via:
+
+
+``` python
+from misty2py.robot import Misty
+from misty2py.utils.env_loader import EnvLoader
+
+env_loader = EnvLoader()
+my_misty = Misty(env_loader.get_ip())
+```
+
+Assuming a `Misty` object called `my_misty` was obtained, all required actions can be performed via the following three methods:
+
+``` python
+# Performing an action (a POST or DELETE request):
+my_misty.perform_action(&#34;&lt;action_keyword&gt;&#34;)
+
+# Obtaining information (a GET request):
+my_misty.get_info(&#34;&lt;information_keyword&gt;&#34;)
+
+# Event related methods 
+# (subscribing to an event, getting event data
+# or event log and unsubscribing from an event):
+my_misty.event(&#34;&lt;parameter&gt;&#34;)
+```
+
+### Responses
+
+Any action performed via Misty2py which contains communication with Misty&#39;s APIs returns the `Misty2pyResponse` object. `Misty2pyResponse` is a uniform representation of two sub-responses that are present in any HTTP or WebSocket communication with Misty&#39;s APIs using Misty2py. The first sub-response is always from Misty2py and is represented by the attributes `Misty2pyResponse.misty2py_status` (`True` if no Misty2py-related errors were encountered) and potentially empty `Misty2pyResponse.error_msg` and `Misty2pyResponse.error_type` that contain error information if a Misty2py-related error was encountered. The other sub-response is either from Misty&#39;s REST API or Misty&#39;s WebSocket API. In the first case, it is represented by the attribute `Misty2pyResponse.rest_response` (Dict), and in the second case, it is represented by the attribute `Misty2pyResponse.ws_response`. One of these is always empty, because no action in Misty2py includes simultaneous communication with both APIs. For convenience, a `Misty2pyResponse` object can be easily parsed to a dictionary via the method `Misty2pyResponse.parse_to_dict`.
 
 ### Obtaining information
 
-Obtaining digital information is handled by `misty2py.robot::get_info` method.
-
-`misty2py.robot::get_info` has following arguments:
-
-- `info_name` - *required;* the string information keyword corresponding to an endpoint in Misty&#39;s API;
-- `params` - *optional;* a dictionary of parameter name and parameter value pairs, defaults to `{}`.
+Obtaining digital information is handled by `misty2py.robot::get_info` method which has two arguments. The argument `info_name` is required and it specifies the string information keyword corresponding to an endpoint in Misty&#39;s REST API. The argument `params` is optional and it supplies a dictionary of parameter name and parameter value pairs. This argument defaults to `{}` (an empty dictionary).
 
 ### Performing actions
 
-Performing physical and digital actions including removal of non-system files is handled by `misty2py.robot::perform_action()` method.
-
-`misty2py.robot::perform_action()` has following arguments:
-
-- `action_name` - *required;* the string action keyword corresponding to an endpoint in Misty&#39;s API;
-- `data` - *optional;* the data to pass to the request as a dictionary or a data shortcut (string), defaults to `{}`.
+Performing physical and digital actions including removal of non-system files is handled by `misty2py.robot::perform_action()` method which takes two arguments. The argument `action_name` is required and it specifies the string action keyword corresponding to an endpoint in Misty’s REST API. The second argument, `data`, is optional and it specifies the data to pass to the request as a dictionary or a data shortcut (string). The `data` argument defaults to `{}` (an empty dictionary).
 
 ### Event types
 
-To obtain event data in Misty&#39;s framework, it is required to **subscribe** to an event type on Misty&#39;s websocket server. Misty&#39;s websocket server then streams data to the websocket client, in this implementation via a separate thread. To **access this data,** `misty2py.robot::event` method must be called with `&#34;get_data&#34;` parameter from the main thread. When data are no longer required to be streamed to the client, an event type can be **unsubscribed** to kill the event thread.
+Misty&#39;s WebSocket API follows PUB-SUB architecture, which means that in order to obtain event data in Misty&#39;s framework, it is required to **subscribe** to an event type on Misty&#39;s WebSocket API. The WebSocket server then streams data to the WebSocket client, which receives it a separate thread. To **access the data,** `misty2py.robot::event` method must be called with `&#34;get_data&#34;` parameter from the main thread. When the data are no longer required to be streamed to the client, an event type can be **unsubscribed** which both kills the event thread and stops the API from sending more data.
 
-#### Subscription
-
-Subscribe to an event via `misty2py.robot::event` with the parameter `&#34;subscribe&#34;` and following keyword arguments:
+**Subscribing** to an event is done via `misty2py.robot::event` with the parameter `&#34;subscribe&#34;` and following keyword arguments:
 
 - `type` - *required;* event type string as documented in [Event Types Docs](https://docs.mistyrobotics.com/misty-ii/robot/sensor-data/ &#34;Misty Robotics Event Types&#34;).
 - `name` - *optional;* a custom event name string; must be unique.
 - `return_property` - *optional;* the property to return from Misty&#39;s websockets; all properties are returned if return_property is not supplied.
-- `debounce` - *optional;* the interval in ms at which new information is sent; defaults to 250.
-- `len_data_entries` - *optional;* the maximum number of data entries to keep (discards in fifo style); defaults to 10.
+- `debounce` - *optional;* the interval in ms at which new information is sent; defaults to `250`.
+- `len_data_entries` - *optional;* the maximum number of data entries to keep (discards in fifo style); defaults to `10`.
 - `event_emitter` - *optional;* an event emitter function which emits an event upon message recieval. Supplies the message content as an argument.
 
-#### Accessing the data and the log
+**Accessing the data** of an event or its log is done via `misty2py.robot::event` with the parameter `&#34;get_data&#34;` or `&#34;get_log&#34;` and a keyword argument `name` (the name of the event).
 
-Access the data of an event or its log via `misty2py.robot::event` with the parameter `&#34;get_data&#34;` or `&#34;get_log&#34;` and a keyword argument `name` (the name of the event).
+**Unsubscribing** from an event is done via `misty2py.robot::event` with the parameter `&#34;unsubscribe&#34;` and a keyword argument `name` (the name of the event).
 
-#### Unsubscribing
-
-Unsubscribe from an event via `misty2py.robot::event` with the parameter `&#34;unsubscribe&#34;` and a keyword argument `name` (the name of the event).
-
-#### Basic events usage example
+A bare-bones implementation of event subscription can be seen below.
 
 ```python
 import time
@@ -598,7 +611,7 @@ d = m.event(&#34;get_data&#34;, name = e_name)
 d = m.event(&#34;unsubscribe&#34;, name = e_name)
 ```
 
-#### Event emitter usage example
+The following example shows a more realistic scenario which includes an event emitter and an event listener.
 
 ```python
 import time
@@ -627,13 +640,15 @@ d = m.event(&#34;unsubscribe&#34;, name = event_name)
 
 ### Adding custom keywords and shortcuts
 
-Custom keywords and shortcuts can be passed to a Misty object while declaring a new instance by using the optional arguments:
+Custom keywords and shortcuts can be passed to a Misty object while declaring a new instance by using the optional arguments `custom_info`, `custom_actions` and `custom_data`. 
 
-- `custom_info` for custom information keywords (a dictionary with keys being the information keywords and values being the endpoints),
-- `custom_actions` for custom action keywords (a dictionary with keys being the action keywords and values being a dictionary `{&#34;endpoint&#34; : &#34;edpoint_value&#34;, &#34;method&#34; : &#34;method_value&#34;}` where `method_value` is either `post` or `delete`),
-- `custom_data` for custom data shortcuts (a dictionary with keys being the data shortcuts and values being the dictionary of data values).
+The argument `custom_info` can be used to pass custom information keywords as a dictionary with keys being the information keywords and values being the endpoints. An information keyword can only be used for a `GET` method supporting endpoint.
 
-An example:
+The argument `custom_actions` can be used to pass custom action keywords as a dictionary with keys being the action keywords and values being a dictionary of an `&#34;endpoint&#34;` key (str) and a `&#34;method&#34;` key (str). The `&#34;method&#34;` values must be one of `post`, `delete`, `put`, `head`, `options` and `patch`. However, it should be noted that Misty&#39;s REST API currently only has `GET`, `POST` and `DELETE` methods. The rest of the methods was implement in Misty2py for forwards-compatibility.
+
+The argument `custom_data` can be used to pass custom data shortcuts as a dictionary with keys being the data shortcuts and values being the dictionary of data values.
+
+For futher illustration, an example of passing custom keywords and shortcuts can be seen below.
 
 ```python
 custom_allowed_infos = {
@@ -979,7 +994,11 @@ misty_robot = Misty(&#34;0.0.0.0&#34;,
 </dd>
 <dt><code class="name"><a title="misty2py.misty_event" href="misty_event.html">misty2py.misty_event</a></code></dt>
 <dd>
-<div class="desc"><p>This module handles the communication of misty2py with Misty's WebSockets API and the communication between different threads created within misty2py …</p></div>
+<div class="desc"><p>This module handles the communication of Misty2py with Misty's WebSocket API and the communication between different threads created within Misty2py …</p></div>
+</dd>
+<dt><code class="name"><a title="misty2py.response" href="response.html">misty2py.response</a></code></dt>
+<dd>
+<div class="desc"><p>This module defines Misty2pyResponse class to handle responses from Misty2py when it communicates with Misty's REST API or Misty's WebSocket API.</p></div>
 </dd>
 <dt><code class="name"><a title="misty2py.robot" href="robot.html">misty2py.robot</a></code></dt>
 <dd>
@@ -1012,16 +1031,10 @@ misty_robot = Misty(&#34;0.0.0.0&#34;,
 <li><a href="#license">License</a></li>
 <li><a href="#usage">Usage</a><ul>
 <li><a href="#getting-started">Getting started</a></li>
+<li><a href="#responses">Responses</a></li>
 <li><a href="#obtaining-information">Obtaining information</a></li>
 <li><a href="#performing-actions">Performing actions</a></li>
-<li><a href="#event-types">Event types</a><ul>
-<li><a href="#subscription">Subscription</a></li>
-<li><a href="#accessing-the-data-and-the-log">Accessing the data and the log</a></li>
-<li><a href="#unsubscribing">Unsubscribing</a></li>
-<li><a href="#basic-events-usage-example">Basic events usage example</a></li>
-<li><a href="#event-emitter-usage-example">Event emitter usage example</a></li>
-</ul>
-</li>
+<li><a href="#event-types">Event types</a></li>
 <li><a href="#adding-custom-keywords-and-shortcuts">Adding custom keywords and shortcuts</a></li>
 </ul>
 </li>
@@ -1035,6 +1048,7 @@ misty_robot = Misty(&#34;0.0.0.0&#34;,
 <li><code><a title="misty2py.basic_skills" href="basic_skills/index.html">misty2py.basic_skills</a></code></li>
 <li><code><a title="misty2py.information" href="information.html">misty2py.information</a></code></li>
 <li><code><a title="misty2py.misty_event" href="misty_event.html">misty2py.misty_event</a></code></li>
+<li><code><a title="misty2py.response" href="response.html">misty2py.response</a></code></li>
 <li><code><a title="misty2py.robot" href="robot.html">misty2py.robot</a></code></li>
 <li><code><a title="misty2py.utils" href="utils/index.html">misty2py.utils</a></code></li>
 </ul>

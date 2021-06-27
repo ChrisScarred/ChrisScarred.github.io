@@ -75,7 +75,7 @@ class Status:
             content_type (str): The parameter whose value to return. Accepts `&#34;data&#34;`, `&#34;time&#34;` and `&#34;status&#34;`.
 
         Returns:
-            Any: The value of the requested parameter.
+            Any: The value of the requested parameter or `None` if the parameter does not exist.
         &#34;&#34;&#34;
         if content_type == &#34;data&#34;:
             return self.data
@@ -83,6 +83,7 @@ class Status:
             return self.time
         if content_type == &#34;status&#34;:
             return self.status
+        return None
 
     def parse_to_message(self) -&gt; Dict:
         &#34;&#34;&#34;Returns the current status as a JSON dictionary.
@@ -251,7 +252,7 @@ class ActionLog:
             content_type (str): The parameter whose value to return. Accepts `&#34;data&#34;`, `&#34;time&#34;` and `&#34;status&#34;`.
 
         Returns:
-            Any: The value of the requested parameter.
+            Any: The value of the requested parameter or `None` if the parameter does not exist.
         &#34;&#34;&#34;
         if content_type == &#34;data&#34;:
             return self.data
@@ -259,6 +260,7 @@ class ActionLog:
             return self.time
         if content_type == &#34;status&#34;:
             return self.status
+        return None
 
     def parse_to_message(self) -&gt; Dict:
         &#34;&#34;&#34;Returns the current status as a JSON dictionary.
@@ -295,7 +297,7 @@ class ActionLog:
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>Any</code></dt>
-<dd>The value of the requested parameter.</dd>
+<dd>The value of the requested parameter or <code>None</code> if the parameter does not exist.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -308,14 +310,15 @@ class ActionLog:
         content_type (str): The parameter whose value to return. Accepts `&#34;data&#34;`, `&#34;time&#34;` and `&#34;status&#34;`.
 
     Returns:
-        Any: The value of the requested parameter.
+        Any: The value of the requested parameter or `None` if the parameter does not exist.
     &#34;&#34;&#34;
     if content_type == &#34;data&#34;:
         return self.data
     if content_type == &#34;time&#34;:
         return self.time
     if content_type == &#34;status&#34;:
-        return self.status</code></pre>
+        return self.status
+    return None</code></pre>
 </details>
 </dd>
 <dt id="misty2py.utils.status.Status.parse_to_message"><code class="name flex">

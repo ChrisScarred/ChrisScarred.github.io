@@ -34,7 +34,7 @@ from misty2py.robot import Misty
 
 
 class Movement:
-    &#34;&#34;&#34;Handles Misty&#39;s movement.&#34;&#34;&#34;
+    &#34;&#34;&#34;Handles Misty&#39;s movement. All angles are in degrees as integers.&#34;&#34;&#34;
 
     def __init__(
         self,
@@ -77,7 +77,7 @@ class Movement:
             value (int): the input value.
             max (int): the maximal allowed value.
             min (int): the minimal allowed value.
-            negative (bool, optional): Whether the input value should be transformed into its negative. Defaults to `False`.
+            negative (bool, optional): Whether the output value should be its negative (if the input is positive) or remain negative/stagnant if the input is not positive. Defaults to `False`.
             negatives_allowed (bool, optional): Whether an input value can be negative. Defaults to `False`.
 
         Returns:
@@ -100,7 +100,7 @@ class Movement:
             if value &gt; max * (-1):
                 # velocity below min, over negative max
                 return value
-            # velocity over negative max
+            # velocity below negative max
             return max * (-1)
 
         if value &lt; min:
@@ -159,7 +159,7 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
             &#34;AngularVelocity&#34;: self.stagnant_angle,
         }
-        return misty.perform_action(&#34;drive&#34;, data=forw)
+        return misty.perform_action(&#34;drive&#34;, data=forw).parse_to_dict()
 
     def drive_backward(self, misty: Misty, velocity: int):
         &#34;&#34;&#34;Drives backwards with the specified velocity.&#34;&#34;&#34;
@@ -167,7 +167,7 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity, negative=True),
             &#34;AngularVelocity&#34;: self.stagnant_angle,
         }
-        return misty.perform_action(&#34;drive&#34;, data=back)
+        return misty.perform_action(&#34;drive&#34;, data=back).parse_to_dict()
 
     def drive_left(self, misty: Misty, velocity: int, angle: int):
         &#34;&#34;&#34;Drives left with the specified velocity and angle.&#34;&#34;&#34;
@@ -175,7 +175,7 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
             &#34;AngularVelocity&#34;: self._parse_angle(angle),
         }
-        return misty.perform_action(&#34;drive&#34;, data=left)
+        return misty.perform_action(&#34;drive&#34;, data=left).parse_to_dict()
 
     def drive_right(self, misty: Misty, velocity: int, angle: int):
         &#34;&#34;&#34;Drives right with the specified velocity and angle.&#34;&#34;&#34;
@@ -184,11 +184,11 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
             &#34;AngularVelocity&#34;: self._parse_angle(angle, negative=True),
         }
-        return misty.perform_action(&#34;drive&#34;, data=right)
+        return misty.perform_action(&#34;drive&#34;, data=right).parse_to_dict()
 
     def stop_driving(self, misty: Misty):
         &#34;&#34;&#34;Stops driving.&#34;&#34;&#34;
-        return misty.perform_action(&#34;drive_stop&#34;)</code></pre>
+        return misty.perform_action(&#34;drive_stop&#34;).parse_to_dict()</code></pre>
 </details>
 </section>
 <section>
@@ -205,7 +205,7 @@ class Movement:
 <span>(</span><span>max_velocity=100, min_velocity=1, stagnant_velocity=0, max_angle=100, min_angle=1, stagnant_angle=0)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Handles Misty's movement.</p>
+<div class="desc"><p>Handles Misty's movement. All angles are in degrees as integers.</p>
 <p>Initialises the Movement class.</p>
 <h2 id="args">Args</h2>
 <dl>
@@ -227,7 +227,7 @@ class Movement:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Movement:
-    &#34;&#34;&#34;Handles Misty&#39;s movement.&#34;&#34;&#34;
+    &#34;&#34;&#34;Handles Misty&#39;s movement. All angles are in degrees as integers.&#34;&#34;&#34;
 
     def __init__(
         self,
@@ -270,7 +270,7 @@ class Movement:
             value (int): the input value.
             max (int): the maximal allowed value.
             min (int): the minimal allowed value.
-            negative (bool, optional): Whether the input value should be transformed into its negative. Defaults to `False`.
+            negative (bool, optional): Whether the output value should be its negative (if the input is positive) or remain negative/stagnant if the input is not positive. Defaults to `False`.
             negatives_allowed (bool, optional): Whether an input value can be negative. Defaults to `False`.
 
         Returns:
@@ -293,7 +293,7 @@ class Movement:
             if value &gt; max * (-1):
                 # velocity below min, over negative max
                 return value
-            # velocity over negative max
+            # velocity below negative max
             return max * (-1)
 
         if value &lt; min:
@@ -352,7 +352,7 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
             &#34;AngularVelocity&#34;: self.stagnant_angle,
         }
-        return misty.perform_action(&#34;drive&#34;, data=forw)
+        return misty.perform_action(&#34;drive&#34;, data=forw).parse_to_dict()
 
     def drive_backward(self, misty: Misty, velocity: int):
         &#34;&#34;&#34;Drives backwards with the specified velocity.&#34;&#34;&#34;
@@ -360,7 +360,7 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity, negative=True),
             &#34;AngularVelocity&#34;: self.stagnant_angle,
         }
-        return misty.perform_action(&#34;drive&#34;, data=back)
+        return misty.perform_action(&#34;drive&#34;, data=back).parse_to_dict()
 
     def drive_left(self, misty: Misty, velocity: int, angle: int):
         &#34;&#34;&#34;Drives left with the specified velocity and angle.&#34;&#34;&#34;
@@ -368,7 +368,7 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
             &#34;AngularVelocity&#34;: self._parse_angle(angle),
         }
-        return misty.perform_action(&#34;drive&#34;, data=left)
+        return misty.perform_action(&#34;drive&#34;, data=left).parse_to_dict()
 
     def drive_right(self, misty: Misty, velocity: int, angle: int):
         &#34;&#34;&#34;Drives right with the specified velocity and angle.&#34;&#34;&#34;
@@ -377,11 +377,11 @@ class Movement:
             &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
             &#34;AngularVelocity&#34;: self._parse_angle(angle, negative=True),
         }
-        return misty.perform_action(&#34;drive&#34;, data=right)
+        return misty.perform_action(&#34;drive&#34;, data=right).parse_to_dict()
 
     def stop_driving(self, misty: Misty):
         &#34;&#34;&#34;Stops driving.&#34;&#34;&#34;
-        return misty.perform_action(&#34;drive_stop&#34;)</code></pre>
+        return misty.perform_action(&#34;drive_stop&#34;).parse_to_dict()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -400,7 +400,7 @@ class Movement:
         &#34;LinearVelocity&#34;: self._parse_velocity(velocity, negative=True),
         &#34;AngularVelocity&#34;: self.stagnant_angle,
     }
-    return misty.perform_action(&#34;drive&#34;, data=back)</code></pre>
+    return misty.perform_action(&#34;drive&#34;, data=back).parse_to_dict()</code></pre>
 </details>
 </dd>
 <dt id="misty2py.basic_skills.movement.Movement.drive_forward"><code class="name flex">
@@ -418,7 +418,7 @@ class Movement:
         &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
         &#34;AngularVelocity&#34;: self.stagnant_angle,
     }
-    return misty.perform_action(&#34;drive&#34;, data=forw)</code></pre>
+    return misty.perform_action(&#34;drive&#34;, data=forw).parse_to_dict()</code></pre>
 </details>
 </dd>
 <dt id="misty2py.basic_skills.movement.Movement.drive_left"><code class="name flex">
@@ -436,7 +436,7 @@ class Movement:
         &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
         &#34;AngularVelocity&#34;: self._parse_angle(angle),
     }
-    return misty.perform_action(&#34;drive&#34;, data=left)</code></pre>
+    return misty.perform_action(&#34;drive&#34;, data=left).parse_to_dict()</code></pre>
 </details>
 </dd>
 <dt id="misty2py.basic_skills.movement.Movement.drive_right"><code class="name flex">
@@ -455,7 +455,7 @@ class Movement:
         &#34;LinearVelocity&#34;: self._parse_velocity(velocity),
         &#34;AngularVelocity&#34;: self._parse_angle(angle, negative=True),
     }
-    return misty.perform_action(&#34;drive&#34;, data=right)</code></pre>
+    return misty.perform_action(&#34;drive&#34;, data=right).parse_to_dict()</code></pre>
 </details>
 </dd>
 <dt id="misty2py.basic_skills.movement.Movement.stop_driving"><code class="name flex">
@@ -469,7 +469,7 @@ class Movement:
 </summary>
 <pre><code class="python">def stop_driving(self, misty: Misty):
     &#34;&#34;&#34;Stops driving.&#34;&#34;&#34;
-    return misty.perform_action(&#34;drive_stop&#34;)</code></pre>
+    return misty.perform_action(&#34;drive_stop&#34;).parse_to_dict()</code></pre>
 </details>
 </dd>
 </dl>

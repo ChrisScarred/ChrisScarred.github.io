@@ -36,36 +36,42 @@ from typing import Dict, Union
 import requests
 
 from misty2py.utils.colours import construct_transition_dict
+from misty2py.response import *
 
 this_directory = path.abspath(path.dirname(__file__))
 ACTIONS_JSON = str(path.join(this_directory, &#34;allowed_actions.json&#34;))
 DATA_JSON = str(path.join(this_directory, &#34;allowed_data.json&#34;))
+VALID_HTTP_REQUEST_METHODS = [&#34;OPTIONS&#34;, &#34;HEAD&#34;, &#34;POST&#34;, &#34;PUT&#34;, &#34;PATCH&#34;, &#34;DELETE&#34;]
 
 
-class Post:
-    &#34;&#34;&#34;A class representing the POST url request method.
+class BodyRequest:
+    &#34;&#34;&#34;A class representing the url request methods with a body.
 
     Attributes:
-        ip (str): The IP address where the requests are sent.
-        allowed_actions (dict): The dictionary of custom action keywords matching to the Misty&#39;s API endpoints.
-        allowed_data (dict): The dictionary of custom data shortcuts matching to the json dictionaries required by Misty&#39;s API.
+        ip (str): The IP address for the URL where the requests are sent.
+        protocol (str): The protocol for the URL where the requests are sent.
+        allowed_actions (dict): The dictionary of custom action keywords matching to the Misty&#39;s REST API endpoints.
+        allowed_data (dict): The dictionary of custom data shortcuts matching to the json dictionaries required by Misty&#39;s REST API.
     &#34;&#34;&#34;
 
     def __init__(
         self,
         ip: str,
+        protocol: str,
         custom_allowed_actions: Dict = {},
-        custom_allowed_data: Dict = {}
+        custom_allowed_data: Dict = {},
     ) -&gt; None:
         &#34;&#34;&#34;Initialises a Post object.
 
         Args:
             ip (str): The IP address where the requests are sent.
+            protocol (str): The protocol for the URL where the requests are sent.
             custom_allowed_actions (Dict, optional): The dictionary of action keywords. Defaults to `{}`.
             custom_allowed_data (Dict, optional): The dictionary of data shortcuts. Defaults to `{}`.
         &#34;&#34;&#34;
 
         self.ip = ip
+        self.protocol = protocol
 
         allowed_actions = custom_allowed_actions
         f = open(ACTIONS_JSON)
@@ -81,8 +87,8 @@ class Post:
 
     def perform_action(
         self, endpoint: str, data: Dict, request_method: str = &#34;post&#34;
-    ) -&gt; Dict:
-        &#34;&#34;&#34;Sends a POST request.
+    ) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Sends an action request.
 
         Args:
             endpoint (str): The REST API endpoint to which the request is sent.
@@ -90,35 +96,40 @@ class Post:
             request_method (str, optional): The request method. Defaults to `&#34;post&#34;`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
-        if request_method == &#34;post&#34;:
-            response = requests.post(
-                &#34;http://%s/%s&#34; % (self.ip, endpoint),
-                json=data
+        if request_method.upper() not in VALID_HTTP_REQUEST_METHODS:
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Request method `%s` is not supported.&#34; % request_method,
+                error_type=Misty2pyErrorType.REQUEST_METHOD,
             )
-        else:
-            response = requests.delete(
-                &#34;http://%s/%s&#34; % (self.ip, endpoint),
-                json=data
-            )
+
+        response = requests.request(
+            request_method.upper(),
+            &#34;%s://%s/%s&#34; % (self.protocol, self.ip, endpoint),
+            json=data,
+        )
+
         try:
-            return response.json()
+            return Misty2pyResponse(True, rest_response=response.json())
+
         except Exception as e:
-            return {
-                &#34;status&#34;: &#34;Success&#34;,
-                &#34;content&#34;: response.content,
-                &#34;error_msg&#34;: e
-            }
+            return Misty2pyResponse(
+                False,
+                rest_response=response.content,
+                error_msg=e,
+                error_type=Misty2pyErrorType.UNKNOWN,
+            )
 
 
-class Action(Post):
+class Action(BodyRequest):
     &#34;&#34;&#34;A class representing an action request for Misty.&#34;&#34;&#34;
 
     def perform_action(
         self, action_name: str, data: Union[str, Dict], data_method: str
-    ) -&gt; Dict:
+    ) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends an action request to Misty.
 
         Args:
@@ -127,56 +138,48 @@ class Action(Post):
             data_method (str): &#34;dict&#34; if the data is supplied as a json dictionary, &#34;string&#34; if the data is supplied as a data shortcut.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         if action_name not in self.allowed_actions.keys():
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Command `%s` not supported.&#34; % action_name,
-            }
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Command `%s` not supported.&#34; % action_name,
+                error_type=Misty2pyErrorType.COMMAND,
+            )
+
+        if data_method == &#34;dict&#34;:
+            try:
+                return super().perform_action(
+                    self.allowed_actions[action_name][&#34;endpoint&#34;],
+                    data,
+                    request_method=(self.allowed_actions[action_name][&#34;method&#34;]),
+                )
+
+            except Exception as e:
+                return unknown_error(e)
+
+        if data_method == &#34;string&#34; and data in self.allowed_data:
+            try:
+                return super().perform_action(
+                    self.allowed_actions[action_name][&#34;endpoint&#34;],
+                    self.allowed_data[data],
+                    request_method=(self.allowed_actions[action_name][&#34;method&#34;]),
+                )
+
+            except Exception as e:
+                return unknown_error(e)
 
         else:
-            if data_method == &#34;dict&#34;:
-                try:
-                    return super().perform_action(
-                        self.allowed_actions[action_name][&#34;endpoint&#34;],
-                        data,
-                        request_method=(
-                            self.allowed_actions[action_name][&#34;method&#34;]
-                        )
-                    )
+            return Misty2pyResponse(
+                False,
+                error_type=Misty2pyErrorType.DATA_SHORTCUT,
+                error_msg=&#34;Data shortcut `%s` is not supported.&#34; % data,
+            )
 
-                except Exception as e:
-                    return {
-                        &#34;status&#34;: &#34;Failed&#34;,
-                        &#34;message&#34;: &#34;Error occured. Error message: `%s`.&#34; % e,
-                    }
-
-            elif data_method == &#34;string&#34; and data in self.allowed_data:
-                try:
-                    return super().perform_action(
-                        self.allowed_actions[action_name][&#34;endpoint&#34;],
-                        self.allowed_data[data],
-                        request_method=(
-                            self.allowed_actions[action_name]
-                                                [&#34;method&#34;]
-                        ),
-                    )
-
-                except Exception as e:
-                    return {
-                        &#34;status&#34;: &#34;Failed&#34;,
-                        &#34;message&#34;: &#34;Error occured. Error message: `%s`&#34; % e,
-                    }
-
-            else:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Data shortcut `%s` not supported.&#34; % data,
-                }
-
-    def action_handler(self, action_name: str, data: Union[Dict, str]) -&gt; Dict:
+    def action_handler(
+        self, action_name: str, data: Union[Dict, str]
+    ) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends Misty a request to perform an action.
 
         Args:
@@ -184,33 +187,28 @@ class Action(Post):
             data (Union[Dict, str]): The data to send in the request body in the form of a data shortcut or a json dictionary.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         if (
-            action_name == &#34;led_trans&#34; and
-            isinstance(data, Dict) and
-            len(data) &gt;= 2 and
-            len(data) &lt;= 4
+            action_name == &#34;led_trans&#34;
+            and isinstance(data, Dict)
+            and len(data) &gt;= 2
+            and len(data) &lt;= 4
         ):
 
             try:
                 data = construct_transition_dict(data, self.allowed_data)
 
             except ValueError as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;The data is not in correct format.&#34;,
-                    &#34;details&#34;: e,
-                }
+                return Misty2pyResponse(
+                    False, error_msg=e, error_type=Misty2pyErrorType.DATA_FORMAT
+                )
 
-        data_method = &#34;&#34;
+        data_method = &#34;string&#34;
 
         if isinstance(data, Dict):
             data_method = &#34;dict&#34;
-
-        else:
-            data_method = &#34;string&#34;
 
         return self.perform_action(action_name, data, data_method)</code></pre>
 </details>
@@ -226,7 +224,7 @@ class Action(Post):
 <dl>
 <dt id="misty2py.action.Action"><code class="flex name class">
 <span>class <span class="ident">Action</span></span>
-<span>(</span><span>ip: str, custom_allowed_actions: Dict = {}, custom_allowed_data: Dict = {})</span>
+<span>(</span><span>ip: str, protocol: str, custom_allowed_actions: Dict = {}, custom_allowed_data: Dict = {})</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class representing an action request for Misty.</p>
@@ -235,6 +233,8 @@ class Action(Post):
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
 <dd>The IP address where the requests are sent.</dd>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>The protocol for the URL where the requests are sent.</dd>
 <dt><strong><code>custom_allowed_actions</code></strong> :&ensp;<code>Dict</code>, optional</dt>
 <dd>The dictionary of action keywords. Defaults to <code>{}</code>.</dd>
 <dt><strong><code>custom_allowed_data</code></strong> :&ensp;<code>Dict</code>, optional</dt>
@@ -244,12 +244,12 @@ class Action(Post):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Action(Post):
+<pre><code class="python">class Action(BodyRequest):
     &#34;&#34;&#34;A class representing an action request for Misty.&#34;&#34;&#34;
 
     def perform_action(
         self, action_name: str, data: Union[str, Dict], data_method: str
-    ) -&gt; Dict:
+    ) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends an action request to Misty.
 
         Args:
@@ -258,56 +258,48 @@ class Action(Post):
             data_method (str): &#34;dict&#34; if the data is supplied as a json dictionary, &#34;string&#34; if the data is supplied as a data shortcut.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         if action_name not in self.allowed_actions.keys():
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Command `%s` not supported.&#34; % action_name,
-            }
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Command `%s` not supported.&#34; % action_name,
+                error_type=Misty2pyErrorType.COMMAND,
+            )
+
+        if data_method == &#34;dict&#34;:
+            try:
+                return super().perform_action(
+                    self.allowed_actions[action_name][&#34;endpoint&#34;],
+                    data,
+                    request_method=(self.allowed_actions[action_name][&#34;method&#34;]),
+                )
+
+            except Exception as e:
+                return unknown_error(e)
+
+        if data_method == &#34;string&#34; and data in self.allowed_data:
+            try:
+                return super().perform_action(
+                    self.allowed_actions[action_name][&#34;endpoint&#34;],
+                    self.allowed_data[data],
+                    request_method=(self.allowed_actions[action_name][&#34;method&#34;]),
+                )
+
+            except Exception as e:
+                return unknown_error(e)
 
         else:
-            if data_method == &#34;dict&#34;:
-                try:
-                    return super().perform_action(
-                        self.allowed_actions[action_name][&#34;endpoint&#34;],
-                        data,
-                        request_method=(
-                            self.allowed_actions[action_name][&#34;method&#34;]
-                        )
-                    )
+            return Misty2pyResponse(
+                False,
+                error_type=Misty2pyErrorType.DATA_SHORTCUT,
+                error_msg=&#34;Data shortcut `%s` is not supported.&#34; % data,
+            )
 
-                except Exception as e:
-                    return {
-                        &#34;status&#34;: &#34;Failed&#34;,
-                        &#34;message&#34;: &#34;Error occured. Error message: `%s`.&#34; % e,
-                    }
-
-            elif data_method == &#34;string&#34; and data in self.allowed_data:
-                try:
-                    return super().perform_action(
-                        self.allowed_actions[action_name][&#34;endpoint&#34;],
-                        self.allowed_data[data],
-                        request_method=(
-                            self.allowed_actions[action_name]
-                                                [&#34;method&#34;]
-                        ),
-                    )
-
-                except Exception as e:
-                    return {
-                        &#34;status&#34;: &#34;Failed&#34;,
-                        &#34;message&#34;: &#34;Error occured. Error message: `%s`&#34; % e,
-                    }
-
-            else:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Data shortcut `%s` not supported.&#34; % data,
-                }
-
-    def action_handler(self, action_name: str, data: Union[Dict, str]) -&gt; Dict:
+    def action_handler(
+        self, action_name: str, data: Union[Dict, str]
+    ) -&gt; Misty2pyResponse:
         &#34;&#34;&#34;Sends Misty a request to perform an action.
 
         Args:
@@ -315,44 +307,39 @@ class Action(Post):
             data (Union[Dict, str]): The data to send in the request body in the form of a data shortcut or a json dictionary.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         if (
-            action_name == &#34;led_trans&#34; and
-            isinstance(data, Dict) and
-            len(data) &gt;= 2 and
-            len(data) &lt;= 4
+            action_name == &#34;led_trans&#34;
+            and isinstance(data, Dict)
+            and len(data) &gt;= 2
+            and len(data) &lt;= 4
         ):
 
             try:
                 data = construct_transition_dict(data, self.allowed_data)
 
             except ValueError as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;The data is not in correct format.&#34;,
-                    &#34;details&#34;: e,
-                }
+                return Misty2pyResponse(
+                    False, error_msg=e, error_type=Misty2pyErrorType.DATA_FORMAT
+                )
 
-        data_method = &#34;&#34;
+        data_method = &#34;string&#34;
 
         if isinstance(data, Dict):
             data_method = &#34;dict&#34;
-
-        else:
-            data_method = &#34;string&#34;
 
         return self.perform_action(action_name, data, data_method)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="misty2py.action.Post" href="#misty2py.action.Post">Post</a></li>
+<li><a title="misty2py.action.BodyRequest" href="#misty2py.action.BodyRequest">BodyRequest</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
 <dt id="misty2py.action.Action.action_handler"><code class="name flex">
-<span>def <span class="ident">action_handler</span></span>(<span>self, action_name: str, data: Union[Dict, str]) ‑> Dict</span>
+<span>def <span class="ident">action_handler</span></span>(<span>self, action_name: str, data: Union[Dict, str]) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sends Misty a request to perform an action.</p>
@@ -365,14 +352,16 @@ class Action(Post):
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The response from Misty's REST API.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def action_handler(self, action_name: str, data: Union[Dict, str]) -&gt; Dict:
+<pre><code class="python">def action_handler(
+    self, action_name: str, data: Union[Dict, str]
+) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Sends Misty a request to perform an action.
 
     Args:
@@ -380,39 +369,34 @@ class Action(Post):
         data (Union[Dict, str]): The data to send in the request body in the form of a data shortcut or a json dictionary.
 
     Returns:
-        Dict: The response from Misty&#39;s REST API.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
     &#34;&#34;&#34;
 
     if (
-        action_name == &#34;led_trans&#34; and
-        isinstance(data, Dict) and
-        len(data) &gt;= 2 and
-        len(data) &lt;= 4
+        action_name == &#34;led_trans&#34;
+        and isinstance(data, Dict)
+        and len(data) &gt;= 2
+        and len(data) &lt;= 4
     ):
 
         try:
             data = construct_transition_dict(data, self.allowed_data)
 
         except ValueError as e:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;The data is not in correct format.&#34;,
-                &#34;details&#34;: e,
-            }
+            return Misty2pyResponse(
+                False, error_msg=e, error_type=Misty2pyErrorType.DATA_FORMAT
+            )
 
-    data_method = &#34;&#34;
+    data_method = &#34;string&#34;
 
     if isinstance(data, Dict):
         data_method = &#34;dict&#34;
-
-    else:
-        data_method = &#34;string&#34;
 
     return self.perform_action(action_name, data, data_method)</code></pre>
 </details>
 </dd>
 <dt id="misty2py.action.Action.perform_action"><code class="name flex">
-<span>def <span class="ident">perform_action</span></span>(<span>self, action_name: str, data: Union[str, Dict], data_method: str) ‑> Dict</span>
+<span>def <span class="ident">perform_action</span></span>(<span>self, action_name: str, data: Union[str, Dict], data_method: str) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sends an action request to Misty.</p>
@@ -427,8 +411,8 @@ class Action(Post):
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The response from Misty's REST API.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -436,7 +420,7 @@ class Action(Post):
 </summary>
 <pre><code class="python">def perform_action(
     self, action_name: str, data: Union[str, Dict], data_method: str
-) -&gt; Dict:
+) -&gt; Misty2pyResponse:
     &#34;&#34;&#34;Sends an action request to Misty.
 
     Args:
@@ -445,78 +429,72 @@ class Action(Post):
         data_method (str): &#34;dict&#34; if the data is supplied as a json dictionary, &#34;string&#34; if the data is supplied as a data shortcut.
 
     Returns:
-        Dict: The response from Misty&#39;s REST API.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
     &#34;&#34;&#34;
 
     if action_name not in self.allowed_actions.keys():
-        return {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Command `%s` not supported.&#34; % action_name,
-        }
+        return Misty2pyResponse(
+            False,
+            error_msg=&#34;Command `%s` not supported.&#34; % action_name,
+            error_type=Misty2pyErrorType.COMMAND,
+        )
+
+    if data_method == &#34;dict&#34;:
+        try:
+            return super().perform_action(
+                self.allowed_actions[action_name][&#34;endpoint&#34;],
+                data,
+                request_method=(self.allowed_actions[action_name][&#34;method&#34;]),
+            )
+
+        except Exception as e:
+            return unknown_error(e)
+
+    if data_method == &#34;string&#34; and data in self.allowed_data:
+        try:
+            return super().perform_action(
+                self.allowed_actions[action_name][&#34;endpoint&#34;],
+                self.allowed_data[data],
+                request_method=(self.allowed_actions[action_name][&#34;method&#34;]),
+            )
+
+        except Exception as e:
+            return unknown_error(e)
 
     else:
-        if data_method == &#34;dict&#34;:
-            try:
-                return super().perform_action(
-                    self.allowed_actions[action_name][&#34;endpoint&#34;],
-                    data,
-                    request_method=(
-                        self.allowed_actions[action_name][&#34;method&#34;]
-                    )
-                )
-
-            except Exception as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occured. Error message: `%s`.&#34; % e,
-                }
-
-        elif data_method == &#34;string&#34; and data in self.allowed_data:
-            try:
-                return super().perform_action(
-                    self.allowed_actions[action_name][&#34;endpoint&#34;],
-                    self.allowed_data[data],
-                    request_method=(
-                        self.allowed_actions[action_name]
-                                            [&#34;method&#34;]
-                    ),
-                )
-
-            except Exception as e:
-                return {
-                    &#34;status&#34;: &#34;Failed&#34;,
-                    &#34;message&#34;: &#34;Error occured. Error message: `%s`&#34; % e,
-                }
-
-        else:
-            return {
-                &#34;status&#34;: &#34;Failed&#34;,
-                &#34;message&#34;: &#34;Data shortcut `%s` not supported.&#34; % data,
-            }</code></pre>
+        return Misty2pyResponse(
+            False,
+            error_type=Misty2pyErrorType.DATA_SHORTCUT,
+            error_msg=&#34;Data shortcut `%s` is not supported.&#34; % data,
+        )</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
-<dt id="misty2py.action.Post"><code class="flex name class">
-<span>class <span class="ident">Post</span></span>
-<span>(</span><span>ip: str, custom_allowed_actions: Dict = {}, custom_allowed_data: Dict = {})</span>
+<dt id="misty2py.action.BodyRequest"><code class="flex name class">
+<span>class <span class="ident">BodyRequest</span></span>
+<span>(</span><span>ip: str, protocol: str, custom_allowed_actions: Dict = {}, custom_allowed_data: Dict = {})</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A class representing the POST url request method.</p>
+<div class="desc"><p>A class representing the url request methods with a body.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>The IP address where the requests are sent.</dd>
+<dd>The IP address for the URL where the requests are sent.</dd>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>The protocol for the URL where the requests are sent.</dd>
 <dt><strong><code>allowed_actions</code></strong> :&ensp;<code>dict</code></dt>
-<dd>The dictionary of custom action keywords matching to the Misty's API endpoints.</dd>
+<dd>The dictionary of custom action keywords matching to the Misty's REST API endpoints.</dd>
 <dt><strong><code>allowed_data</code></strong> :&ensp;<code>dict</code></dt>
-<dd>The dictionary of custom data shortcuts matching to the json dictionaries required by Misty's API.</dd>
+<dd>The dictionary of custom data shortcuts matching to the json dictionaries required by Misty's REST API.</dd>
 </dl>
 <p>Initialises a Post object.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
 <dd>The IP address where the requests are sent.</dd>
+<dt><strong><code>protocol</code></strong> :&ensp;<code>str</code></dt>
+<dd>The protocol for the URL where the requests are sent.</dd>
 <dt><strong><code>custom_allowed_actions</code></strong> :&ensp;<code>Dict</code>, optional</dt>
 <dd>The dictionary of action keywords. Defaults to <code>{}</code>.</dd>
 <dt><strong><code>custom_allowed_data</code></strong> :&ensp;<code>Dict</code>, optional</dt>
@@ -526,30 +504,34 @@ class Action(Post):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Post:
-    &#34;&#34;&#34;A class representing the POST url request method.
+<pre><code class="python">class BodyRequest:
+    &#34;&#34;&#34;A class representing the url request methods with a body.
 
     Attributes:
-        ip (str): The IP address where the requests are sent.
-        allowed_actions (dict): The dictionary of custom action keywords matching to the Misty&#39;s API endpoints.
-        allowed_data (dict): The dictionary of custom data shortcuts matching to the json dictionaries required by Misty&#39;s API.
+        ip (str): The IP address for the URL where the requests are sent.
+        protocol (str): The protocol for the URL where the requests are sent.
+        allowed_actions (dict): The dictionary of custom action keywords matching to the Misty&#39;s REST API endpoints.
+        allowed_data (dict): The dictionary of custom data shortcuts matching to the json dictionaries required by Misty&#39;s REST API.
     &#34;&#34;&#34;
 
     def __init__(
         self,
         ip: str,
+        protocol: str,
         custom_allowed_actions: Dict = {},
-        custom_allowed_data: Dict = {}
+        custom_allowed_data: Dict = {},
     ) -&gt; None:
         &#34;&#34;&#34;Initialises a Post object.
 
         Args:
             ip (str): The IP address where the requests are sent.
+            protocol (str): The protocol for the URL where the requests are sent.
             custom_allowed_actions (Dict, optional): The dictionary of action keywords. Defaults to `{}`.
             custom_allowed_data (Dict, optional): The dictionary of data shortcuts. Defaults to `{}`.
         &#34;&#34;&#34;
 
         self.ip = ip
+        self.protocol = protocol
 
         allowed_actions = custom_allowed_actions
         f = open(ACTIONS_JSON)
@@ -565,8 +547,8 @@ class Action(Post):
 
     def perform_action(
         self, endpoint: str, data: Dict, request_method: str = &#34;post&#34;
-    ) -&gt; Dict:
-        &#34;&#34;&#34;Sends a POST request.
+    ) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Sends an action request.
 
         Args:
             endpoint (str): The REST API endpoint to which the request is sent.
@@ -574,27 +556,32 @@ class Action(Post):
             request_method (str, optional): The request method. Defaults to `&#34;post&#34;`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
-        if request_method == &#34;post&#34;:
-            response = requests.post(
-                &#34;http://%s/%s&#34; % (self.ip, endpoint),
-                json=data
+        if request_method.upper() not in VALID_HTTP_REQUEST_METHODS:
+            return Misty2pyResponse(
+                False,
+                error_msg=&#34;Request method `%s` is not supported.&#34; % request_method,
+                error_type=Misty2pyErrorType.REQUEST_METHOD,
             )
-        else:
-            response = requests.delete(
-                &#34;http://%s/%s&#34; % (self.ip, endpoint),
-                json=data
-            )
+
+        response = requests.request(
+            request_method.upper(),
+            &#34;%s://%s/%s&#34; % (self.protocol, self.ip, endpoint),
+            json=data,
+        )
+
         try:
-            return response.json()
+            return Misty2pyResponse(True, rest_response=response.json())
+
         except Exception as e:
-            return {
-                &#34;status&#34;: &#34;Success&#34;,
-                &#34;content&#34;: response.content,
-                &#34;error_msg&#34;: e
-            }</code></pre>
+            return Misty2pyResponse(
+                False,
+                rest_response=response.content,
+                error_msg=e,
+                error_type=Misty2pyErrorType.UNKNOWN,
+            )</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -602,11 +589,11 @@ class Action(Post):
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="misty2py.action.Post.perform_action"><code class="name flex">
-<span>def <span class="ident">perform_action</span></span>(<span>self, endpoint: str, data: Dict, request_method: str = 'post') ‑> Dict</span>
+<dt id="misty2py.action.BodyRequest.perform_action"><code class="name flex">
+<span>def <span class="ident">perform_action</span></span>(<span>self, endpoint: str, data: Dict, request_method: str = 'post') ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Sends a POST request.</p>
+<div class="desc"><p>Sends an action request.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>endpoint</code></strong> :&ensp;<code>str</code></dt>
@@ -618,8 +605,8 @@ class Action(Post):
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The response from Misty's REST API.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -627,8 +614,8 @@ class Action(Post):
 </summary>
 <pre><code class="python">def perform_action(
     self, endpoint: str, data: Dict, request_method: str = &#34;post&#34;
-) -&gt; Dict:
-    &#34;&#34;&#34;Sends a POST request.
+) -&gt; Misty2pyResponse:
+    &#34;&#34;&#34;Sends an action request.
 
     Args:
         endpoint (str): The REST API endpoint to which the request is sent.
@@ -636,27 +623,32 @@ class Action(Post):
         request_method (str, optional): The request method. Defaults to `&#34;post&#34;`.
 
     Returns:
-        Dict: The response from Misty&#39;s REST API.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
     &#34;&#34;&#34;
 
-    if request_method == &#34;post&#34;:
-        response = requests.post(
-            &#34;http://%s/%s&#34; % (self.ip, endpoint),
-            json=data
+    if request_method.upper() not in VALID_HTTP_REQUEST_METHODS:
+        return Misty2pyResponse(
+            False,
+            error_msg=&#34;Request method `%s` is not supported.&#34; % request_method,
+            error_type=Misty2pyErrorType.REQUEST_METHOD,
         )
-    else:
-        response = requests.delete(
-            &#34;http://%s/%s&#34; % (self.ip, endpoint),
-            json=data
-        )
+
+    response = requests.request(
+        request_method.upper(),
+        &#34;%s://%s/%s&#34; % (self.protocol, self.ip, endpoint),
+        json=data,
+    )
+
     try:
-        return response.json()
+        return Misty2pyResponse(True, rest_response=response.json())
+
     except Exception as e:
-        return {
-            &#34;status&#34;: &#34;Success&#34;,
-            &#34;content&#34;: response.content,
-            &#34;error_msg&#34;: e
-        }</code></pre>
+        return Misty2pyResponse(
+            False,
+            rest_response=response.content,
+            error_msg=e,
+            error_type=Misty2pyErrorType.UNKNOWN,
+        )</code></pre>
 </details>
 </dd>
 </dl>
@@ -685,9 +677,9 @@ class Action(Post):
 </ul>
 </li>
 <li>
-<h4><code><a title="misty2py.action.Post" href="#misty2py.action.Post">Post</a></code></h4>
+<h4><code><a title="misty2py.action.BodyRequest" href="#misty2py.action.BodyRequest">BodyRequest</a></code></h4>
 <ul class="">
-<li><code><a title="misty2py.action.Post.perform_action" href="#misty2py.action.Post.perform_action">perform_action</a></code></li>
+<li><code><a title="misty2py.action.BodyRequest.perform_action" href="#misty2py.action.BodyRequest.perform_action">perform_action</a></code></li>
 </ul>
 </li>
 </ul>

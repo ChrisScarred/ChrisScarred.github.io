@@ -49,10 +49,7 @@ def content_to_base64(
         try:
             data = open(input_str, &#34;rb&#34;).read()
         except Exception as e:
-            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (
-                input_str,
-                e
-            )
+            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (input_str, e)
     else:
         data = input_str.encode()
     encoded = base64.b64encode(data)
@@ -62,10 +59,7 @@ def content_to_base64(
                 f.write(encoded)
             return &#34;Successfully saved to `%s`&#34; % save_path
         except Exception as e:
-            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (
-                save_path,
-                e
-            )
+            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (save_path, e)
     return encoded.decode(&#34;utf-8&#34;)
 
 
@@ -86,10 +80,7 @@ def base64_to_content(
         try:
             data = open(input_str, &#34;rb&#34;).read()
         except Exception as e:
-            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (
-                input_str,
-                e
-            )
+            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (input_str, e)
     else:
         data = input_str.encode()
     decoded = base64.b64decode(data)
@@ -99,10 +90,7 @@ def base64_to_content(
                 f.write(decoded)
             return &#34;Successfully saved to `%s`&#34; % save_path
         except Exception as e:
-            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (
-                save_path,
-                e
-            )
+            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (save_path, e)
     return decoded.decode(&#34;utf-8&#34;)</code></pre>
 </details>
 </section>
@@ -153,10 +141,7 @@ def base64_to_content(
         try:
             data = open(input_str, &#34;rb&#34;).read()
         except Exception as e:
-            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (
-                input_str,
-                e
-            )
+            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (input_str, e)
     else:
         data = input_str.encode()
     decoded = base64.b64decode(data)
@@ -166,10 +151,7 @@ def base64_to_content(
                 f.write(decoded)
             return &#34;Successfully saved to `%s`&#34; % save_path
         except Exception as e:
-            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (
-                save_path,
-                e
-            )
+            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (save_path, e)
     return decoded.decode(&#34;utf-8&#34;)</code></pre>
 </details>
 </dd>
@@ -213,10 +195,7 @@ def base64_to_content(
         try:
             data = open(input_str, &#34;rb&#34;).read()
         except Exception as e:
-            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (
-                input_str,
-                e
-            )
+            return &#34;Error reading the file `%s`. Error message: `%s`&#34; % (input_str, e)
     else:
         data = input_str.encode()
     encoded = base64.b64encode(data)
@@ -226,10 +205,7 @@ def base64_to_content(
                 f.write(encoded)
             return &#34;Successfully saved to `%s`&#34; % save_path
         except Exception as e:
-            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (
-                save_path,
-                e
-            )
+            return &#34;Error saving to `%s`. Error message: `%s`&#34; % (save_path, e)
     return encoded.decode(&#34;utf-8&#34;)</code></pre>
 </details>
 </dd>

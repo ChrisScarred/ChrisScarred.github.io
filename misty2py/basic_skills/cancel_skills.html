@@ -28,20 +28,41 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;This module enables cancellation of all currently running skills.&#34;&#34;&#34;
+from misty2py.utils.utils import get_misty
+from typing import Dict
 from misty2py.robot import Misty
+from misty2py.utils.status import ActionLog
+from misty2py.response import success_of_action_list
 
 
-def cancel_skills(misty: Misty):
-    &#34;&#34;&#34;Cancels all skills currently running on Misty.&#34;&#34;&#34;
-    data = misty.get_info(&#34;skills_running&#34;)
+def cancel_skills(misty: Misty) -&gt; Dict:
+    &#34;&#34;&#34;Cancels all skills currently running on Misty.
+
+    Args:
+        misty (Misty): The Misty on which to cancel running skills.
+
+    Returns:
+        Dict: a dictionary with the key `overall_success` specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse.
+    &#34;&#34;&#34;
+    actions = ActionLog()
+    data = misty.get_info(&#34;skills_running&#34;).parse_to_dict()
+    actions.append_({&#34;get_running_skills&#34;: data})
+
+    data = data.get(&#34;rest_response&#34;, {})
     result = data.get(&#34;result&#34;, [])
     to_cancel = []
     for dct in result:
         uid = dct.get(&#34;uniqueId&#34;, &#34;&#34;)
         if len(uid) &gt; 0:
             to_cancel.append(uid)
+
     for skill in to_cancel:
-        misty.perform_action(&#34;skill_cancel&#34;, data={&#34;Skill&#34;: skill})</code></pre>
+        data = misty.perform_action(
+            &#34;skill_cancel&#34;, data={&#34;Skill&#34;: skill}
+        ).parse_to_dict()
+        actions.append_({&#34;cancel_%s&#34; % skill: data})
+
+    return success_of_action_list(actions.get_())</code></pre>
 </details>
 </section>
 <section>
@@ -52,25 +73,52 @@ def cancel_skills(misty: Misty):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="misty2py.basic_skills.cancel_skills.cancel_skills"><code class="name flex">
-<span>def <span class="ident">cancel_skills</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>)</span>
+<span>def <span class="ident">cancel_skills</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>) ‑> Dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Cancels all skills currently running on Misty.</p></div>
+<div class="desc"><p>Cancels all skills currently running on Misty.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
+<dd>The Misty on which to cancel running skills.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>a dictionary with the key <code>overall_success</code> specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def cancel_skills(misty: Misty):
-    &#34;&#34;&#34;Cancels all skills currently running on Misty.&#34;&#34;&#34;
-    data = misty.get_info(&#34;skills_running&#34;)
+<pre><code class="python">def cancel_skills(misty: Misty) -&gt; Dict:
+    &#34;&#34;&#34;Cancels all skills currently running on Misty.
+
+    Args:
+        misty (Misty): The Misty on which to cancel running skills.
+
+    Returns:
+        Dict: a dictionary with the key `overall_success` specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse.
+    &#34;&#34;&#34;
+    actions = ActionLog()
+    data = misty.get_info(&#34;skills_running&#34;).parse_to_dict()
+    actions.append_({&#34;get_running_skills&#34;: data})
+
+    data = data.get(&#34;rest_response&#34;, {})
     result = data.get(&#34;result&#34;, [])
     to_cancel = []
     for dct in result:
         uid = dct.get(&#34;uniqueId&#34;, &#34;&#34;)
         if len(uid) &gt; 0:
             to_cancel.append(uid)
+
     for skill in to_cancel:
-        misty.perform_action(&#34;skill_cancel&#34;, data={&#34;Skill&#34;: skill})</code></pre>
+        data = misty.perform_action(
+            &#34;skill_cancel&#34;, data={&#34;Skill&#34;: skill}
+        ).parse_to_dict()
+        actions.append_({&#34;cancel_%s&#34; % skill: data})
+
+    return success_of_action_list(actions.get_())</code></pre>
 </details>
 </dd>
 </dl>

@@ -32,6 +32,7 @@
 from misty2py.action import *
 from misty2py.information import *
 from misty2py.misty_event import MistyEventHandler
+from misty2py.response import *
 
 
 class Misty:
@@ -50,80 +51,88 @@ class Misty:
         custom_info: Dict = {},
         custom_actions: Dict = {},
         custom_data: Dict = {},
-    ):
-        &#34;&#34;&#34;Initialises an instance of a Misty robot.
+        rest_protocol: str = &#34;http&#34;,
+        websocket_protocol: str = &#34;ws&#34;,
+        websocket_endpoint: str = &#34;pubsub&#34;,
+    ) -&gt; None:
+        &#34;&#34;&#34;Initialises an instance of a Misty class representing a Misty robot.
 
         Args:
-            ip (str): The IP address of this Misty robot.
-            custom_info (Dict, optional): Custom information keywords in the form of dictionary with key being the keyword and value being the API endpoint. Defaults to `{}`.
-            custom_actions (Dict, optional): Custom actions keywords in the form of dictionary with key being the keyword and value being the API endpoint. Defaults to `{}`.
-            custom_data (Dict, optional): Custom data shortcuts in the form of dictionary with key being the shortcut and value being the json data in the form of a dictionary. Defaults to `{}`.
+            ip (str): The IP address of a Misty robot.
+            custom_info (Dict, optional): Custom information keywords in the form of dictionary with key being the keyword and value being the API endpoint that allows a `GET` request method. Defaults to {}.
+            custom_actions (Dict, optional): Custom actions keywords in the form of dictionary with key being the keyword and value being a dictionary of the endpoint (key `&#34;endpoint&#34;`) and the method (key `&#34;method&#34;`) whose value is not `GET`. Defaults to {}.
+            custom_data (Dict, optional): Custom data shortcuts in the form of dictionary with keys being the shortcuts and values being the json data in the form of a dictionary. Defaults to {}.
+            rest_protocol (str, optional): The protocol to use when communicating with Misty&#39;s REST API. Defaults to &#34;http&#34;.
+            websocket_protocol (str, optional): The protocol to use when communicating with Misty&#39;s WebSocket API. Defaults to &#34;ws&#34;.
+            websocket_endpoint (str, optional): Misty&#39;s WebSocket API endpoint. Defaults to &#34;pubsub&#34;.
         &#34;&#34;&#34;
-
         self.ip = ip
-        self.infos = Info(ip, custom_allowed_infos=custom_info)
+        self.infos = Info(ip, rest_protocol, custom_allowed_infos=custom_info)
         self.actions = Action(
             ip,
+            rest_protocol,
             custom_allowed_actions=custom_actions,
-            custom_allowed_data=custom_data
+            custom_allowed_data=custom_data,
         )
-        self.event_handler = MistyEventHandler(ip)
+        self.event_handler = MistyEventHandler(
+            ip, websocket_protocol, websocket_endpoint
+        )
 
     def __str__(self) -&gt; str:
-        &#34;&#34;&#34;Parses a Misty object into a string.
+        &#34;&#34;&#34;Parses the Misty object into a string.
 
         Returns:
-            str: A string identifiyng this Misty object.
+            str: A string identifiyng the Misty object.
         &#34;&#34;&#34;
 
         return &#34;A Misty II robot with IP address %s&#34; % self.ip
 
-    def perform_action(self, action_name: str, data: Dict = {}) -&gt; Dict:
-        &#34;&#34;&#34;Sends Misty a request to perform an action.
+    def perform_action(self, action_name: str, data: Dict = {}) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Sends a request to perform an action to Misty&#39;s REST API.
 
         Args:
             action_name (str): The keyword specifying the action to perform.
             data (Dict, optional): The data to send in the request body in the form of a data shortcut or a json dictionary. Defaults to `{}`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         return self.actions.action_handler(action_name, data)
 
-    def get_info(self, info_name: str, params: Dict = {}) -&gt; Dict:
-        &#34;&#34;&#34;Obtains information from Misty.
+    def get_info(self, info_name: str, params: Dict = {}) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Sends a request to obtain information from Misty&#39;s REST API.
 
         Args:
-            info_name (str): The information keyword specifying which kind of information to retrieve.
+            info_name (str): The information keyword specifying which information to retrieve.
             params (Dict): A dictionary of parameter names and parameter values. Defaults to `{}`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         return self.infos.get_info(info_name, params)
 
-    def event(self, action: str, **kwargs) -&gt; Dict:
-        &#34;&#34;&#34;Handles event-related actions.
+    def event(self, action: str, **kwargs) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Handles event-related actions by sending messeges to Misty&#39;s WebSocket API and receiving messages from it.
 
         Supports following actions:
 
-        - **event subscripton** - requires an action keyword `subscribe` and an argument `type` (a string representing the event type to subscribe to). Optional arguments are:
-            - `name` (str) for a custom event name; must be unique.
-            - `return_property` (str) for the property to return from Misty&#39;s WebSockets API; all properties are returned if `return_property` is not supplied.
-            - debounce (int) for the interval at which new information is sent in ms; defaults to `250`.
-            - len_data_entries (int) for the maximum number of data entries to keep (discards in fifo style); defaults to `10`.
-            - event_emitter (Callable) for an event emitter function which emits an event upon message recieval; defaults to `None`.
-        - **obtaining the data from an event** - requires an action keyword `get_data` and an argument `name` (the event name).
-        - **obtaining the log from an event** - requires an action keyword `get_log` and an argument `name` (the event name).
-        - **unsubscribing from an event** - requires an action keyword `unsubscribe` and an argument `name` (the event name).
+        - **event subscripton** - requires an action keyword `&#34;subscribe&#34;` and an argument `type` (str) which is the name of the event type to subscribe to. Optional arguments are:
+            - `name` (str) for a custom, unique event name.
+            - `return_property` (str) for the property to return from Misty&#39;s WebSocket API. All properties are returned if `return_property` is not supplied.
+            - debounce (int) for the interval at which new information is sent in ms. Defaults to `250`.
+            - len_data_entries (int) for the maximum number of data entries to keep (discards in FIFO style). Defaults to `10`.
+            - event_emitter (Callable) for an event emitter function which emits an event upon message recieval. Defaults to `None`.
+        - **obtaining the data from an event** - requires an action keyword `&#34;get_data&#34;` and an argument `name` (str) specifying the event name.
+        - **obtaining the log from an event** - requires an action keyword `&#34;get_log&#34;` and an argument `name` (str) specifying the event name.
+        - **unsubscribing from an event** - requires an action keyword `&#34;unsubscribe&#34;` and an argument `name` (str) specifying the event name.
 
         Args:
-            action (str): The action keyword.
+            action (str): The action keyword. One of `&#34;subscribe&#34;`, `&#34;get_data&#34;`, `&#34;get_log&#34;` and `&#34;unsubscribe&#34;`.
 
         Returns:
-            Dict: The JSON dictionary response.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
         if action == &#34;subscribe&#34;:
@@ -138,10 +147,11 @@ class Misty:
         if action == &#34;unsubscribe&#34;:
             return self.event_handler.unsubscribe_event(kwargs)
 
-        return {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Unknown event action: `%s`.&#34; % action
-        }</code></pre>
+        return Misty2pyResponse(
+            False,
+            error_type=Misty2pyErrorType.COMMAND,
+            error_msg=&#34;The event action `%s` is not supported.&#34; % action,
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -155,7 +165,7 @@ class Misty:
 <dl>
 <dt id="misty2py.robot.Misty"><code class="flex name class">
 <span>class <span class="ident">Misty</span></span>
-<span>(</span><span>ip: str, custom_info: Dict = {}, custom_actions: Dict = {}, custom_data: Dict = {})</span>
+<span>(</span><span>ip: str, custom_info: Dict = {}, custom_actions: Dict = {}, custom_data: Dict = {}, rest_protocol: str = 'http', websocket_protocol: str = 'ws', websocket_endpoint: str = 'pubsub')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class representing a Misty robot.</p>
@@ -170,17 +180,23 @@ class Misty:
 <dt><strong><code>events</code></strong> :&ensp;<code>dict</code></dt>
 <dd>A dictionary of active event subscriptions (keys being the event name, values the MistyEvent() object).</dd>
 </dl>
-<p>Initialises an instance of a Misty robot.</p>
+<p>Initialises an instance of a Misty class representing a Misty robot.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>ip</code></strong> :&ensp;<code>str</code></dt>
-<dd>The IP address of this Misty robot.</dd>
+<dd>The IP address of a Misty robot.</dd>
 <dt><strong><code>custom_info</code></strong> :&ensp;<code>Dict</code>, optional</dt>
-<dd>Custom information keywords in the form of dictionary with key being the keyword and value being the API endpoint. Defaults to <code>{}</code>.</dd>
+<dd>Custom information keywords in the form of dictionary with key being the keyword and value being the API endpoint that allows a <code>GET</code> request method. Defaults to {}.</dd>
 <dt><strong><code>custom_actions</code></strong> :&ensp;<code>Dict</code>, optional</dt>
-<dd>Custom actions keywords in the form of dictionary with key being the keyword and value being the API endpoint. Defaults to <code>{}</code>.</dd>
+<dd>Custom actions keywords in the form of dictionary with key being the keyword and value being a dictionary of the endpoint (key <code>"endpoint"</code>) and the method (key <code>"method"</code>) whose value is not <code>GET</code>. Defaults to {}.</dd>
 <dt><strong><code>custom_data</code></strong> :&ensp;<code>Dict</code>, optional</dt>
-<dd>Custom data shortcuts in the form of dictionary with key being the shortcut and value being the json data in the form of a dictionary. Defaults to <code>{}</code>.</dd>
+<dd>Custom data shortcuts in the form of dictionary with keys being the shortcuts and values being the json data in the form of a dictionary. Defaults to {}.</dd>
+<dt><strong><code>rest_protocol</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The protocol to use when communicating with Misty's REST API. Defaults to "http".</dd>
+<dt><strong><code>websocket_protocol</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The protocol to use when communicating with Misty's WebSocket API. Defaults to "ws".</dd>
+<dt><strong><code>websocket_endpoint</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Misty's WebSocket API endpoint. Defaults to "pubsub".</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -202,80 +218,88 @@ class Misty:
         custom_info: Dict = {},
         custom_actions: Dict = {},
         custom_data: Dict = {},
-    ):
-        &#34;&#34;&#34;Initialises an instance of a Misty robot.
+        rest_protocol: str = &#34;http&#34;,
+        websocket_protocol: str = &#34;ws&#34;,
+        websocket_endpoint: str = &#34;pubsub&#34;,
+    ) -&gt; None:
+        &#34;&#34;&#34;Initialises an instance of a Misty class representing a Misty robot.
 
         Args:
-            ip (str): The IP address of this Misty robot.
-            custom_info (Dict, optional): Custom information keywords in the form of dictionary with key being the keyword and value being the API endpoint. Defaults to `{}`.
-            custom_actions (Dict, optional): Custom actions keywords in the form of dictionary with key being the keyword and value being the API endpoint. Defaults to `{}`.
-            custom_data (Dict, optional): Custom data shortcuts in the form of dictionary with key being the shortcut and value being the json data in the form of a dictionary. Defaults to `{}`.
+            ip (str): The IP address of a Misty robot.
+            custom_info (Dict, optional): Custom information keywords in the form of dictionary with key being the keyword and value being the API endpoint that allows a `GET` request method. Defaults to {}.
+            custom_actions (Dict, optional): Custom actions keywords in the form of dictionary with key being the keyword and value being a dictionary of the endpoint (key `&#34;endpoint&#34;`) and the method (key `&#34;method&#34;`) whose value is not `GET`. Defaults to {}.
+            custom_data (Dict, optional): Custom data shortcuts in the form of dictionary with keys being the shortcuts and values being the json data in the form of a dictionary. Defaults to {}.
+            rest_protocol (str, optional): The protocol to use when communicating with Misty&#39;s REST API. Defaults to &#34;http&#34;.
+            websocket_protocol (str, optional): The protocol to use when communicating with Misty&#39;s WebSocket API. Defaults to &#34;ws&#34;.
+            websocket_endpoint (str, optional): Misty&#39;s WebSocket API endpoint. Defaults to &#34;pubsub&#34;.
         &#34;&#34;&#34;
-
         self.ip = ip
-        self.infos = Info(ip, custom_allowed_infos=custom_info)
+        self.infos = Info(ip, rest_protocol, custom_allowed_infos=custom_info)
         self.actions = Action(
             ip,
+            rest_protocol,
             custom_allowed_actions=custom_actions,
-            custom_allowed_data=custom_data
+            custom_allowed_data=custom_data,
         )
-        self.event_handler = MistyEventHandler(ip)
+        self.event_handler = MistyEventHandler(
+            ip, websocket_protocol, websocket_endpoint
+        )
 
     def __str__(self) -&gt; str:
-        &#34;&#34;&#34;Parses a Misty object into a string.
+        &#34;&#34;&#34;Parses the Misty object into a string.
 
         Returns:
-            str: A string identifiyng this Misty object.
+            str: A string identifiyng the Misty object.
         &#34;&#34;&#34;
 
         return &#34;A Misty II robot with IP address %s&#34; % self.ip
 
-    def perform_action(self, action_name: str, data: Dict = {}) -&gt; Dict:
-        &#34;&#34;&#34;Sends Misty a request to perform an action.
+    def perform_action(self, action_name: str, data: Dict = {}) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Sends a request to perform an action to Misty&#39;s REST API.
 
         Args:
             action_name (str): The keyword specifying the action to perform.
             data (Dict, optional): The data to send in the request body in the form of a data shortcut or a json dictionary. Defaults to `{}`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         return self.actions.action_handler(action_name, data)
 
-    def get_info(self, info_name: str, params: Dict = {}) -&gt; Dict:
-        &#34;&#34;&#34;Obtains information from Misty.
+    def get_info(self, info_name: str, params: Dict = {}) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Sends a request to obtain information from Misty&#39;s REST API.
 
         Args:
-            info_name (str): The information keyword specifying which kind of information to retrieve.
+            info_name (str): The information keyword specifying which information to retrieve.
             params (Dict): A dictionary of parameter names and parameter values. Defaults to `{}`.
 
         Returns:
-            Dict: The response from Misty&#39;s REST API.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
         &#34;&#34;&#34;
 
         return self.infos.get_info(info_name, params)
 
-    def event(self, action: str, **kwargs) -&gt; Dict:
-        &#34;&#34;&#34;Handles event-related actions.
+    def event(self, action: str, **kwargs) -&gt; Misty2pyResponse:
+        &#34;&#34;&#34;Handles event-related actions by sending messeges to Misty&#39;s WebSocket API and receiving messages from it.
 
         Supports following actions:
 
-        - **event subscripton** - requires an action keyword `subscribe` and an argument `type` (a string representing the event type to subscribe to). Optional arguments are:
-            - `name` (str) for a custom event name; must be unique.
-            - `return_property` (str) for the property to return from Misty&#39;s WebSockets API; all properties are returned if `return_property` is not supplied.
-            - debounce (int) for the interval at which new information is sent in ms; defaults to `250`.
-            - len_data_entries (int) for the maximum number of data entries to keep (discards in fifo style); defaults to `10`.
-            - event_emitter (Callable) for an event emitter function which emits an event upon message recieval; defaults to `None`.
-        - **obtaining the data from an event** - requires an action keyword `get_data` and an argument `name` (the event name).
-        - **obtaining the log from an event** - requires an action keyword `get_log` and an argument `name` (the event name).
-        - **unsubscribing from an event** - requires an action keyword `unsubscribe` and an argument `name` (the event name).
+        - **event subscripton** - requires an action keyword `&#34;subscribe&#34;` and an argument `type` (str) which is the name of the event type to subscribe to. Optional arguments are:
+            - `name` (str) for a custom, unique event name.
+            - `return_property` (str) for the property to return from Misty&#39;s WebSocket API. All properties are returned if `return_property` is not supplied.
+            - debounce (int) for the interval at which new information is sent in ms. Defaults to `250`.
+            - len_data_entries (int) for the maximum number of data entries to keep (discards in FIFO style). Defaults to `10`.
+            - event_emitter (Callable) for an event emitter function which emits an event upon message recieval. Defaults to `None`.
+        - **obtaining the data from an event** - requires an action keyword `&#34;get_data&#34;` and an argument `name` (str) specifying the event name.
+        - **obtaining the log from an event** - requires an action keyword `&#34;get_log&#34;` and an argument `name` (str) specifying the event name.
+        - **unsubscribing from an event** - requires an action keyword `&#34;unsubscribe&#34;` and an argument `name` (str) specifying the event name.
 
         Args:
-            action (str): The action keyword.
+            action (str): The action keyword. One of `&#34;subscribe&#34;`, `&#34;get_data&#34;`, `&#34;get_log&#34;` and `&#34;unsubscribe&#34;`.
 
         Returns:
-            Dict: The JSON dictionary response.
+            Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
         &#34;&#34;&#34;
 
         if action == &#34;subscribe&#34;:
@@ -290,66 +314,67 @@ class Misty:
         if action == &#34;unsubscribe&#34;:
             return self.event_handler.unsubscribe_event(kwargs)
 
-        return {
-            &#34;status&#34;: &#34;Failed&#34;,
-            &#34;message&#34;: &#34;Unknown event action: `%s`.&#34; % action
-        }</code></pre>
+        return Misty2pyResponse(
+            False,
+            error_type=Misty2pyErrorType.COMMAND,
+            error_msg=&#34;The event action `%s` is not supported.&#34; % action,
+        )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
 <dt id="misty2py.robot.Misty.event"><code class="name flex">
-<span>def <span class="ident">event</span></span>(<span>self, action: str, **kwargs) ‑> Dict</span>
+<span>def <span class="ident">event</span></span>(<span>self, action: str, **kwargs) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Handles event-related actions.</p>
+<div class="desc"><p>Handles event-related actions by sending messeges to Misty's WebSocket API and receiving messages from it.</p>
 <p>Supports following actions:</p>
 <ul>
-<li><strong>event subscripton</strong> - requires an action keyword <code>subscribe</code> and an argument <code>type</code> (a string representing the event type to subscribe to). Optional arguments are:<ul>
-<li><code>name</code> (str) for a custom event name; must be unique.</li>
-<li><code>return_property</code> (str) for the property to return from Misty's WebSockets API; all properties are returned if <code>return_property</code> is not supplied.</li>
-<li>debounce (int) for the interval at which new information is sent in ms; defaults to <code>250</code>.</li>
-<li>len_data_entries (int) for the maximum number of data entries to keep (discards in fifo style); defaults to <code>10</code>.</li>
-<li>event_emitter (Callable) for an event emitter function which emits an event upon message recieval; defaults to <code>None</code>.</li>
+<li><strong>event subscripton</strong> - requires an action keyword <code>"subscribe"</code> and an argument <code>type</code> (str) which is the name of the event type to subscribe to. Optional arguments are:<ul>
+<li><code>name</code> (str) for a custom, unique event name.</li>
+<li><code>return_property</code> (str) for the property to return from Misty's WebSocket API. All properties are returned if <code>return_property</code> is not supplied.</li>
+<li>debounce (int) for the interval at which new information is sent in ms. Defaults to <code>250</code>.</li>
+<li>len_data_entries (int) for the maximum number of data entries to keep (discards in FIFO style). Defaults to <code>10</code>.</li>
+<li>event_emitter (Callable) for an event emitter function which emits an event upon message recieval. Defaults to <code>None</code>.</li>
 </ul>
 </li>
-<li><strong>obtaining the data from an event</strong> - requires an action keyword <code>get_data</code> and an argument <code>name</code> (the event name).</li>
-<li><strong>obtaining the log from an event</strong> - requires an action keyword <code>get_log</code> and an argument <code>name</code> (the event name).</li>
-<li><strong>unsubscribing from an event</strong> - requires an action keyword <code>unsubscribe</code> and an argument <code>name</code> (the event name).</li>
+<li><strong>obtaining the data from an event</strong> - requires an action keyword <code>"get_data"</code> and an argument <code>name</code> (str) specifying the event name.</li>
+<li><strong>obtaining the log from an event</strong> - requires an action keyword <code>"get_log"</code> and an argument <code>name</code> (str) specifying the event name.</li>
+<li><strong>unsubscribing from an event</strong> - requires an action keyword <code>"unsubscribe"</code> and an argument <code>name</code> (str) specifying the event name.</li>
 </ul>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>action</code></strong> :&ensp;<code>str</code></dt>
-<dd>The action keyword.</dd>
+<dd>The action keyword. One of <code>"subscribe"</code>, <code>"get_data"</code>, <code>"get_log"</code> and <code>"unsubscribe"</code>.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The JSON dictionary response.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def event(self, action: str, **kwargs) -&gt; Dict:
-    &#34;&#34;&#34;Handles event-related actions.
+<pre><code class="python">def event(self, action: str, **kwargs) -&gt; Misty2pyResponse:
+    &#34;&#34;&#34;Handles event-related actions by sending messeges to Misty&#39;s WebSocket API and receiving messages from it.
 
     Supports following actions:
 
-    - **event subscripton** - requires an action keyword `subscribe` and an argument `type` (a string representing the event type to subscribe to). Optional arguments are:
-        - `name` (str) for a custom event name; must be unique.
-        - `return_property` (str) for the property to return from Misty&#39;s WebSockets API; all properties are returned if `return_property` is not supplied.
-        - debounce (int) for the interval at which new information is sent in ms; defaults to `250`.
-        - len_data_entries (int) for the maximum number of data entries to keep (discards in fifo style); defaults to `10`.
-        - event_emitter (Callable) for an event emitter function which emits an event upon message recieval; defaults to `None`.
-    - **obtaining the data from an event** - requires an action keyword `get_data` and an argument `name` (the event name).
-    - **obtaining the log from an event** - requires an action keyword `get_log` and an argument `name` (the event name).
-    - **unsubscribing from an event** - requires an action keyword `unsubscribe` and an argument `name` (the event name).
+    - **event subscripton** - requires an action keyword `&#34;subscribe&#34;` and an argument `type` (str) which is the name of the event type to subscribe to. Optional arguments are:
+        - `name` (str) for a custom, unique event name.
+        - `return_property` (str) for the property to return from Misty&#39;s WebSocket API. All properties are returned if `return_property` is not supplied.
+        - debounce (int) for the interval at which new information is sent in ms. Defaults to `250`.
+        - len_data_entries (int) for the maximum number of data entries to keep (discards in FIFO style). Defaults to `10`.
+        - event_emitter (Callable) for an event emitter function which emits an event upon message recieval. Defaults to `None`.
+    - **obtaining the data from an event** - requires an action keyword `&#34;get_data&#34;` and an argument `name` (str) specifying the event name.
+    - **obtaining the log from an event** - requires an action keyword `&#34;get_log&#34;` and an argument `name` (str) specifying the event name.
+    - **unsubscribing from an event** - requires an action keyword `&#34;unsubscribe&#34;` and an argument `name` (str) specifying the event name.
 
     Args:
-        action (str): The action keyword.
+        action (str): The action keyword. One of `&#34;subscribe&#34;`, `&#34;get_data&#34;`, `&#34;get_log&#34;` and `&#34;unsubscribe&#34;`.
 
     Returns:
-        Dict: The JSON dictionary response.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty WebSocket API sub-response.
     &#34;&#34;&#34;
 
     if action == &#34;subscribe&#34;:
@@ -364,52 +389,53 @@ class Misty:
     if action == &#34;unsubscribe&#34;:
         return self.event_handler.unsubscribe_event(kwargs)
 
-    return {
-        &#34;status&#34;: &#34;Failed&#34;,
-        &#34;message&#34;: &#34;Unknown event action: `%s`.&#34; % action
-    }</code></pre>
+    return Misty2pyResponse(
+        False,
+        error_type=Misty2pyErrorType.COMMAND,
+        error_msg=&#34;The event action `%s` is not supported.&#34; % action,
+    )</code></pre>
 </details>
 </dd>
 <dt id="misty2py.robot.Misty.get_info"><code class="name flex">
-<span>def <span class="ident">get_info</span></span>(<span>self, info_name: str, params: Dict = {}) ‑> Dict</span>
+<span>def <span class="ident">get_info</span></span>(<span>self, info_name: str, params: Dict = {}) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Obtains information from Misty.</p>
+<div class="desc"><p>Sends a request to obtain information from Misty's REST API.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>info_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>The information keyword specifying which kind of information to retrieve.</dd>
+<dd>The information keyword specifying which information to retrieve.</dd>
 <dt><strong><code>params</code></strong> :&ensp;<code>Dict</code></dt>
 <dd>A dictionary of parameter names and parameter values. Defaults to <code>{}</code>.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The response from Misty's REST API.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_info(self, info_name: str, params: Dict = {}) -&gt; Dict:
-    &#34;&#34;&#34;Obtains information from Misty.
+<pre><code class="python">def get_info(self, info_name: str, params: Dict = {}) -&gt; Misty2pyResponse:
+    &#34;&#34;&#34;Sends a request to obtain information from Misty&#39;s REST API.
 
     Args:
-        info_name (str): The information keyword specifying which kind of information to retrieve.
+        info_name (str): The information keyword specifying which information to retrieve.
         params (Dict): A dictionary of parameter names and parameter values. Defaults to `{}`.
 
     Returns:
-        Dict: The response from Misty&#39;s REST API.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
     &#34;&#34;&#34;
 
     return self.infos.get_info(info_name, params)</code></pre>
 </details>
 </dd>
 <dt id="misty2py.robot.Misty.perform_action"><code class="name flex">
-<span>def <span class="ident">perform_action</span></span>(<span>self, action_name: str, data: Dict = {}) ‑> Dict</span>
+<span>def <span class="ident">perform_action</span></span>(<span>self, action_name: str, data: Dict = {}) ‑> <a title="misty2py.response.Misty2pyResponse" href="response.html#misty2py.response.Misty2pyResponse">Misty2pyResponse</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Sends Misty a request to perform an action.</p>
+<div class="desc"><p>Sends a request to perform an action to Misty's REST API.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>action_name</code></strong> :&ensp;<code>str</code></dt>
@@ -419,22 +445,22 @@ class Misty:
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Dict</code></dt>
-<dd>The response from Misty's REST API.</dd>
+<dt><code>Misty2pyResponse</code></dt>
+<dd>A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def perform_action(self, action_name: str, data: Dict = {}) -&gt; Dict:
-    &#34;&#34;&#34;Sends Misty a request to perform an action.
+<pre><code class="python">def perform_action(self, action_name: str, data: Dict = {}) -&gt; Misty2pyResponse:
+    &#34;&#34;&#34;Sends a request to perform an action to Misty&#39;s REST API.
 
     Args:
         action_name (str): The keyword specifying the action to perform.
         data (Dict, optional): The data to send in the request body in the form of a data shortcut or a json dictionary. Defaults to `{}`.
 
     Returns:
-        Dict: The response from Misty&#39;s REST API.
+        Misty2pyResponse: A Misty2pyResponse object with Misty2py sub-response and Misty REST API sub-response.
     &#34;&#34;&#34;
 
     return self.actions.action_handler(action_name, data)</code></pre>

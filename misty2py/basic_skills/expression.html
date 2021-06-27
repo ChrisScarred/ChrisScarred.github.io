@@ -34,9 +34,8 @@ import time
 from typing import Dict, Union
 
 from misty2py.robot import Misty
-from misty2py.utils.colours import (construct_transition_dict,
-                                    get_rgb_from_unknown)
-from misty2py.utils.messages import success_parser_from_list
+from misty2py.utils.colours import construct_transition_dict, get_rgb_from_unknown
+from misty2py.response import success_of_action_list
 from misty2py.utils.status import ActionLog
 
 
@@ -52,7 +51,7 @@ def expression(
     colour_offset: Union[float, int] = 0,
     duration: Union[float, int] = 1.5,
 ) -&gt; Dict:
-    &#34;&#34;&#34;Performs an audio-visual expression. 
+    &#34;&#34;&#34;Performs an audio-visual expression.
 
     Args:
         misty (Misty): the Misty that performs the expression.
@@ -67,7 +66,7 @@ def expression(
         duration (Union[float, int], optional): The duration of the expression. Defaults to `1.5`.
 
     Returns:
-        Dict: The responses from Misty&#39;s REST API for every action and the key `overal_success` (bool) specifying whether all actions were successful.
+        Dict: a dictionary with the key `overall_success` specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse for that action.
     &#34;&#34;&#34;
     assert duration &gt; 0, &#34;Duration must be higher than zero.&#34;
     assert (
@@ -79,9 +78,7 @@ def expression(
         (display image, sound or led colour / colours) must be set.&#34;
 
     assert (
-        image_offset &lt; duration and
-        sound_offset &lt; duration and
-        colour_offset &lt; duration
+        image_offset &lt; duration and sound_offset &lt; duration and colour_offset &lt; duration
     ), &#34;The offsets cannot be higher than the duration.&#34;
 
     actions = ActionLog()
@@ -96,18 +93,16 @@ def expression(
         if offset == image_offset:
             if image:
                 img_show_message = misty.perform_action(
-                    &#34;image_show&#34;,
-                    data=image
-                )
+                    &#34;image_show&#34;, data=image
+                ).parse_to_dict()
                 actions.append_({&#34;img_show&#34;: img_show_message})
                 reset_img = True
 
         if offset == sound_offset:
             if sound:
                 audio_play_message = misty.perform_action(
-                    &#34;audio_play&#34;,
-                    data=sound
-                )
+                    &#34;audio_play&#34;, data=sound
+                ).parse_to_dict()
                 actions.append_({&#34;audio_play&#34;: audio_play_message})
 
         if offset == colour_offset:
@@ -115,19 +110,16 @@ def expression(
                 json_cols = None
                 if colours:
                     json_cols = construct_transition_dict(
-                        colours,
-                        misty.actions.allowed_data
+                        colours, misty.actions.allowed_data
                     )
                 elif colour:
                     json_cols = construct_transition_dict(
-                        {&#34;col1&#34;: colour, &#34;col2&#34;: &#34;led_off&#34;},
-                        misty.actions.allowed_data
+                        {&#34;col1&#34;: colour, &#34;col2&#34;: &#34;led_off&#34;}, misty.actions.allowed_data
                     )
                 if json_cols:
                     led_trans_message = misty.perform_action(
-                        &#34;led_trans&#34;,
-                        data=json_cols
-                    )
+                        &#34;led_trans&#34;, data=json_cols
+                    ).parse_to_dict()
                     actions.append_({&#34;led_trans&#34;: led_trans_message})
                     reset_led = True
             else:
@@ -135,7 +127,9 @@ def expression(
                     json_col = get_rgb_from_unknown(
                         colour, allowed_data=misty.actions.allowed_data
                     )
-                    led_message = misty.perform_action(&#34;led&#34;, data=json_col)
+                    led_message = misty.perform_action(
+                        &#34;led&#34;, data=json_col
+                    ).parse_to_dict()
                     actions.append_({&#34;led&#34;: led_message})
                     reset_led = True
 
@@ -145,14 +139,14 @@ def expression(
     if reset_img:
         reset_img_message = misty.perform_action(
             &#34;image_show&#34;, data=&#34;image_content_default&#34;
-        )
+        ).parse_to_dict()
         actions.append_({&#34;reset_img&#34;: reset_img_message})
 
     if reset_led:
-        reset_led_message = misty.perform_action(&#34;led&#34;, data=&#34;led_off&#34;)
+        reset_led_message = misty.perform_action(&#34;led&#34;, data=&#34;led_off&#34;).parse_to_dict()
         actions.append_({&#34;reset_led&#34;: reset_led_message})
 
-    return success_parser_from_list(actions.get_())</code></pre>
+    return success_of_action_list(actions.get_())</code></pre>
 </details>
 </section>
 <section>
@@ -166,7 +160,7 @@ def expression(
 <span>def <span class="ident">expression</span></span>(<span>misty: <a title="misty2py.robot.Misty" href="../robot.html#misty2py.robot.Misty">Misty</a>, image: Union[str, Dict, NoneType] = None, sound: Union[str, Dict, NoneType] = None, colour_type: Optional[str] = None, colour: Union[str, Dict, NoneType] = None, colours: Union[str, Dict, NoneType] = None, image_offset: Union[float, int] = 0, sound_offset: Union[float, int] = 0, colour_offset: Union[float, int] = 0, duration: Union[float, int] = 1.5) ‑> Dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Performs an audio-visual expression. </p>
+<div class="desc"><p>Performs an audio-visual expression.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>misty</code></strong> :&ensp;<code>Misty</code></dt>
@@ -193,7 +187,7 @@ def expression(
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>Dict</code></dt>
-<dd>The responses from Misty's REST API for every action and the key <code>overal_success</code> (bool) specifying whether all actions were successful.</dd>
+<dd>a dictionary with the key <code>overall_success</code> specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse for that action.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -211,7 +205,7 @@ def expression(
     colour_offset: Union[float, int] = 0,
     duration: Union[float, int] = 1.5,
 ) -&gt; Dict:
-    &#34;&#34;&#34;Performs an audio-visual expression. 
+    &#34;&#34;&#34;Performs an audio-visual expression.
 
     Args:
         misty (Misty): the Misty that performs the expression.
@@ -226,7 +220,7 @@ def expression(
         duration (Union[float, int], optional): The duration of the expression. Defaults to `1.5`.
 
     Returns:
-        Dict: The responses from Misty&#39;s REST API for every action and the key `overal_success` (bool) specifying whether all actions were successful.
+        Dict: a dictionary with the key `overall_success` specifying whether all actions were successful and a key for every action containing the dictionarised Misty2pyResponse for that action.
     &#34;&#34;&#34;
     assert duration &gt; 0, &#34;Duration must be higher than zero.&#34;
     assert (
@@ -238,9 +232,7 @@ def expression(
         (display image, sound or led colour / colours) must be set.&#34;
 
     assert (
-        image_offset &lt; duration and
-        sound_offset &lt; duration and
-        colour_offset &lt; duration
+        image_offset &lt; duration and sound_offset &lt; duration and colour_offset &lt; duration
     ), &#34;The offsets cannot be higher than the duration.&#34;
 
     actions = ActionLog()
@@ -255,18 +247,16 @@ def expression(
         if offset == image_offset:
             if image:
                 img_show_message = misty.perform_action(
-                    &#34;image_show&#34;,
-                    data=image
-                )
+                    &#34;image_show&#34;, data=image
+                ).parse_to_dict()
                 actions.append_({&#34;img_show&#34;: img_show_message})
                 reset_img = True
 
         if offset == sound_offset:
             if sound:
                 audio_play_message = misty.perform_action(
-                    &#34;audio_play&#34;,
-                    data=sound
-                )
+                    &#34;audio_play&#34;, data=sound
+                ).parse_to_dict()
                 actions.append_({&#34;audio_play&#34;: audio_play_message})
 
         if offset == colour_offset:
@@ -274,19 +264,16 @@ def expression(
                 json_cols = None
                 if colours:
                     json_cols = construct_transition_dict(
-                        colours,
-                        misty.actions.allowed_data
+                        colours, misty.actions.allowed_data
                     )
                 elif colour:
                     json_cols = construct_transition_dict(
-                        {&#34;col1&#34;: colour, &#34;col2&#34;: &#34;led_off&#34;},
-                        misty.actions.allowed_data
+                        {&#34;col1&#34;: colour, &#34;col2&#34;: &#34;led_off&#34;}, misty.actions.allowed_data
                     )
                 if json_cols:
                     led_trans_message = misty.perform_action(
-                        &#34;led_trans&#34;,
-                        data=json_cols
-                    )
+                        &#34;led_trans&#34;, data=json_cols
+                    ).parse_to_dict()
                     actions.append_({&#34;led_trans&#34;: led_trans_message})
                     reset_led = True
             else:
@@ -294,7 +281,9 @@ def expression(
                     json_col = get_rgb_from_unknown(
                         colour, allowed_data=misty.actions.allowed_data
                     )
-                    led_message = misty.perform_action(&#34;led&#34;, data=json_col)
+                    led_message = misty.perform_action(
+                        &#34;led&#34;, data=json_col
+                    ).parse_to_dict()
                     actions.append_({&#34;led&#34;: led_message})
                     reset_led = True
 
@@ -304,14 +293,14 @@ def expression(
     if reset_img:
         reset_img_message = misty.perform_action(
             &#34;image_show&#34;, data=&#34;image_content_default&#34;
-        )
+        ).parse_to_dict()
         actions.append_({&#34;reset_img&#34;: reset_img_message})
 
     if reset_led:
-        reset_led_message = misty.perform_action(&#34;led&#34;, data=&#34;led_off&#34;)
+        reset_led_message = misty.perform_action(&#34;led&#34;, data=&#34;led_off&#34;).parse_to_dict()
         actions.append_({&#34;reset_led&#34;: reset_led_message})
 
-    return success_parser_from_list(actions.get_())</code></pre>
+    return success_of_action_list(actions.get_())</code></pre>
 </details>
 </dd>
 </dl>

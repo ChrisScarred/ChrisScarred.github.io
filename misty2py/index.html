@@ -90,8 +90,59 @@ my_misty.get_info(&quot;&lt;information_keyword&gt;&quot;)
 # or event log and unsubscribing from an event):
 my_misty.event(&quot;&lt;parameter&gt;&quot;)
 </code></pre>
-<h3 id="responses">Responses</h3>
+<h3 id="misty2pyresponse">Misty2pyResponse</h3>
 <p>Any action performed via Misty2py which contains communication with Misty's APIs returns the <code>Misty2pyResponse</code> object. <code>Misty2pyResponse</code> is a uniform representation of two sub-responses that are present in any HTTP or WebSocket communication with Misty's APIs using Misty2py. The first sub-response is always from Misty2py and is represented by the attributes <code>Misty2pyResponse.misty2py_status</code> (<code>True</code> if no Misty2py-related errors were encountered) and potentially empty <code>Misty2pyResponse.error_msg</code> and <code>Misty2pyResponse.error_type</code> that contain error information if a Misty2py-related error was encountered. The other sub-response is either from Misty's REST API or Misty's WebSocket API. In the first case, it is represented by the attribute <code>Misty2pyResponse.rest_response</code> (Dict), and in the second case, it is represented by the attribute <code>Misty2pyResponse.ws_response</code>. One of these is always empty, because no action in Misty2py includes simultaneous communication with both APIs. For convenience, a <code>Misty2pyResponse</code> object can be easily parsed to a dictionary via the method <code>Misty2pyResponse.parse_to_dict</code>.</p>
+<p>Following code snippets show the formats of dictionarised Misty2pyResponses in different circumstances.</p>
+<p>The case of a successful communication with Misty's REST API:</p>
+<pre><code class="language-python">{
+    &quot;misty2py_response&quot;: {
+        &quot;success&quot;: True
+    },
+    &quot;rest_response&quot;: {
+        &quot;success&quot;: True,
+        &quot;message&quot;: &quot;A message from Misty's REST API&quot; 
+    },
+    &quot;overall_success&quot;: True
+}
+</code></pre>
+<p>The case of a successful communication with Misty's WebSocket API:</p>
+<pre><code class="language-python">{
+    &quot;misty2py_response&quot;: {
+        &quot;success&quot;: True
+    },
+    &quot;ws_response&quot;: {
+        &quot;success&quot;: True,
+        &quot;message&quot;: &quot;A message from Misty's WebSocket API&quot; 
+    },
+    &quot;overall_success&quot;: True
+}
+</code></pre>
+<p>The case of a successful communication with Misty's REST API with an error encountered in Misty2py:</p>
+<pre><code class="language-python">{
+    &quot;misty2py_response&quot;: {
+        &quot;success&quot;: False,
+        &quot;error_msg&quot;: &quot;An error message&quot;,
+        &quot;error_type&quot;: &quot;unknown&quot;
+    },
+    &quot;rest_response&quot;: {
+        &quot;success&quot;: True,
+        &quot;message&quot;: &quot;A message from Misty's REST API&quot; 
+    },
+    &quot;overall_success&quot;: False
+}
+</code></pre>
+<p>The case of an unsuccessful communication with Misty's REST API:</p>
+<pre><code class="language-python">{
+    &quot;misty2py_response&quot;: {
+        &quot;success&quot;: True
+    },
+    &quot;rest_response&quot;: {
+        &quot;success&quot;: False,
+        &quot;message&quot;: &quot;An error message from Misty's REST API&quot; 
+    },
+    &quot;overall_success&quot;: False
+}
+</code></pre>
 <h3 id="obtaining-information">Obtaining information</h3>
 <p>Obtaining digital information is handled by <code>misty2py.robot::get_info</code> method which has two arguments. The argument <code>info_name</code> is required and it specifies the string information keyword corresponding to an endpoint in Misty's REST API. The argument <code>params</code> is optional and it supplies a dictionary of parameter name and parameter value pairs. This argument defaults to <code>{}</code> (an empty dictionary).</p>
 <h3 id="performing-actions">Performing actions</h3>
@@ -117,16 +168,20 @@ from misty2py.utils.env_loader import EnvLoader
 
 env_loader = EnvLoader
 
-m = Misty(env_loader.get_ip())
+my_misty = Misty(env_loader.get_ip())
 
-d = m.event(&quot;subscribe&quot;, type = &quot;BatteryCharge&quot;)
-e_name = d.get(&quot;event_name&quot;)
+subscription_reply = my_misty.event(&quot;subscribe&quot;, type=&quot;BatteryCharge&quot;)
+# obtaining the event name from a Misty2pyResponse
+event_name = subscription_reply.parse_to_dict().get(&quot;ws_response&quot;, {}).get(&quot;event_name&quot;)
 
 time.sleep(1)
 
-d = m.event(&quot;get_data&quot;, name = e_name)
+get_data_response = my_misty.event(&quot;get_data&quot;, name=event_name)
 
-d = m.event(&quot;unsubscribe&quot;, name = e_name)
+# obtaining the data from a Misty2pyResponse
+data = get_data_response.parse_to_dict().get(&quot;ws_response&quot;, {}).get(&quot;message&quot;)
+
+my_misty.event(&quot;unsubscribe&quot;, name=event_name)
 </code></pre>
 <p>The following example shows a more realistic scenario which includes an event emitter and an event listener.</p>
 <pre><code class="language-python">import time
@@ -137,7 +192,7 @@ from misty2py.utils.env_loader import EnvLoader
 
 env_loader = EnvLoader
 
-m = Misty(env_loader.get_ip())
+my_misty = Misty(env_loader.get_ip())
 ee = EventEmitter()
 event_name = &quot;myevent_001&quot;
 
@@ -145,19 +200,23 @@ event_name = &quot;myevent_001&quot;
 def listener(data):
     print(data)
 
-d = m.event(&quot;subscribe&quot;, type = &quot;BatteryCharge&quot;, 
-            name = event_name, event_emitter = ee)
+my_misty.event(
+    &quot;subscribe&quot;, 
+    type = &quot;BatteryCharge&quot;, 
+    name = event_name, 
+    event_emitter = ee
+)
 
 time.sleep(2)
 
-d = m.event(&quot;unsubscribe&quot;, name = event_name)
+my_misty.event(&quot;unsubscribe&quot;, name = event_name)
 </code></pre>
 <h3 id="adding-custom-keywords-and-shortcuts">Adding custom keywords and shortcuts</h3>
 <p>Custom keywords and shortcuts can be passed to a Misty object while declaring a new instance by using the optional arguments <code>custom_info</code>, <code>custom_actions</code> and <code>custom_data</code>. </p>
 <p>The argument <code>custom_info</code> can be used to pass custom information keywords as a dictionary with keys being the information keywords and values being the endpoints. An information keyword can only be used for a <code>GET</code> method supporting endpoint.</p>
 <p>The argument <code>custom_actions</code> can be used to pass custom action keywords as a dictionary with keys being the action keywords and values being a dictionary of an <code>"endpoint"</code> key (str) and a <code>"method"</code> key (str). The <code>"method"</code> values must be one of <code>post</code>, <code>delete</code>, <code>put</code>, <code>head</code>, <code>options</code> and <code>patch</code>. However, it should be noted that Misty's REST API currently only has <code>GET</code>, <code>POST</code> and <code>DELETE</code> methods. The rest of the methods was implement in Misty2py for forwards-compatibility.</p>
 <p>The argument <code>custom_data</code> can be used to pass custom data shortcuts as a dictionary with keys being the data shortcuts and values being the dictionary of data values.</p>
-<p>For futher illustration, an example of passing custom keywords and shortcuts can be seen below.</p>
+<p>For further illustration, an example of passing custom keywords and shortcuts can be seen below.</p>
 <pre><code class="language-python">custom_allowed_infos = {
     &quot;hazards_settings&quot;: &quot;api/hazards/settings&quot;
 }
@@ -560,9 +619,73 @@ my_misty.get_info(&#34;&lt;information_keyword&gt;&#34;)
 my_misty.event(&#34;&lt;parameter&gt;&#34;)
 ```
 
-### Responses
+### Misty2pyResponse
 
 Any action performed via Misty2py which contains communication with Misty&#39;s APIs returns the `Misty2pyResponse` object. `Misty2pyResponse` is a uniform representation of two sub-responses that are present in any HTTP or WebSocket communication with Misty&#39;s APIs using Misty2py. The first sub-response is always from Misty2py and is represented by the attributes `Misty2pyResponse.misty2py_status` (`True` if no Misty2py-related errors were encountered) and potentially empty `Misty2pyResponse.error_msg` and `Misty2pyResponse.error_type` that contain error information if a Misty2py-related error was encountered. The other sub-response is either from Misty&#39;s REST API or Misty&#39;s WebSocket API. In the first case, it is represented by the attribute `Misty2pyResponse.rest_response` (Dict), and in the second case, it is represented by the attribute `Misty2pyResponse.ws_response`. One of these is always empty, because no action in Misty2py includes simultaneous communication with both APIs. For convenience, a `Misty2pyResponse` object can be easily parsed to a dictionary via the method `Misty2pyResponse.parse_to_dict`.
+
+Following code snippets show the formats of dictionarised Misty2pyResponses in different circumstances.
+
+The case of a successful communication with Misty&#39;s REST API:
+
+```python
+{
+    &#34;misty2py_response&#34;: {
+        &#34;success&#34;: True
+    },
+    &#34;rest_response&#34;: {
+        &#34;success&#34;: True,
+        &#34;message&#34;: &#34;A message from Misty&#39;s REST API&#34; 
+    },
+    &#34;overall_success&#34;: True
+}
+```
+
+The case of a successful communication with Misty&#39;s WebSocket API:
+
+```python
+{
+    &#34;misty2py_response&#34;: {
+        &#34;success&#34;: True
+    },
+    &#34;ws_response&#34;: {
+        &#34;success&#34;: True,
+        &#34;message&#34;: &#34;A message from Misty&#39;s WebSocket API&#34; 
+    },
+    &#34;overall_success&#34;: True
+}
+```
+
+The case of a successful communication with Misty&#39;s REST API with an error encountered in Misty2py:
+
+```python
+{
+    &#34;misty2py_response&#34;: {
+        &#34;success&#34;: False,
+        &#34;error_msg&#34;: &#34;An error message&#34;,
+        &#34;error_type&#34;: &#34;unknown&#34;
+    },
+    &#34;rest_response&#34;: {
+        &#34;success&#34;: True,
+        &#34;message&#34;: &#34;A message from Misty&#39;s REST API&#34; 
+    },
+    &#34;overall_success&#34;: False
+}
+```
+
+The case of an unsuccessful communication with Misty&#39;s REST API:
+
+```python
+{
+    &#34;misty2py_response&#34;: {
+        &#34;success&#34;: True
+    },
+    &#34;rest_response&#34;: {
+        &#34;success&#34;: False,
+        &#34;message&#34;: &#34;An error message from Misty&#39;s REST API&#34; 
+    },
+    &#34;overall_success&#34;: False
+}
+```
 
 ### Obtaining information
 
@@ -599,16 +722,20 @@ from misty2py.utils.env_loader import EnvLoader
 
 env_loader = EnvLoader
 
-m = Misty(env_loader.get_ip())
+my_misty = Misty(env_loader.get_ip())
 
-d = m.event(&#34;subscribe&#34;, type = &#34;BatteryCharge&#34;)
-e_name = d.get(&#34;event_name&#34;)
+subscription_reply = my_misty.event(&#34;subscribe&#34;, type=&#34;BatteryCharge&#34;)
+# obtaining the event name from a Misty2pyResponse
+event_name = subscription_reply.parse_to_dict().get(&#34;ws_response&#34;, {}).get(&#34;event_name&#34;)
 
 time.sleep(1)
 
-d = m.event(&#34;get_data&#34;, name = e_name)
+get_data_response = my_misty.event(&#34;get_data&#34;, name=event_name)
 
-d = m.event(&#34;unsubscribe&#34;, name = e_name)
+# obtaining the data from a Misty2pyResponse
+data = get_data_response.parse_to_dict().get(&#34;ws_response&#34;, {}).get(&#34;message&#34;)
+
+my_misty.event(&#34;unsubscribe&#34;, name=event_name)
 ```
 
 The following example shows a more realistic scenario which includes an event emitter and an event listener.
@@ -622,7 +749,7 @@ from misty2py.utils.env_loader import EnvLoader
 
 env_loader = EnvLoader
 
-m = Misty(env_loader.get_ip())
+my_misty = Misty(env_loader.get_ip())
 ee = EventEmitter()
 event_name = &#34;myevent_001&#34;
 
@@ -630,12 +757,16 @@ event_name = &#34;myevent_001&#34;
 def listener(data):
     print(data)
 
-d = m.event(&#34;subscribe&#34;, type = &#34;BatteryCharge&#34;, 
-            name = event_name, event_emitter = ee)
+my_misty.event(
+    &#34;subscribe&#34;, 
+    type = &#34;BatteryCharge&#34;, 
+    name = event_name, 
+    event_emitter = ee
+)
 
 time.sleep(2)
 
-d = m.event(&#34;unsubscribe&#34;, name = event_name)
+my_misty.event(&#34;unsubscribe&#34;, name = event_name)
 ```
 
 ### Adding custom keywords and shortcuts
@@ -648,7 +779,7 @@ The argument `custom_actions` can be used to pass custom action keywords as a di
 
 The argument `custom_data` can be used to pass custom data shortcuts as a dictionary with keys being the data shortcuts and values being the dictionary of data values.
 
-For futher illustration, an example of passing custom keywords and shortcuts can be seen below.
+For further illustration, an example of passing custom keywords and shortcuts can be seen below.
 
 ```python
 custom_allowed_infos = {
@@ -1031,7 +1162,7 @@ misty_robot = Misty(&#34;0.0.0.0&#34;,
 <li><a href="#license">License</a></li>
 <li><a href="#usage">Usage</a><ul>
 <li><a href="#getting-started">Getting started</a></li>
-<li><a href="#responses">Responses</a></li>
+<li><a href="#misty2pyresponse">Misty2pyResponse</a></li>
 <li><a href="#obtaining-information">Obtaining information</a></li>
 <li><a href="#performing-actions">Performing actions</a></li>
 <li><a href="#event-types">Event types</a></li>
